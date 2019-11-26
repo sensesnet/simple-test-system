@@ -60,8 +60,6 @@ public class ConnectionPool
             // logging
             connectionCount = MINIMAL_CONNECTION_COUNT;
         }
-
-        System.out.println("ñîçäàåìñÿ");
         freeConnections = new ArrayBlockingQueue<>(connectionCount);
         givenConnections = new ArrayBlockingQueue<>(connectionCount);
 
@@ -113,13 +111,9 @@ public class ConnectionPool
             givenConnections.remove(connection);
             freeConnections.put(connection);
         }
-        catch (SQLException e)
+        catch (SQLException | InterruptedException e)
         {
-            throw new ConnectionPoolException("zzz", e);
-        }
-        catch (InterruptedException e)
-        {
-            throw new ConnectionPoolException("xxx", e);
+            throw new ConnectionPoolException("exception", e);
         }
 
     }
@@ -162,11 +156,6 @@ public class ConnectionPool
         pool.init2();
 
         Connection con = pool.takeConnection();
-
-        if (con != null)
-        {
-            System.out.println("ok");
-        }
 
     }
 }
