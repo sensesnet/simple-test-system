@@ -1,12 +1,11 @@
-package com.sensesnet.dao.test.dao;
+package com.sensesnet.dao.user.dao;
 
 /**
  * @author sensesnet <br />
  * Copyright 2019 Eshted LLC. All rights reserved.
  * <p>
- * DAO: Test process
+ * TODO: add description
  */
-public class TestProcess
+public class UserInfoDao
 {
-
 }
