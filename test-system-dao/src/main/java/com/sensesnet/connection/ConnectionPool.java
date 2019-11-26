@@ -154,8 +154,7 @@ public class ConnectionPool
     {
         ConnectionPool pool = new ConnectionPool();
         pool.init();
-
-        Connection con = pool.takeConnection();
-
+        Connection conection = pool.takeConnection();
+        pool.destroyPool();
     }
 }
