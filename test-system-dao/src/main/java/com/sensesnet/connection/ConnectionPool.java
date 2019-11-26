@@ -118,7 +118,7 @@ public class ConnectionPool
 
     }
 
-    public void destroyPool()
+    public void destroyPool() throws ConnectionPoolException
     {
         // int closeConnectionCounter = 0;
 
@@ -131,7 +131,7 @@ public class ConnectionPool
             }
             catch (SQLException e)
             {
-                // loggin
+                throw new ConnectionPoolException("exception", e);
             }
         }
 
@@ -144,7 +144,7 @@ public class ConnectionPool
             }
             catch (SQLException e)
             {
-                // loggin
+                throw new ConnectionPoolException("exception", e);
             }
         }
 
