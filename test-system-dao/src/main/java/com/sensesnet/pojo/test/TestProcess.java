@@ -1,6 +1,5 @@
 package com.sensesnet.pojo.test;
 
-import com.sun.istack.internal.NotNull;
 import lombok.*;
 
 import java.util.Date;
@@ -20,13 +19,13 @@ import java.util.Objects;
 @ToString
 public class TestProcess
 {
-    private @NotNull Integer testProcessId;
-    private @NotNull Date testProcessDate;
-    private @NotNull Integer userId;
-    private @NotNull Integer resultId;
-    private @NotNull Integer testId;
-    private @NotNull Integer mainResultValue;
-    private @NotNull boolean isCompleted;
+    private @NonNull Integer testProcessId;
+    private @NonNull Date testProcessDate;
+    private @NonNull Integer userId;
+    private @NonNull Integer resultId;
+    private @NonNull Integer testId;
+    private @NonNull Integer mainResultValue;
+    private @NonNull boolean isCompleted;
 
     @Override
     public boolean equals(Object obj)

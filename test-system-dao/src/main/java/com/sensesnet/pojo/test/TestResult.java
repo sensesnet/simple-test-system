@@ -1,8 +1,6 @@
 package com.sensesnet.pojo.test;
 
-import com.sun.istack.internal.NotNull;
 import lombok.*;
-
 import java.util.Objects;
 
 /**
@@ -19,10 +17,10 @@ import java.util.Objects;
 @ToString
 public class TestResult
 {
-    private @NotNull Integer resultId;
-    private @NotNull Integer testProcessId;
-    private @NotNull Integer questionId;
-    private @NotNull Integer answerId;
+    private @NonNull Integer resultId;
+    private @NonNull Integer testProcessId;
+    private @NonNull Integer questionId;
+    private @NonNull Integer answerId;
 
     @Override
     public boolean equals(Object obj)

@@ -1,6 +1,6 @@
 package com.sensesnet.pojo.authentication;
 
-import com.sun.istack.internal.NotNull;
+
 import lombok.*;
 
 import java.util.Objects;
@@ -19,9 +19,9 @@ import java.util.Objects;
 @ToString
 public class UserRole
 {
-    private @NotNull Integer roleId;
-    private @NotNull String roleName;
-    private @NotNull String roleDesc;
+    private @NonNull Integer roleId;
+    private @NonNull String roleName;
+    private @NonNull String roleDesc;
 
     @Override
     public boolean equals(Object o)

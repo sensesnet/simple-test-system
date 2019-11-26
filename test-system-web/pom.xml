@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>test-system-web</artifactId>
     <name>test-system-web</name>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <url>http://maven.apache.org</url>
     <version>1.0-SNAPSHOT</version>
 
@@ -16,8 +16,25 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
+    <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+
+        <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+
+        <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
-        <finalName>web</finalName>
+        <finalName>test-system-web</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

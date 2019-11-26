@@ -1,6 +1,5 @@
 package com.sensesnet.pojo.authentication;
 
-import com.sun.istack.internal.NotNull;
 import lombok.*;
 
 import java.util.Date;
@@ -19,12 +18,12 @@ import java.util.Objects;
 @ToString
 public class UserInfo
 {
-    private @NotNull Integer infoId;
-    private @NotNull String userName;
-    private @NotNull String userSurname;
-    private @NotNull String userAddress;
-    private @NotNull Date userBirthday;
-    private @NotNull String userPhone;
+    private @NonNull Integer infoId;
+    private @NonNull String userName;
+    private @NonNull String userSurname;
+    private @NonNull String userAddress;
+    private @NonNull Date userBirthday;
+    private @NonNull String userPhone;
 
     @Override
     public boolean equals(Object obj)
