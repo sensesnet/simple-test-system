@@ -94,11 +94,6 @@ public class ConnectionPool
 
         try
         {
-            if (freeConnections == null)
-            {
-                System.out.println("bedaaa");
-            }
-
             connection = freeConnections.take();
             givenConnections.put(connection);
         }
@@ -112,18 +107,6 @@ public class ConnectionPool
 
     public void returnConnection(Connection connection) throws ConnectionPoolException
     {
-        try
-        {
-            if (connection == null || connection.isClosed() == true)
-            {
-                throw new ConnectionPoolException("tyty");
-            }
-        }
-        catch (SQLException e)
-        {
-            throw new ConnectionPoolException("tyty2", e);
-        }
-
         try
         {
             connection.setAutoCommit(true);
