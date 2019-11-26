@@ -41,7 +41,7 @@ public class ConnectionPool
         return instance;
     }
 
-    public void init2() throws ConnectionPoolException
+    public void init() throws ConnectionPoolException
     {
         ResourceBundle resourceBundle = ResourceBundle.getBundle(DB_PROPERTIES_FILE);
 
@@ -153,7 +153,7 @@ public class ConnectionPool
     public static void main(String[] args) throws ConnectionPoolException
     {
         ConnectionPool pool = new ConnectionPool();
-        pool.init2();
+        pool.init();
 
         Connection con = pool.takeConnection();
 
