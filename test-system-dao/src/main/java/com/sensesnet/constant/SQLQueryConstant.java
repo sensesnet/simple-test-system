@@ -40,20 +40,20 @@ public class SQLQueryConstant
     /**
      * SQL queries for DB (test_system.test;)
      */
-    public static final String INSERT_NEW_TEST = "INSERT INTO test_system.test (test_name, test_description, test_value, test_time) VALUES (?, ?, ?, ?)";
-    public static final String UPDATE_TEST = "UPDATE test_system.test SET test_name = ?, test_value = ?, test_time = ? WHERE test_id = ?";
-    public static final String DELETE_TEST_BY_ID = "DELETE FROM test_system.test WHERE test_id = ?";
-    public static final String SELECT_ALL_TEST = "SELECT * FROM test_system.test";
-    public static final String SELECT_TEST_BY_ID = "SELECT * FROM test_system.test WHERE test_id = ?";
+    public final String INSERT_NEW_TEST = "INSERT INTO test_system.test (test_name, test_description, test_value, test_time) VALUES (?, ?, ?, ?)";
+    public final String UPDATE_TEST = "UPDATE test_system.test SET test_name = ?, test_value = ?, test_time = ? WHERE test_id = ?";
+    public final String DELETE_TEST_BY_ID = "DELETE FROM test_system.test WHERE test_id = ?";
+    public final String SELECT_ALL_TEST = "SELECT * FROM test_system.test";
+    public final String SELECT_TEST_BY_ID = "SELECT * FROM test_system.test WHERE test_id = ?";
 
     /**
      * SQL queries for DB (test_system.test_process)
      */
-    public static final String INSERT_NEW_TEST_PROCESS = "INSERT INTO test_system.test_process (test_process_date, user_id, test_id, main_result_value, is_completed) VALUES (?, ?, ?, ?, ?)";
-    public static final String UPDATE_TEST_PROCESS = "UPDATE test_system.test SET test_process_date = ?, user_id = ?, test_id = ?, main_result_value = ?, is_completed = ? WHERE test_process_id = ?";
-    public static final String DELETE_TEST_PROCESS_BY_ID = "DELETE FROM test_system.test_process WHERE test_process_id = ?";
-    public static final String SELECT_ALL_TEST_PROCESS = "SELECT * FROM test_system.test_process";
-    public static final String SELECT_TEST_PROCESS_BY_ID = "SELECT * FROM test_system.test_process WHERE test_process_id = ?";
+    public final String INSERT_NEW_TEST_PROCESS = "INSERT INTO test_system.test_process (test_process_date, user_id, test_id, main_result_value, is_completed) VALUES (?, ?, ?, ?, ?)";
+    public final String UPDATE_TEST_PROCESS = "UPDATE test_system.test SET test_process_date = ?, user_id = ?, test_id = ?, main_result_value = ?, is_completed = ? WHERE test_process_id = ?";
+    public final String DELETE_TEST_PROCESS_BY_ID = "DELETE FROM test_system.test_process WHERE test_process_id = ?";
+    public final String SELECT_ALL_TEST_PROCESS = "SELECT * FROM test_system.test_process";
+    public final String SELECT_TEST_PROCESS_BY_ID = "SELECT * FROM test_system.test_process WHERE test_process_id = ?";
 
     /**
      * SQL queries for DB (test_system.question;)

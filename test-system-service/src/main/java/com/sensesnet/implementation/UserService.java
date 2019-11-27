@@ -7,7 +7,6 @@ import com.sensesnet.pojo.authentication.User;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import sun.security.provider.MD5;
 
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class UserService extends AbstractService<User>
         User existingUser = null;
         try
         {
-            existingUser = userDao.getUserByNameAndPassword(login, this.getEncryptPassword(password));
+            existingUser = userDao.getUserByLoginAndPassword(login, this.getEncryptPassword(password));
             assert existingUser != null;
             log.info("[Auth Step] User has been found [" + login + ";"
                     + this.getEncryptPassword(password) + "]");

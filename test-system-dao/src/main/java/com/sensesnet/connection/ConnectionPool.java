@@ -1,9 +1,11 @@
 package com.sensesnet.connection;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.ResourceBundle;
+import com.sensesnet.constant.Constant;
+import com.sensesnet.util.Config;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.sql.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -16,90 +18,74 @@ import java.util.concurrent.BlockingQueue;
 
 public class ConnectionPool
 {
-
+    private static final Logger log = LogManager.getLogger(ConnectionPool.class);
     private static final ConnectionPool instance = new ConnectionPool();
-
-    private static final String DRIVER = "db.driver";
-    private static final String JDBC_URL = "db.jdbc.url";
-    private static final String DB_LOGIN = "db.login";
-    private static final String DB_PASSWORD = "db.password";
-    private static final String CONNECTION_COUNT = "db.connection_count";
-
-    private static final String DB_PROPERTIES_FILE = "resources.db";
-
-    private static final int MINIMAL_CONNECTION_COUNT = 5;
-
     private BlockingQueue<Connection> freeConnections;
     private BlockingQueue<Connection> givenConnections;
-
-    public ConnectionPool()
-    {
-    }
+    private String databaseServerName = Config.getProperty(Constant.dbConection().DATABASE_SERVER_NANE);
+    private String databasePortNumber = Config.getProperty(Constant.dbConection().DATABASE_PORT_NUMBER);
+    private String databaseName = Config.getProperty(Constant.dbConection().DATABASE_NANE);
+    private String username = Config.getProperty(Constant.dbConection().DATABASE_USERNAME);
+    private String password = Config.getProperty(Constant.dbConection().DATABASE_PASSWORD);
+    private String databaseClass = Config.getProperty(Constant.dbConection().DATABASE_DB_CLASS);
+    private String databaseScheme = Config.getProperty(Constant.dbConection().DATABASE_SCHEME);
+    private String databaseLink =
+            "jdbc:mysql://"
+                    + databaseServerName + ":"
+                    + databasePortNumber + "/" + databaseScheme
+                    + "?useUnicode=true&serverTimezone=UTC&useSSL=false";
+    private static Integer connectionCount = Integer.valueOf(Config.getProperty(Constant.dbConection().CONNECTION_COUNT));
 
     public static ConnectionPool getInstance()
     {
         return instance;
     }
 
-    public void init() throws ConnectionPoolException
+
+    public void initPoolData() throws ConnectionPoolException
     {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle(DB_PROPERTIES_FILE);
-
-        String driver = resourceBundle.getString(DRIVER);
-        String jdbcUrl = resourceBundle.getString(JDBC_URL);
-        String login = resourceBundle.getString(DB_LOGIN);
-        String password = resourceBundle.getString(DB_PASSWORD);
-
-        int connectionCount = 0;
-        try
-        {
-            connectionCount = Integer.parseInt(resourceBundle.getString(CONNECTION_COUNT));
-        }
-        catch (NumberFormatException e)
-        {
-            // logging
-            connectionCount = MINIMAL_CONNECTION_COUNT;
-        }
         freeConnections = new ArrayBlockingQueue<>(connectionCount);
         givenConnections = new ArrayBlockingQueue<>(connectionCount);
 
         try
         {
-            Class.forName(driver);
-
-            Connection connection = DriverManager.getConnection(jdbcUrl, login, password);
-
-            freeConnections.put(connection);
-
+            Class.forName(databaseClass);
+            for (int i = 0; i < connectionCount; i++)
+            {
+                freeConnections.put(DriverManager.getConnection(databaseLink, username, password));
+            }
         }
         catch (ClassNotFoundException e)
         {
-            throw new ConnectionPoolException("db.prorerties eroor", e);
+            throw new ConnectionPoolException("Connection pool: database class not found!", e);
         }
         catch (SQLException e)
         {
-            throw new ConnectionPoolException("connection eroor", e);
+            throw new ConnectionPoolException("Connection pool: lose DB connection!", e);
         }
         catch (InterruptedException e)
         {
-            throw new ConnectionPoolException("pool eroor", e);
+            throw new ConnectionPoolException("Connection pool: blocked thread on DB connection initialisation!", e);
         }
     }
 
+    /**
+     * Get free connection
+     * @return
+     * @throws ConnectionPoolException
+     */
     public Connection takeConnection() throws ConnectionPoolException
     {
         Connection connection;
-
         try
         {
             connection = freeConnections.take();
-            givenConnections.put(connection);
+            givenConnections.add(connection);
         }
         catch (InterruptedException e)
         {
-            throw new ConnectionPoolException("take connection error", e);
+            throw new ConnectionPoolException("Connection pool: blocked thread on take DB connection!", e);
         }
-
         return connection;
     }
 
@@ -118,43 +104,109 @@ public class ConnectionPool
 
     }
 
-    public void destroyPool() throws ConnectionPoolException
+
+    /**
+     * Close all connections
+     * @throws ConnectionPoolException
+     * @throws SQLException
+     */
+    public void closeAllConnections() throws ConnectionPoolException, SQLException
     {
-        // int closeConnectionCounter = 0;
-
-        for (int i = 0; i < freeConnections.size(); i++)
-        {
-            Connection con = freeConnections.poll();
-            try
-            {
-                con.close();
-            }
-            catch (SQLException e)
-            {
-                throw new ConnectionPoolException("exception", e);
-            }
-        }
-
-        for (int i = 0; i < givenConnections.size(); i++)
-        {
-            Connection con = givenConnections.poll();
-            try
-            {
-                con.close();
-            }
-            catch (SQLException e)
-            {
-                throw new ConnectionPoolException("exception", e);
-            }
-        }
-
+        this.closeConnectionQueue(freeConnections);
+        this.closeConnectionQueue(givenConnections);
+        log.info("[ConnectionPool] All Db connections closed.");
     }
 
-    public static void main(String[] args) throws ConnectionPoolException
+    private void closeConnectionQueue(BlockingQueue<Connection> queue) throws SQLException, ConnectionPoolException
+    {
+        for (int i = 0; i < queue.size(); i++)
+        {
+            Connection connection = queue.poll();
+            if (connection != null)
+                connection.commit();
+            try
+            {
+                connection.close();
+            }
+            catch (SQLException e)
+            {
+                throw new ConnectionPoolException("Connection pool: lose DB connection!", e);
+            }
+        }
+    }
+
+    /**
+     * Close connection statement and resultSet
+     *
+     * @param connection
+     * @param statement
+     * @param resultSet
+     */
+    public void closeConnection(Connection connection, Statement statement, ResultSet resultSet)
+    {
+        try
+        {
+            connection.close();
+        }
+        catch (SQLException e)
+        {
+            log.error("[ConnectionPoll] Connection has not returned to the pool.");
+            e.printStackTrace();
+        }
+        try
+        {
+            resultSet.close();
+        }
+        catch (SQLException e)
+        {
+            log.error("[ConnectionPoll] ResultSet has not been closed.");
+            e.printStackTrace();
+        }
+        try
+        {
+            statement.close();
+        }
+        catch (SQLException e)
+        {
+            log.error("[ConnectionPoll] Statement has not been closed.");
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Close statement and connection
+     *
+     * @param connection
+     * @param statement
+     */
+    public void closeConnection(Connection connection, Statement statement)
+    {
+        try
+        {
+            connection.close();
+        }
+        catch (SQLException e)
+        {
+            log.error("[ConnectionPoll] Connection has not returned to the pool.");
+            e.printStackTrace();
+        }
+        try
+        {
+            statement.close();
+        }
+        catch (SQLException e)
+        {
+            log.error("[ConnectionPoll] Statement has not been closed.");
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void main(String[] args) throws ConnectionPoolException, SQLException
     {
         ConnectionPool pool = new ConnectionPool();
-        pool.init();
+        pool.initPoolData();
         Connection conection = pool.takeConnection();
-        pool.destroyPool();
+        pool.closeAllConnections();
     }
 }

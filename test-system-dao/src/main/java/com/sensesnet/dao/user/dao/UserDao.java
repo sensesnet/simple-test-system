@@ -2,15 +2,10 @@ package com.sensesnet.dao.user.dao;
 
 import com.sensesnet.connection.ConnectionPoolException;
 import com.sensesnet.constant.Constant;
-import com.sensesnet.constant.SQLQueryConstant;
 import com.sensesnet.dao.AbstractDao;
 import com.sensesnet.dao.exception.DaoException;
 import com.sensesnet.pojo.authentication.User;
-import com.sensesnet.pojo.authentication.UserInfo;
-import com.sensesnet.pojo.authentication.UserRole;
 
-import java.beans.PropertyVetoException;
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -81,11 +76,11 @@ public class UserDao extends AbstractDao<UserDao>
 
     }
 
-    public User getUserByNameAndPassword(String login, String password) throws DaoException
+    public User getUserByLoginAndPassword(String login, String password) throws DaoException
     {
         LinkedList<User> userList = new LinkedList<>();
         try (PreparedStatement statement = getConnection()
-                .prepareStatement(Constant.QUERY().SELECT_USER_BY_LOGIN_AND_PASSWORD))
+                .prepareStatement(Constant.query().SELECT_USER_BY_LOGIN_AND_PASSWORD))
         {
             statement.setString(1, login);
             statement.setString(2, password);
@@ -108,7 +103,7 @@ public class UserDao extends AbstractDao<UserDao>
         }
         catch (AssertionError e)
         {
-            throw new DaoException("Response Error: Have more one account for [" + login + "," + password + "].", e);
+            throw new DaoException("Account Error: Have more one account for [" + login + "," + password + "].", e);
         }
         catch (ConnectionPoolException e) {
             throw new DaoException("Connection pool Error:", e);

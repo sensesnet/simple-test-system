@@ -8,5 +8,8 @@ package com.sensesnet.constant;
  */
 public class Constant
 {
-    public static SQLQueryConstant QUERY() { return new SQLQueryConstant(); }
+    public static SQLQueryConstant query() { return new SQLQueryConstant(); }
+
+    public static DbConnectionConstant dbConection() { return new DbConnectionConstant(); }
+
 }
