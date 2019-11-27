@@ -1,6 +1,7 @@
 package com.sensesnet.pojo.authentication;
 
 import lombok.*;
+
 import java.util.Objects;
 
 /**
@@ -17,12 +18,12 @@ import java.util.Objects;
 @ToString
 public class User
 {
-    private @NonNull Integer userId;
+    private Integer userId;
     private @NonNull String userLogin;
     private @NonNull String userPassword;
-    private @NonNull UserRole userRole;
-    private @NonNull Integer userInfoId;
-    private @NonNull UserInfo userInfo;
+    private Integer userRole;
+    private Integer userInfoId;
+    private Integer userInfo;
 
     @Override
     public boolean equals(Object o)

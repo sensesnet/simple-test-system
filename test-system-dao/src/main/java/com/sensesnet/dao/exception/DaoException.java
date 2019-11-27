@@ -9,18 +9,19 @@ package com.sensesnet.dao.exception;
 
 public class DaoException extends Exception
 {
-    public DaoException(String msg, Exception e)
-    {
-        super(msg, e);
+    public DaoException(String message) {
+        super(message);
     }
 
-    public DaoException(Exception e)
-    {
-        super(e);
+    public DaoException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    public DaoException(String msg)
-    {
-        super(msg);
+    public DaoException(Throwable cause) {
+        super(cause);
+    }
+
+    public DaoException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 }
