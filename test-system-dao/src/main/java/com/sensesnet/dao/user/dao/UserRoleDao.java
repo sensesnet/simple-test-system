@@ -2,6 +2,8 @@ package com.sensesnet.dao.user.dao;
 
 import com.sensesnet.dao.AbstractDao;
 import com.sensesnet.dao.exception.DaoException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
@@ -14,29 +16,7 @@ import java.util.List;
  */
 public class UserRoleDao extends AbstractDao<UserRoleDao>
 {
-    @Override
-    public String getCreateQuery() throws DaoException
-    {
-        return null;
-    }
-
-    @Override
-    public String getSelectQuery() throws DaoException
-    {
-        return null;
-    }
-
-    @Override
-    public String getUpdateQuery() throws DaoException
-    {
-        return null;
-    }
-
-    @Override
-    public String getDeleteQuery() throws DaoException
-    {
-        return null;
-    }
+    private static final Logger log = LogManager.getLogger(UserRoleDao.class);
 
     @Override
     public UserRoleDao getByIdentifier(UserRoleDao entity)

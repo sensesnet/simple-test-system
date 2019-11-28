@@ -16,30 +16,6 @@ import java.util.List;
 public class TestQuestionDao extends AbstractDao<TestQuestion>
 {
     @Override
-    public String getCreateQuery() throws DaoException
-    {
-        return null;
-    }
-
-    @Override
-    public String getSelectQuery() throws DaoException
-    {
-        return null;
-    }
-
-    @Override
-    public String getUpdateQuery() throws DaoException
-    {
-        return null;
-    }
-
-    @Override
-    public String getDeleteQuery() throws DaoException
-    {
-        return null;
-    }
-
-    @Override
     public TestQuestion getByIdentifier(TestQuestion entity)
     {
         return null;

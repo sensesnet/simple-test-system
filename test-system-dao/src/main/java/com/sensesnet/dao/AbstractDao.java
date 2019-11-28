@@ -5,10 +5,8 @@ import com.sensesnet.connection.ConnectionPoolException;
 import com.sensesnet.dao.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+
+import java.sql.*;
 import java.util.List;
 
 /**
@@ -82,37 +80,47 @@ public abstract class AbstractDao<T>
         log.info("[Abstract DAO] Connection has been closed with statement!");
     }
 
-    /**
-     * Query generator
-     *
-     * @return
-     * @throws DaoException
-     */
-    public abstract String getCreateQuery() throws DaoException;
 
-    /**
-     * Query generator
-     *
-     * @return
-     * @throws DaoException
-     */
-    public abstract String getSelectQuery() throws DaoException;
-
-    /**
-     * Query generator
-     *
-     * @return
-     * @throws DaoException
-     */
-    public abstract String getUpdateQuery() throws DaoException;
-
-    /**
-     * Query generator
-     *
-     * @return
-     * @throws DaoException
-     */
-    public abstract String getDeleteQuery() throws DaoException;
+    protected PreparedStatement prepareStatementParams(PreparedStatement statement, Object... args) throws SQLException
+    {
+        String result = null;
+        int i = 1;
+        try
+        {
+            for (Object arg : args)
+            {
+                if (arg instanceof Date)
+                {
+                    statement.setTimestamp(i++, new Timestamp(((Date) arg).getTime()));
+                }
+                else if (arg instanceof Integer)
+                {
+                    statement.setInt(i++, (Integer) arg);
+                }
+                else if (arg instanceof Long)
+                {
+                    statement.setLong(i++, (Long) arg);
+                }
+                else if (arg instanceof Double)
+                {
+                    statement.setDouble(i++, (Double) arg);
+                }
+                else if (arg instanceof Float)
+                {
+                    statement.setFloat(i++, (Float) arg);
+                }
+                else
+                {
+                    statement.setString(i++, (String) arg);
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            log.warn("[Error] Prepared statement has not been prepared:" + e.getLocalizedMessage());
+        }
+        return statement;
+    }
 
     /**
      * Dao
@@ -121,7 +129,7 @@ public abstract class AbstractDao<T>
      * @param entity
      * @return
      */
-    public abstract T getByIdentifier(T entity);
+    public abstract T getByIdentifier(T entity) throws ConnectionPoolException, DaoException;
 
     /**
      * Dao
@@ -129,7 +137,7 @@ public abstract class AbstractDao<T>
      *
      * @return
      */
-    public abstract List<T> getListOfEntity();
+    public abstract List<T> getListOfEntity() throws ConnectionPoolException, DaoException;
 
     /**
      * Dao
@@ -137,7 +145,7 @@ public abstract class AbstractDao<T>
      *
      * @param entity
      */
-    public abstract void addEntity(T entity);
+    public abstract void addEntity(T entity) throws ConnectionPoolException, DaoException;
 
     /**
      * Dao
@@ -145,11 +153,11 @@ public abstract class AbstractDao<T>
      *
      * @param entity
      */
-    public abstract void removeEntity(T entity);
+    public abstract void removeEntity(T entity) throws DaoException, ConnectionPoolException;
 
     /**
      * Dao
      * - edit entity
      */
-    public abstract void editEntity(T entity);
+    public abstract void editEntity(T entity) throws ConnectionPoolException, DaoException;
 }
