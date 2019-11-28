@@ -1,5 +1,6 @@
 package com.sensesnet.implementation;
 
+import com.sensesnet.connection.ConnectionPoolException;
 import com.sensesnet.dao.DaoFactory;
 import com.sensesnet.dao.exception.DaoException;
 import com.sensesnet.dao.user.dao.UserDao;
@@ -50,6 +51,10 @@ public class UserService extends AbstractService<User>
             log.error("[Auth step] User account is not found:[" + login + ";"
                     + this.getEncryptPassword(password) + "] ");
             throw new SecurityException("User account is not found!");
+        }
+        catch (ConnectionPoolException e)
+        {
+            e.printStackTrace();
         }
         return existingUser;
     }

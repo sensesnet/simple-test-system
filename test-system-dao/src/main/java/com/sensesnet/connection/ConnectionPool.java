@@ -36,12 +36,16 @@ public class ConnectionPool
                     + "?useUnicode=true&serverTimezone=UTC&useSSL=false";
     private static Integer connectionCount = Integer.valueOf(Config.getProperty(Constant.dbConection().CONNECTION_COUNT));
 
-    public static ConnectionPool getInstance()
+    public static ConnectionPool getInstance() throws ConnectionPoolException
     {
         return instance;
     }
 
-
+    /**
+     * Connection queue initialization
+     *
+     * @throws ConnectionPoolException
+     */
     public void initPoolData() throws ConnectionPoolException
     {
         freeConnections = new ArrayBlockingQueue<>(connectionCount);
@@ -71,6 +75,7 @@ public class ConnectionPool
 
     /**
      * Get free connection
+     *
      * @return
      * @throws ConnectionPoolException
      */
@@ -89,24 +94,9 @@ public class ConnectionPool
         return connection;
     }
 
-    public void returnConnection(Connection connection) throws ConnectionPoolException
-    {
-        try
-        {
-            connection.setAutoCommit(true);
-            givenConnections.remove(connection);
-            freeConnections.put(connection);
-        }
-        catch (SQLException | InterruptedException e)
-        {
-            throw new ConnectionPoolException("exception", e);
-        }
-
-    }
-
-
     /**
      * Close all connections
+     *
      * @throws ConnectionPoolException
      * @throws SQLException
      */
@@ -117,13 +107,18 @@ public class ConnectionPool
         log.info("[ConnectionPool] All Db connections closed.");
     }
 
+    /**
+     * Close connection pool
+     *
+     * @param queue
+     * @throws SQLException
+     * @throws ConnectionPoolException
+     */
     private void closeConnectionQueue(BlockingQueue<Connection> queue) throws SQLException, ConnectionPoolException
     {
         for (int i = 0; i < queue.size(); i++)
         {
             Connection connection = queue.poll();
-            if (connection != null)
-                connection.commit();
             try
             {
                 connection.close();
@@ -201,12 +196,20 @@ public class ConnectionPool
         }
     }
 
-
-    public static void main(String[] args) throws ConnectionPoolException, SQLException
+    /**
+     * Close connection
+     *
+     * @param connection
+     */
+    public void closeConnection(Connection connection) throws SQLException
     {
-        ConnectionPool pool = new ConnectionPool();
-        pool.initPoolData();
-        Connection conection = pool.takeConnection();
-        pool.closeAllConnections();
+        if (connection.isClosed())
+            throw new SQLException("Attempting to close closed connection.");
+        if (connection.isReadOnly())
+            connection.setReadOnly(false);
+        if (!givenConnections.remove(connection))
+            throw new SQLException("Error deleting connection from the given away pool.");
+        if (!freeConnections.offer(connection))
+            throw new SQLException("Error allocating connection in the pool.");
     }
 }

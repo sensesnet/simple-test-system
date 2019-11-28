@@ -1,11 +1,15 @@
 package com.sensesnet.dao.user.dao;
 
+import com.sensesnet.connection.ConnectionPool;
 import com.sensesnet.connection.ConnectionPoolException;
 import com.sensesnet.constant.Constant;
 import com.sensesnet.dao.AbstractDao;
 import com.sensesnet.dao.exception.DaoException;
 import com.sensesnet.pojo.authentication.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,6 +25,8 @@ import java.util.List;
  */
 public class UserDao extends AbstractDao<UserDao>
 {
+
+    private static final Logger log = LogManager.getLogger(UserDao.class);
 
     @Override
     public String getCreateQuery() throws DaoException
@@ -76,26 +82,28 @@ public class UserDao extends AbstractDao<UserDao>
 
     }
 
-    public User getUserByLoginAndPassword(String login, String password) throws DaoException
+    public User getUserByLoginAndPassword(String login, String password) throws DaoException, ConnectionPoolException
     {
         LinkedList<User> userList = new LinkedList<>();
-        try (PreparedStatement statement = getConnection()
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
                 .prepareStatement(Constant.query().SELECT_USER_BY_LOGIN_AND_PASSWORD))
         {
             statement.setString(1, login);
             statement.setString(2, password);
-            ResultSet resultSet = statement.executeQuery();
-            if (!resultSet.next()) return null;
-            while (resultSet.next())
+            try (ResultSet resultSet = statement.executeQuery())
             {
-                userList.add(User.builder()
-                        .userId(resultSet.getInt("user_id"))
-                        .userLogin(resultSet.getString("user_login"))
-                        .userPassword(resultSet.getString("user_password"))
-                        .userRole(resultSet.getInt("role_id"))
-                        .userInfo(resultSet.getInt("info_id")).build());
+                while (resultSet.next())
+                {
+                    userList.add(User.builder()
+                            .userId(resultSet.getInt("user_id"))
+                            .userLogin(resultSet.getString("user_login"))
+                            .userPassword(resultSet.getString("user_password"))
+                            .userRole(resultSet.getInt("role_id"))
+                            .userInfo(resultSet.getInt("info_id")).build());
+                }
+                assert userList.size() == 1;
             }
-            assert userList.size() == 1;
         }
         catch (SQLException e)
         {
@@ -103,13 +111,12 @@ public class UserDao extends AbstractDao<UserDao>
         }
         catch (AssertionError e)
         {
-            throw new DaoException("Account Error: Have more one account for [" + login + "," + password + "].", e);
+            log.info("[Auth] User [" + login + ";" + password + "] account is not exist!");
+            return null;
         }
-        catch (ConnectionPoolException e) {
-            throw new DaoException("Connection pool Error:", e);
-        }finally
+        finally
         {
-//          TODO:  close statement result set and return connection
+            closeConnection(connection);
         }
         return userList.iterator().next();
     }

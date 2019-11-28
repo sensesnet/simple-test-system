@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 public class Config
 {
     private static Logger log = LogManager.getLogger(Config.class);
-    private static String databaseConfigPath = "test-system-dao/src/main/resources/config/database";
+    private static String databaseConfigPath = "../test-system-dao/src/main/resources/config/database";
     private static String databaseConfigFileName = "database-config.properties";
     private static String databaseConfigFilePathPattern = databaseConfigPath + "/" + databaseConfigFileName;
 
