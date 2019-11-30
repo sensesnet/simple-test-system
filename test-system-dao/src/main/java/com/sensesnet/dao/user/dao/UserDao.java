@@ -48,6 +48,7 @@ public class UserDao extends AbstractDao<User>
                             .userRole(resultSet.getInt("role_id"))
                             .userInfo(resultSet.getInt("info_id")).build());
                 }
+                assert userList.size() == 1;
                 log.info("[UserDao] Account has been selected by id: " + entity.getUserId());
             }
         }
@@ -157,6 +158,7 @@ public class UserDao extends AbstractDao<User>
                     statement,
                     entity.getUserLogin(),
                     entity.getUserPassword(),
+                    entity.getUserInfo(),
                     entity.getUserRole(),
                     entity.getUserInfo()).executeQuery();
             log.info("[UserDao] Account has been updated: " + entity.toString());

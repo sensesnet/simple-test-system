@@ -11,7 +11,7 @@ public class SQLQueryConstant
     /**
      * SQL queries for DB (test_system.user;)
      */
-    public final String INSERT_NEW_USER = "INSERT INTO test_system.user (user_login, user_password, role_id, info_id) VALUES ( ?, ?, ?, ?)";
+    public final String INSERT_NEW_USER = "INSERT INTO test_system.user (user_login, user_password, role_id, info_id) VALUES (?, ?, ?, ?)";
     public final String DELETE_USER_BY_ID = "DELETE FROM test_system.user WHERE user_id=?";
     public final String UPDATE_USER = "UPDATE test_system.user SET user_login = ?, user_password = ? WHERE user_id = ? AND role_id = ? AND info_id = ?";
     public final String SELECT_ALL_USER = "SELECT * FROM test_system.user";
@@ -21,7 +21,7 @@ public class SQLQueryConstant
     /**
      * SQL queries for DB (test_system.user_info;)
      */
-    public final String INSERT_NEW_USER_INFO = "INSERT INTO test_system.user_info (info_id, name, surname, address, birthday, phone) VALUES (?, ?, ?, ?, ?)";
+    public final String INSERT_NEW_USER_INFO = "INSERT INTO test_system.user_info (name, surname, address, birthday, phone) VALUES (?, ?, ?, ?)";
     public final String DELETE_USER_INFO_BY_ID = "DELETE FROM test_system.user_info WHERE info_id = ?";
     public final String UPDATE_USER_INFO = "UPDATE test_system.user_info SET name = ?, surname = ?, address = ?, birthday = ?, phone = ? WHERE info_id = ?";
     public final String SELECT_ALL_USER_INFO = "SELECT * FROM test_system.user_info";
@@ -31,7 +31,7 @@ public class SQLQueryConstant
     /**
      * SQL queries for DB (test_system.user_role)
      */
-    public final String INSERT_NEW_USER_ROLE = "INSERT INTO test_system.user_role (role_id, role_name, role_description) VALUES (?, ?)";
+    public final String INSERT_NEW_USER_ROLE = "INSERT INTO test_system.user_role (role_name, role_description) VALUES (?, ?)";
     public final String DELETE_USER_ROLE_BY_ID = "DELETE FROM test_system.user_role WHERE role_id = ?";
     public final String UPDATE_USER_ROLE = "UPDATE test_system.user_role SET role_name = ?, role_description = ? WHERE role_id = ?";
     public final String SELECT_ALL_USER_ROLE = "SELECT * FROM test_system.user_role";
