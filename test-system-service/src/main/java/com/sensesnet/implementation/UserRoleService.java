@@ -8,34 +8,34 @@ import java.util.List;
  * <p>
  * Service: User role service
  */
-public class UserRole extends AbstractService<UserRole>
+public class UserRoleService extends AbstractService<UserRoleService>
 {
     @Override
-    public UserRole getByIdentifier(UserRole entity)
+    public UserRoleService getByIdentifier(UserRoleService entity)
     {
         return null;
     }
 
     @Override
-    public List<UserRole> getListOfEntity()
+    public List<UserRoleService> getListOfEntity()
     {
         return null;
     }
 
     @Override
-    public void addEntity(UserRole entity)
+    public void addEntity(UserRoleService entity)
     {
 
     }
 
     @Override
-    public void removeEntity(UserRole entity)
+    public void removeEntity(UserRoleService entity)
     {
 
     }
 
     @Override
-    public void editEntity(UserRole entity)
+    public void editEntity(UserRoleService entity)
     {
 
     }

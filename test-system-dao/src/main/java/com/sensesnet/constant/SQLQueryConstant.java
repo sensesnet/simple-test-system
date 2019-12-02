@@ -79,6 +79,7 @@ public class SQLQueryConstant
     public final String INSERT_RESULT = "INSERT INTO test_system.result (test_process_id, question_id, answer_id) VALUES (?, ?, ?)";
     public final String DELETE_RESULT_BY_ID = "DELETE FROM test_system.result WHERE result_id = ?";
     public final String SELECT_ALL_RESULT = "SELECT * FROM test_system.result";
-    public final String SELECT_RESULT_BY_USER_ID = "SELECT * FROM test_system.result WHERE result_id = ?";
+    public final String SELECT_RESULT_BY_ID = "SELECT * FROM test_system.result WHERE result_id = ?";
+    public final String UPDATE_RESULT = "UPDATE test_system.result SET test_process_id = ?, question_id = ?, answer_id = ? WHERE result_id = ?";
 
 }

@@ -37,6 +37,7 @@ public class UserDao extends AbstractDao<User>
         try (PreparedStatement statement = connection
                 .prepareStatement(Constant.query().SELECT_USER_BY_ID))
         {
+            statement.setInt(1, entity.getUserId());
             try (ResultSet resultSet = statement.executeQuery())
             {
                 while (resultSet.next())
@@ -48,7 +49,7 @@ public class UserDao extends AbstractDao<User>
                             .userRole(resultSet.getInt("role_id"))
                             .userInfo(resultSet.getInt("info_id")).build());
                 }
-                assert userList.size() == 1;
+                assert userList.size() == 10;
                 log.info("[UserDao] Account has been selected by id: " + entity.getUserId());
             }
         }
@@ -56,11 +57,11 @@ public class UserDao extends AbstractDao<User>
         {
             throw new DaoException("SQL Error: Have no access to DB.", e);
         }
-        catch (AssertionError e)
-        {
-            log.info("[Auth] User id [" + entity.getUserId() + "] account is not exist!");
-            return null;
-        }
+//        catch (AssertionError e)
+//        {
+//            log.info("[Auth] User id [" + entity.getUserId() + "] account is not exist!");
+//            return null;
+//        }
         finally
         {
             closeConnection(connection);

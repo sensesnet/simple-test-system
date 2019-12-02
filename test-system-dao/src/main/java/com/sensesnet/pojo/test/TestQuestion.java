@@ -22,6 +22,7 @@ public class TestQuestion
     private @NonNull Integer questionValue;
     private @NonNull Integer answerId;
     private @NonNull Integer testId;
+    private @NonNull String questionClarification;
 
     @Override
     public boolean equals(Object obj)

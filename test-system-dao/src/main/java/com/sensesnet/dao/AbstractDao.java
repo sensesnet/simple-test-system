@@ -17,7 +17,7 @@ import java.util.List;
  */
 public abstract class AbstractDao<T>
 {
-    private ConnectionPool connectionPool = null;
+    private static volatile ConnectionPool connectionPool = null;
     private static final Logger log = LogManager.getLogger(AbstractDao.class);
 
     /**

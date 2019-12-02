@@ -36,6 +36,7 @@ public class UserInfoDao extends AbstractDao<UserInfo>
         try (PreparedStatement statement = connection
                 .prepareStatement(Constant.query().SELECT_USER_INFO_BY_ID))
         {
+            statement.setInt(1, entity.getInfoId());
             try (ResultSet resultSet = statement.executeQuery())
             {
                 while (resultSet.next())

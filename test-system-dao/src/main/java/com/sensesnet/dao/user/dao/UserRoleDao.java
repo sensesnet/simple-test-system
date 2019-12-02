@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -28,9 +29,41 @@ public class UserRoleDao extends AbstractDao<UserRole>
     private static final Logger log = LogManager.getLogger(UserRoleDao.class);
 
     @Override
-    public UserRole getByIdentifier(UserRole entity)
+    public UserRole getByIdentifier(UserRole entity) throws ConnectionPoolException, DaoException
     {
-        return null;
+        LinkedList<UserRole> userRoleList = new LinkedList<>();
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(Constant.query().SELECT_USER_ROLE_BY_ID))
+        {
+            statement.setInt(1, entity.getRoleId());
+            try (ResultSet resultSet = statement.executeQuery())
+            {
+                while (resultSet.next())
+                {
+                    userRoleList.add(UserRole.builder()
+                            .roleId(resultSet.getInt("role_id"))
+                            .roleName(resultSet.getString("role_name"))
+                            .roleDesc(resultSet.getString("role_description")).build());
+                }
+                assert userRoleList.size() == 1;
+                log.info("[UserDao] Role has been selected by id: " + entity.getRoleId());
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DaoException("SQL Error: Have no access to DB.", e);
+        }
+        catch (AssertionError e)
+        {
+            log.info("[Auth] Role [" + entity.getRoleId() + "] account is not exist!");
+            return null;
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
+        return userRoleList.iterator().next();
     }
 
     @Override

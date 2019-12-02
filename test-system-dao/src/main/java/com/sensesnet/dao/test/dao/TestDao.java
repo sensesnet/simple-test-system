@@ -1,9 +1,21 @@
 package com.sensesnet.dao.test.dao;
 
+import com.sensesnet.connection.ConnectionPoolException;
+import com.sensesnet.constant.Constant;
 import com.sensesnet.dao.AbstractDao;
 import com.sensesnet.dao.exception.DaoException;
+import com.sensesnet.pojo.authentication.User;
 import com.sensesnet.pojo.test.Test;
+import com.sensesnet.pojo.test.TestAnswer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -15,34 +27,149 @@ import java.util.List;
  */
 public class TestDao extends AbstractDao<Test>
 {
+    private static final Logger log = LogManager.getLogger(Test.class);
+
     @Override
-    public Test getByIdentifier(Test entity)
+    public Test getByIdentifier(Test entity) throws ConnectionPoolException, DaoException
     {
-        return null;
+        LinkedList<Test> testList = new LinkedList<>();
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(Constant.query().SELECT_TEST_BY_ID))
+        {
+            statement.setInt(1, entity.getTestId());
+            try (ResultSet resultSet = statement.executeQuery())
+            {
+                while (resultSet.next())
+                {
+                    testList.add(Test.builder()
+                            .testId(resultSet.getInt("test_id"))
+                            .testName(resultSet.getString("test_name"))
+                            .testDescription(resultSet.getString("test_description"))
+                            .testValue(resultSet.getInt("test_value"))
+                            .testTime(resultSet.getTime("test_time")).build());
+                }
+                assert testList.size() == 1;
+                log.info("[UserDao] Test has been selected by id: " + entity.getTestId());
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DaoException("SQL Error: Have no access to DB.", e);
+        }
+        catch (AssertionError e)
+        {
+            log.info("[Auth] Test info by id [" + entity.getTestId() + "] is not exist!");
+            return null;
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
+        return testList.iterator().next();
     }
 
     @Override
-    public List<Test> getListOfEntity()
+    public List<Test> getListOfEntity() throws ConnectionPoolException, DaoException
     {
-        return null;
+        List<Test> testList = new ArrayList<>();
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(Constant.query().SELECT_ALL_TEST))
+        {
+            try (ResultSet resultSet = statement.executeQuery())
+            {
+                while (resultSet.next())
+                {
+                    testList.add(Test.builder()
+                            .testId(resultSet.getInt("test_id"))
+                            .testName(resultSet.getString("test_name"))
+                            .testDescription(resultSet.getString("test_description"))
+                            .testValue(resultSet.getInt("test_value"))
+                            .testTime(resultSet.getTime("test_time")).build());
+                }
+                log.info("[UserDao] All tests has been selected.");
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DaoException("SQL Error: Have no access to DB.", e);
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
+        return testList;
     }
 
     @Override
-    public void addEntity(Test entity)
+    public void addEntity(Test entity) throws ConnectionPoolException, DaoException
     {
-
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(Constant.query().INSERT_NEW_TEST))
+        {
+            prepareStatementParams(
+                    statement,
+                    entity.getTestDescription(),
+                    entity.getTestValue(),
+                    entity.getTestTime()).executeUpdate();
+            log.info("[UserDao] New test has been added: " + entity.toString());
+        }
+        catch (SQLException e)
+        {
+            throw new DaoException("SQL Error: Have no access to DB.", e);
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
     }
 
     @Override
-    public void removeEntity(Test entity)
+    public void removeEntity(Test entity) throws ConnectionPoolException, DaoException
     {
-
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(Constant.query().DELETE_TEST_BY_ID))
+        {
+            statement.setInt(1, entity.getTestId());
+            statement.execute();
+            log.info("[UserDao] Test has been removed: " + entity.toString());
+        }
+        catch (SQLException e)
+        {
+            throw new DaoException("SQL Error: Have no access to DB.", e);
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
     }
 
     @Override
-    public void editEntity(Test entity)
+    public void editEntity(Test entity) throws ConnectionPoolException, DaoException
     {
-
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(Constant.query().UPDATE_TEST))
+        {
+            prepareStatementParams(
+                    statement,
+                    entity.getTestName(),
+                    entity.getTestDescription(),
+                    entity.getTestValue(),
+                    entity.getTestTime()).executeQuery();
+            log.info("[UserDao] Answer has been updated: " + entity.toString());
+        }
+        catch (SQLException e)
+        {
+            throw new DaoException("SQL Error: Have no access to DB.", e);
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
     }
 
 }

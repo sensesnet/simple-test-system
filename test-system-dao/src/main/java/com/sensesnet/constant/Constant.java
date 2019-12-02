@@ -10,6 +10,6 @@ public class Constant
 {
     public static SQLQueryConstant query() { return new SQLQueryConstant(); }
 
-    public static DbConnectionConstant dbConection() { return new DbConnectionConstant(); }
+    public static DbConnectionConstant dbConnection() { return new DbConnectionConstant(); }
 
 }

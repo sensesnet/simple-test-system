@@ -11,7 +11,7 @@ public class DbConnectionConstant
     /**
      * DB server name
      */
-    public final String DATABASE_SERVER_NANE = "database.serverName";
+    public final String DATABASE_SERVER_NAME = "database.serverName";
 
     /**
      * DB port number
@@ -21,7 +21,7 @@ public class DbConnectionConstant
     /**
      * DB name
      */
-    public final String DATABASE_NANE = "database.name";
+    public final String DATABASE_NAME = "database.name";
 
     /**
      * DB user name
