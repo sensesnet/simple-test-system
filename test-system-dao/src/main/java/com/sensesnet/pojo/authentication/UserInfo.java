@@ -18,12 +18,12 @@ import java.util.Objects;
 @ToString
 public class UserInfo
 {
-    private @NonNull Integer infoId;
-    private @NonNull String userName;
-    private @NonNull String userSurname;
-    private @NonNull String userAddress;
-    private @NonNull Date userBirthday;
-    private @NonNull String userPhone;
+    private Integer infoId;
+    private String userName;
+    private String userSurname;
+    private String userAddress;
+    private Date userBirthday;
+    private String userPhone;
 
     @Override
     public boolean equals(Object obj)

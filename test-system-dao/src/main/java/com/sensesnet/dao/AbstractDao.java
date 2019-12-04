@@ -17,21 +17,30 @@ import java.util.List;
  */
 public abstract class AbstractDao<T>
 {
-    private static volatile ConnectionPool connectionPool = null;
+    private volatile ConnectionPool connectionPool;
     private static final Logger log = LogManager.getLogger(AbstractDao.class);
 
     /**
      * Get connection via Connection Pool
+     * (Double-checked locking)
      *
      * @return
      * @throws ConnectionPoolException
      */
     protected Connection getConnection() throws ConnectionPoolException
     {
-        if (connectionPool == null)
+        ConnectionPool localRef = connectionPool;
+        if (localRef == null)
         {
-            connectionPool = ConnectionPool.getInstance();
-            connectionPool.initPoolData();
+            synchronized (this)
+            {
+                localRef = connectionPool;
+                if (localRef == null)
+                {
+                    connectionPool = ConnectionPool.getInstance();
+                    connectionPool.initPoolData();
+                }
+            }
             log.info("[Abstract DAO] Connection pool has been initialized!");
         }
         return connectionPool.takeConnection();
@@ -133,7 +142,7 @@ public abstract class AbstractDao<T>
 
     /**
      * Dao
-     * - get List<T> of entities
+     * - get List<T> of entity
      *
      * @return
      */

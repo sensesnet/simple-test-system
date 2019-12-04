@@ -4,6 +4,7 @@ import com.sensesnet.connection.ConnectionPoolException;
 import com.sensesnet.dao.DaoFactory;
 import com.sensesnet.dao.exception.DaoException;
 import com.sensesnet.dao.user.dao.UserDao;
+import com.sensesnet.exception.ServiceException;
 import com.sensesnet.pojo.authentication.User;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
@@ -37,56 +38,92 @@ public class UserService extends AbstractService<User>
         try
         {
             existingUser = userDao.getUserByLoginAndPassword(login, this.getEncryptPassword(password));
-            assert existingUser != null;
             log.info("[Auth Step] User has been found [" + login + ";"
                     + this.getEncryptPassword(password) + "]");
         }
-        catch (DaoException e)
+        catch (Exception e)
         {
             log.error("[Auth step] User is not found by Name and Password:[" + login + ";"
                     + this.getEncryptPassword(password) + "] ");
             throw new SecurityException("Can't find user by Name and Password");
         }
-        catch (AssertionError e){
+        if (existingUser == null)
+        {
             log.error("[Auth step] User account is not found:[" + login + ";"
                     + this.getEncryptPassword(password) + "] ");
             throw new SecurityException("User account is not found!");
         }
-        catch (ConnectionPoolException e)
-        {
-            e.printStackTrace();
-        }
+        log.info("[User Service] Authorization has completed successfully with [" + existingUser.toString() + "].");
         return existingUser;
     }
 
     @Override
-    public User getByIdentifier(User entity)
+    public User getByIdentifier(User entity) throws ServiceException
     {
-        return null;
+        User user = null;
+        log.info("[" + this.getClass().getName() + "] Get users by id: [" + entity.getUserId() + "].");
+        try
+        {
+            user = userDao.getByIdentifier(entity);
+        }
+        catch (Exception e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "User [" + entity.getUserId() + " ] has NOT been found.", e);
+        }
+        return user;
     }
 
     @Override
-    public List<User> getListOfEntity()
+    public List<User> getListOfEntity() throws ConnectionPoolException, DaoException
     {
-        return null;
+        log.info("[" + this.getClass().getName() + "] Get list with all users.");
+        return userDao.getListOfEntity();
     }
 
     @Override
-    public void addEntity(User entity)
+    public void addEntity(User entity) throws ServiceException
     {
-
+        log.info("[" + this.getClass().getName() + "] Add new user:[" + entity.toString() + "]");
+        try
+        {
+            userDao.addEntity(entity);
+        }
+        catch (Exception e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "New user [" + entity.toString() + " ] has NOT added to test system.", e);
+        }
     }
 
     @Override
-    public void removeEntity(User entity)
+    public void removeEntity(User entity) throws ServiceException
     {
-
+        log.info("[" + this.getClass().getName() + "] Remove user:[" + entity.toString() + "].");
+        try
+        {
+            userDao.removeEntity(entity);
+        }
+        catch (Exception e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "User [" + entity.toString() + " ] has NOT been removed from test system.", e);
+        }
     }
 
     @Override
-    public void editEntity(User entity)
+    public void editEntity(User entity) throws ServiceException
     {
-
+        log.info("[" + this.getClass().getName() + "] Edit user:[" + entity.toString() + "].");
+        try
+        {
+            userDao.editEntity(entity);
+        }
+        catch (Exception e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "User data [" + entity.toString() + " ] has NOT been changed.", e);
+        }
     }
 
 

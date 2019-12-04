@@ -1,5 +1,6 @@
 package com.sensesnet.implementation;
 
+import com.sensesnet.connection.ConnectionPoolException;
 import com.sensesnet.dao.exception.DaoException;
 import com.sensesnet.exception.ServiceException;
 
@@ -24,11 +25,11 @@ public abstract class AbstractService<T>
 
     /**
      * Service
-     * - get List<T> of entities
+     * - get List<T> of entity
      *
      * @return
      */
-    public abstract List<T> getListOfEntity() throws DaoException, ServiceException;
+    public abstract List<T> getListOfEntity() throws DaoException, ServiceException, ConnectionPoolException;
 
     /**
      * Service
@@ -36,7 +37,7 @@ public abstract class AbstractService<T>
      *
      * @param entity
      */
-    public abstract void addEntity(T entity) throws DaoException, ServiceException;
+    public abstract void addEntity(T entity) throws DaoException, ServiceException, ConnectionPoolException;
 
     /**
      * Service

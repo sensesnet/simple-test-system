@@ -4,6 +4,8 @@ import com.sensesnet.dao.test.dao.*;
 import com.sensesnet.dao.user.dao.UserDao;
 import com.sensesnet.dao.user.dao.UserInfoDao;
 import com.sensesnet.dao.user.dao.UserRoleDao;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author sensesnet <br />
@@ -13,6 +15,8 @@ import com.sensesnet.dao.user.dao.UserRoleDao;
  */
 public class DaoFactory
 {
+    private static final Logger log = LogManager.getLogger(DaoFactory.class);
+
     private static TestAnswerDao testAnswerDao;
     private static TestDao testDao;
     private static TestProcessDao testProcessDao;
@@ -59,6 +63,6 @@ public class DaoFactory
 
     public static UserRoleDao getUserRoleDao()
     {
-        return userRoleDao == null ? userRoleDao = new UserRoleDao () : userRoleDao;
+        return userRoleDao == null ? userRoleDao = new UserRoleDao() : userRoleDao;
     }
 }

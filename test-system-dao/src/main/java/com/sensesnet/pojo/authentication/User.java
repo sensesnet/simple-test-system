@@ -18,12 +18,12 @@ import java.util.Objects;
 @ToString
 public class User
 {
-    private Integer userId;
+    private @NonNull Integer userId;
     private @NonNull String userLogin;
     private @NonNull String userPassword;
-    private Integer userRole;
-    private Integer userInfoId;
-    private Integer userInfo;
+    private @NonNull Integer userRole;
+    private @NonNull Integer userInfoId;
+    private @NonNull Integer userInfo;
 
     @Override
     public boolean equals(Object o)
