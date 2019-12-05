@@ -1,6 +1,6 @@
-package com.sensesnet.comand.entity;
+package com.sensesnet.command.command;
 
-import com.sensesnet.comand.ICommand;
+import com.sensesnet.command.ICommand;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

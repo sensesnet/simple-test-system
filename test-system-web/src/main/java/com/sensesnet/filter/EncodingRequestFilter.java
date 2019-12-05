@@ -19,18 +19,9 @@ import java.util.ArrayList;
  * Sign in filter
  */
 
-@WebFilter("/ServletFilter")
-public class ServletFilter implements Filter
+@WebFilter("/")
+public class EncodingRequestFilter implements Filter
 {
-    private FilterConfig filterConfig;
-    private static ArrayList<String> pages;
-
-    public ServletFilter()
-    {
-        if (pages == null)
-            pages = new ArrayList<String>();
-    }
-
     /**
      * Filter Initialization
      *
@@ -40,23 +31,23 @@ public class ServletFilter implements Filter
     @Override
     public void init(FilterConfig config) throws ServletException
     {
-        this.filterConfig = config;
+
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException
+    public void doFilter(ServletRequest request, ServletResponse response,
+                         FilterChain chain) throws IOException, ServletException
     {
-
+        request.setCharacterEncoding("UTF-8");
+        chain.doFilter(request,response);
     }
 
     /**
-     * destroy filter
+     * Destroy filter
      */
     @Override
     public void destroy()
     {
-        filterConfig = null;
-    }
 
-//   ih
+    }
 }

@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author sensesnet <br />
@@ -29,10 +30,15 @@ public class UserDao extends AbstractDao<User>
 
     private static final Logger log = LogManager.getLogger(UserDao.class);
 
+    public UserDao()
+    {
+        log.info("[UserDao] UserDao has been initialized.");
+    }
+
     @Override
     public User getByIdentifier(User entity) throws ConnectionPoolException, DaoException
     {
-        LinkedList<User> userList = new LinkedList<>();
+        CopyOnWriteArrayList<User> userList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(Constant.query().SELECT_USER_BY_ID))
@@ -49,7 +55,7 @@ public class UserDao extends AbstractDao<User>
                             .userRole(resultSet.getInt("role_id"))
                             .userInfo(resultSet.getInt("info_id")).build());
                 }
-                assert userList.size() == 10;
+                assert userList.size() == 1;
                 log.info("[UserDao] Account has been selected by id: " + entity.getUserId());
             }
         }
@@ -57,11 +63,11 @@ public class UserDao extends AbstractDao<User>
         {
             throw new DaoException("SQL Error: Have no access to DB.", e);
         }
-//        catch (AssertionError e)
-//        {
-//            log.info("[Auth] User id [" + entity.getUserId() + "] account is not exist!");
-//            return null;
-//        }
+        catch (AssertionError e)
+        {
+            log.info("[Auth] User id [" + entity.getUserId() + "] account is not exist!");
+            return null;
+        }
         finally
         {
             closeConnection(connection);
@@ -72,7 +78,7 @@ public class UserDao extends AbstractDao<User>
     @Override
     public List<User> getListOfEntity() throws ConnectionPoolException, DaoException
     {
-        List<User> userList = new ArrayList<>();
+        CopyOnWriteArrayList<User> userList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(Constant.query().SELECT_ALL_USER))
@@ -176,7 +182,7 @@ public class UserDao extends AbstractDao<User>
 
     public User getUserByLoginAndPassword(String login, String password) throws DaoException, ConnectionPoolException
     {
-        LinkedList<User> userList = new LinkedList<>();
+        CopyOnWriteArrayList<User> userList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(Constant.query().SELECT_USER_BY_LOGIN_AND_PASSWORD))

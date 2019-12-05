@@ -92,7 +92,6 @@ public abstract class AbstractDao<T>
 
     protected PreparedStatement prepareStatementParams(PreparedStatement statement, Object... args) throws SQLException
     {
-        String result = null;
         int i = 1;
         try
         {
@@ -133,7 +132,7 @@ public abstract class AbstractDao<T>
 
     /**
      * Dao
-     * - get entity
+     * - get command
      *
      * @param entity
      * @return
@@ -142,7 +141,7 @@ public abstract class AbstractDao<T>
 
     /**
      * Dao
-     * - get List<T> of entity
+     * - get List<T> of command
      *
      * @return
      */
@@ -150,7 +149,7 @@ public abstract class AbstractDao<T>
 
     /**
      * Dao
-     * - set entity
+     * - set command
      *
      * @param entity
      */
@@ -166,7 +165,7 @@ public abstract class AbstractDao<T>
 
     /**
      * Dao
-     * - edit entity
+     * - edit command
      */
     public abstract void editEntity(T entity) throws ConnectionPoolException, DaoException;
 }

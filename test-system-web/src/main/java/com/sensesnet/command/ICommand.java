@@ -1,4 +1,4 @@
-package com.sensesnet.comand;
+package com.sensesnet.command;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -9,7 +9,7 @@ import java.io.IOException;
  * @author sensesnet <br />
  * Copyright 2019 Eshted LLC. All rights reserved.
  * <p>
- * Common comand interface
+ * Common command interface
  */
 public interface ICommand
 {

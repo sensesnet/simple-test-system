@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author sensesnet <br />
@@ -28,10 +29,15 @@ public class UserInfoDao extends AbstractDao<UserInfo>
 {
     private static final Logger log = LogManager.getLogger(UserInfo.class);
 
+    public UserInfoDao()
+    {
+        log.info("[UserInfoDao] UserInfoDao has been initialized.");
+    }
+
     @Override
     public UserInfo getByIdentifier(UserInfo entity) throws ConnectionPoolException, DaoException
     {
-        LinkedList<UserInfo> userInfoList = new LinkedList<>();
+        CopyOnWriteArrayList<UserInfo> userInfoList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(Constant.query().SELECT_USER_INFO_BY_ID))
@@ -72,7 +78,7 @@ public class UserInfoDao extends AbstractDao<UserInfo>
     @Override
     public List<UserInfo> getListOfEntity() throws ConnectionPoolException, DaoException
     {
-        List<UserInfo> userInfoList = new ArrayList<>();
+        CopyOnWriteArrayList<UserInfo> userInfoList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(Constant.query().SELECT_ALL_USER_INFO))

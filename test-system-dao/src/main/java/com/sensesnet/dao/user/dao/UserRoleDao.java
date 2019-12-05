@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author sensesnet <br />
@@ -28,10 +29,15 @@ public class UserRoleDao extends AbstractDao<UserRole>
 {
     private static final Logger log = LogManager.getLogger(UserRoleDao.class);
 
+    public UserRoleDao()
+    {
+        log.info("[UserRoleDao] UserRoleDao has been initialized.");
+    }
+
     @Override
     public UserRole getByIdentifier(UserRole entity) throws ConnectionPoolException, DaoException
     {
-        LinkedList<UserRole> userRoleList = new LinkedList<>();
+        CopyOnWriteArrayList<UserRole> userRoleList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(Constant.query().SELECT_USER_ROLE_BY_ID))
@@ -69,7 +75,7 @@ public class UserRoleDao extends AbstractDao<UserRole>
     @Override
     public List<UserRole> getListOfEntity() throws DaoException, ConnectionPoolException
     {
-        List<UserRole> roleList = new ArrayList<>();
+        CopyOnWriteArrayList<UserRole> roleList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(Constant.query().SELECT_ALL_USER_ROLE))

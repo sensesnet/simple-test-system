@@ -16,7 +16,7 @@ public abstract class AbstractService<T>
 {
     /**
      * Service
-     * - get entity
+     * - get command
      *
      * @param entity
      * @return
@@ -25,7 +25,7 @@ public abstract class AbstractService<T>
 
     /**
      * Service
-     * - get List<T> of entity
+     * - get List<T> of command
      *
      * @return
      */
@@ -33,7 +33,7 @@ public abstract class AbstractService<T>
 
     /**
      * Service
-     * - set entity
+     * - set command
      *
      * @param entity
      */
@@ -49,7 +49,7 @@ public abstract class AbstractService<T>
 
     /**
      * Service
-     * - edit entity
+     * - edit command
      */
     public abstract void editEntity(T entity) throws DaoException, ServiceException;
 

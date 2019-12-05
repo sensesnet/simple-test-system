@@ -121,7 +121,7 @@
 </style>
 <body>
 
-<form method="post" action="Controller">
+<form method="post" action="SignInFilter">
     <center>
         <p>Online test system</p>
         <table border="0" width="30%" cellpadding="3">

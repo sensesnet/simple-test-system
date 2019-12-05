@@ -1,4 +1,4 @@
-package com.sensesnet.comand;
+package com.sensesnet.command;
 
 /**
  * @author sensesnet <br />

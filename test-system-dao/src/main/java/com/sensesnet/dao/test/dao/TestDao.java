@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author sensesnet <br />
@@ -29,10 +30,15 @@ public class TestDao extends AbstractDao<Test>
 {
     private static final Logger log = LogManager.getLogger(Test.class);
 
+    public TestDao()
+    {
+        log.info("[TestDao] TestDao has been initialized.");
+    }
+
     @Override
     public Test getByIdentifier(Test entity) throws ConnectionPoolException, DaoException
     {
-        LinkedList<Test> testList = new LinkedList<>();
+        CopyOnWriteArrayList<Test> testList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(Constant.query().SELECT_TEST_BY_ID))
@@ -72,7 +78,7 @@ public class TestDao extends AbstractDao<Test>
     @Override
     public List<Test> getListOfEntity() throws ConnectionPoolException, DaoException
     {
-        List<Test> testList = new ArrayList<>();
+        CopyOnWriteArrayList<Test> testList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(Constant.query().SELECT_ALL_TEST))

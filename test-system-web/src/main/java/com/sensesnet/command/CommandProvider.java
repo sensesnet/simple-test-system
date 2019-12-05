@@ -1,7 +1,7 @@
-package com.sensesnet.comand;
+package com.sensesnet.command;
 
-import com.sensesnet.comand.entity.SignInCommand;
-import com.sensesnet.comand.entity.SignUpCommand;
+import com.sensesnet.command.command.SignInCommand;
+import com.sensesnet.command.command.SignUpCommand;
 
 import java.util.HashMap;
 import java.util.Map;
