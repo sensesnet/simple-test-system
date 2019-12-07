@@ -1,7 +1,5 @@
 package com.sensesnet.connection;
 
-import com.sensesnet.constant.Constant;
-import com.sensesnet.util.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,25 +14,12 @@ import java.util.concurrent.BlockingQueue;
  * Custom Connection pool
  */
 
-public class ConnectionPool
+public class ConnectionPool implements ConnectionPoolConfig
 {
     private static final Logger log = LogManager.getLogger(ConnectionPool.class);
     private static final ConnectionPool instance = new ConnectionPool();
     private BlockingQueue<Connection> freeConnections;
     private BlockingQueue<Connection> givenConnections;
-    private String databaseServerName = Config.getProperty(Constant.dbConnection().DATABASE_SERVER_NAME);
-    private String databasePortNumber = Config.getProperty(Constant.dbConnection().DATABASE_PORT_NUMBER);
-    private String databaseName = Config.getProperty(Constant.dbConnection().DATABASE_NAME);
-    private String username = Config.getProperty(Constant.dbConnection().DATABASE_USERNAME);
-    private String password = Config.getProperty(Constant.dbConnection().DATABASE_PASSWORD);
-    private String databaseClass = Config.getProperty(Constant.dbConnection().DATABASE_DB_CLASS);
-    private String databaseScheme = Config.getProperty(Constant.dbConnection().DATABASE_SCHEME);
-    private String databaseLink =
-            "jdbc:mysql://"
-                    + databaseServerName + ":"
-                    + databasePortNumber + "/" + databaseScheme
-                    + "?useUnicode=true&serverTimezone=UTC&useSSL=false";
-    private static Integer connectionCount = Integer.valueOf(Config.getProperty(Constant.dbConnection().CONNECTION_COUNT));
 
     public static ConnectionPool getInstance() throws ConnectionPoolException
     {

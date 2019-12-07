@@ -4,7 +4,7 @@ package com.sensesnet.constant;
  * @author sensesnet <br />
  * Copyright 2019 Eshted LLC. All rights reserved.
  * <p>
- * Constant: page path
+ * DAOConstant: page path
  */
 public class Page
 {

@@ -1,10 +1,9 @@
 package com.sensesnet.dao.user.dao;
 
 import com.sensesnet.connection.ConnectionPoolException;
-import com.sensesnet.constant.Constant;
+import com.sensesnet.constant.DAOConstant;
 import com.sensesnet.dao.AbstractDao;
 import com.sensesnet.dao.exception.DaoException;
-import com.sensesnet.pojo.authentication.User;
 import com.sensesnet.pojo.authentication.UserInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,8 +12,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -40,7 +37,7 @@ public class UserInfoDao extends AbstractDao<UserInfo>
         CopyOnWriteArrayList<UserInfo> userInfoList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(Constant.query().SELECT_USER_INFO_BY_ID))
+                .prepareStatement(DAOConstant.query().SELECT_USER_INFO_BY_ID))
         {
             statement.setInt(1, entity.getInfoId());
             try (ResultSet resultSet = statement.executeQuery())
@@ -81,7 +78,7 @@ public class UserInfoDao extends AbstractDao<UserInfo>
         CopyOnWriteArrayList<UserInfo> userInfoList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(Constant.query().SELECT_ALL_USER_INFO))
+                .prepareStatement(DAOConstant.query().SELECT_ALL_USER_INFO))
         {
             try (ResultSet resultSet = statement.executeQuery())
             {
@@ -114,7 +111,7 @@ public class UserInfoDao extends AbstractDao<UserInfo>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(Constant.query().INSERT_NEW_USER_INFO))
+                .prepareStatement(DAOConstant.query().INSERT_NEW_USER_INFO))
         {
             prepareStatementParams(
                     statement,
@@ -140,7 +137,7 @@ public class UserInfoDao extends AbstractDao<UserInfo>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(Constant.query().DELETE_USER_INFO_BY_ID))
+                .prepareStatement(DAOConstant.query().DELETE_USER_INFO_BY_ID))
         {
             statement.setInt(1, entity.getInfoId());
             statement.execute();
@@ -161,7 +158,7 @@ public class UserInfoDao extends AbstractDao<UserInfo>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(Constant.query().UPDATE_USER_INFO))
+                .prepareStatement(DAOConstant.query().UPDATE_USER_INFO))
         {
             prepareStatementParams(
                     statement,

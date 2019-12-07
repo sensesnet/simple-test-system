@@ -1,11 +1,9 @@
 package com.sensesnet.dao.test.dao;
 
 import com.sensesnet.connection.ConnectionPoolException;
-import com.sensesnet.constant.Constant;
+import com.sensesnet.constant.DAOConstant;
 import com.sensesnet.dao.AbstractDao;
 import com.sensesnet.dao.exception.DaoException;
-import com.sensesnet.dao.user.dao.UserDao;
-import com.sensesnet.pojo.authentication.User;
 import com.sensesnet.pojo.test.TestAnswer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,8 +12,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -41,7 +37,7 @@ public class TestAnswerDao extends AbstractDao<TestAnswer>
         CopyOnWriteArrayList<TestAnswer> userList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(Constant.query().SELECT_ANSWER_BY_ID))
+                .prepareStatement(DAOConstant.query().SELECT_ANSWER_BY_ID))
         {
             statement.setInt(1, entity.getAnswerId());
             try (ResultSet resultSet = statement.executeQuery())
@@ -79,7 +75,7 @@ public class TestAnswerDao extends AbstractDao<TestAnswer>
         CopyOnWriteArrayList<TestAnswer> testAnswerList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(Constant.query().SELECT_ALL_ANSWER))
+                .prepareStatement(DAOConstant.query().SELECT_ALL_ANSWER))
         {
             try (ResultSet resultSet = statement.executeQuery())
             {
@@ -109,7 +105,7 @@ public class TestAnswerDao extends AbstractDao<TestAnswer>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(Constant.query().INSERT_NEW_ANSWER))
+                .prepareStatement(DAOConstant.query().INSERT_NEW_ANSWER))
         {
             prepareStatementParams(
                     statement,
@@ -132,7 +128,7 @@ public class TestAnswerDao extends AbstractDao<TestAnswer>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(Constant.query().DELETE_ANSWER_BY_ID))
+                .prepareStatement(DAOConstant.query().DELETE_ANSWER_BY_ID))
         {
             statement.setInt(1, entity.getAnswerId());
             statement.execute();
@@ -153,7 +149,7 @@ public class TestAnswerDao extends AbstractDao<TestAnswer>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(Constant.query().UPDATE_ANSWER))
+                .prepareStatement(DAOConstant.query().UPDATE_ANSWER))
         {
             prepareStatementParams(
                     statement,

@@ -44,7 +44,7 @@ public class UserService extends AbstractService<User>
         }
         catch (Exception e)
         {
-            log.error("[Auth step] User is not found by Name and Password:[" + login + ";"
+            log.warn("[Auth step] User is not found by Name and Password:[" + login + ";"
                     + this.getEncryptPassword(password) + "] ");
             throw new SecurityException("Can't find user by Name and Password");
         }
@@ -52,7 +52,7 @@ public class UserService extends AbstractService<User>
         {
             log.error("[Auth step] User account is not found:[" + login + ";"
                     + this.getEncryptPassword(password) + "] ");
-            throw new SecurityException("User account is not found!");
+            return null;
         }
         log.info("[User Service] Authorization has completed successfully with [" + existingUser.toString() + "].");
         return existingUser;
@@ -137,6 +137,6 @@ public class UserService extends AbstractService<User>
     private String getEncryptPassword(String password)
     {
         String SALT = "SALT";
-        return DigestUtils.sha256Hex(password) + DigestUtils.sha256Hex(SALT);
+        return DigestUtils.sha256Hex(password);// + DigestUtils.sha256Hex(SALT);
     }
 }

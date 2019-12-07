@@ -1,8 +1,7 @@
 package com.sensesnet.dao.user.dao;
 
-import com.sensesnet.connection.ConnectionPool;
 import com.sensesnet.connection.ConnectionPoolException;
-import com.sensesnet.constant.Constant;
+import com.sensesnet.constant.DAOConstant;
 import com.sensesnet.dao.AbstractDao;
 import com.sensesnet.dao.exception.DaoException;
 import com.sensesnet.pojo.authentication.User;
@@ -13,8 +12,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -41,7 +38,7 @@ public class UserDao extends AbstractDao<User>
         CopyOnWriteArrayList<User> userList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(Constant.query().SELECT_USER_BY_ID))
+                .prepareStatement(DAOConstant.query().SELECT_USER_BY_ID))
         {
             statement.setInt(1, entity.getUserId());
             try (ResultSet resultSet = statement.executeQuery())
@@ -81,7 +78,7 @@ public class UserDao extends AbstractDao<User>
         CopyOnWriteArrayList<User> userList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(Constant.query().SELECT_ALL_USER))
+                .prepareStatement(DAOConstant.query().SELECT_ALL_USER))
         {
             try (ResultSet resultSet = statement.executeQuery())
             {
@@ -113,7 +110,7 @@ public class UserDao extends AbstractDao<User>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(Constant.query().INSERT_NEW_USER))
+                .prepareStatement(DAOConstant.query().INSERT_NEW_USER))
         {
             prepareStatementParams(
                     statement,
@@ -138,7 +135,7 @@ public class UserDao extends AbstractDao<User>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(Constant.query().DELETE_USER_BY_ID))
+                .prepareStatement(DAOConstant.query().DELETE_USER_BY_ID))
         {
             statement.setInt(1, entity.getUserId());
             statement.execute();
@@ -159,7 +156,7 @@ public class UserDao extends AbstractDao<User>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(Constant.query().UPDATE_USER))
+                .prepareStatement(DAOConstant.query().UPDATE_USER))
         {
             prepareStatementParams(
                     statement,
@@ -185,7 +182,7 @@ public class UserDao extends AbstractDao<User>
         CopyOnWriteArrayList<User> userList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(Constant.query().SELECT_USER_BY_LOGIN_AND_PASSWORD))
+                .prepareStatement(DAOConstant.query().SELECT_USER_BY_LOGIN_AND_PASSWORD))
         {
             statement.setString(1, login);
             statement.setString(2, password);
@@ -200,18 +197,17 @@ public class UserDao extends AbstractDao<User>
                             .userRole(resultSet.getInt("role_id"))
                             .userInfo(resultSet.getInt("info_id")).build());
                 }
-                assert userList.size() == 1;
+                if (userList.size() != 1)
+                {
+                    log.info("[Auth] User [" + login + ";" + password + "] account is not exist!");
+                    return null;
+                }
                 log.info("[UserDao] Account has been found: " + userList.get(0).toString());
             }
         }
         catch (SQLException e)
         {
             throw new DaoException("SQL Error: Have no access to DB.", e);
-        }
-        catch (AssertionError e)
-        {
-            log.info("[Auth] User [" + login + ";" + password + "] account is not exist!");
-            return null;
         }
         finally
         {

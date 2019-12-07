@@ -1,9 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
     <title>Simple test system</title>
 </head>
 <style type="text/css">
@@ -49,7 +50,8 @@
         font-style: normal;
         margin: 0px 0px 7px;
     }
-    a{
+
+    a {
 
         z-index: 4;
         font-size: 20px;
@@ -64,17 +66,17 @@
         display: inline-block;
         text-decoration: inherit;
         text-decoration-line: inherit;
-        margin-left:5px;
+        margin-left: 5px;
         white-space: nowrap;
     }
 
-    input[type=password], input[type=submit], input[type=text]{
+    input[type=password], input[type=submit], input[type=text] {
 
         font-size: 17px;
         line-height: 1.29412;
         font-weight: 400;
         letter-spacing: -.021em;
-        font-family: SF Pro Text,SF Pro Icons,Helvetica Neue,Helvetica,Arial,sans-serif;
+        font-family: SF Pro Text, SF Pro Icons, Helvetica Neue, Helvetica, Arial, sans-serif;
         display: inline-block;
         box-sizing: border-box;
         vertical-align: top;
@@ -91,15 +93,16 @@
         background-clip: padding-box;
     }
 
-    input[type=submit]{
+    input[type=submit] {
         background-color: rgb(240, 240, 240);
         text-align: center;
         vertical-align: center;
     }
-    input[type=reset]{
+
+    input[type=reset] {
         font-size: 17px;
         font-weight: 400;
-        font-family: SF Pro Text,SF Pro Icons,Helvetica Neue,Helvetica,Arial;
+        font-family: SF Pro Text, SF Pro Icons, Helvetica Neue, Helvetica, Arial;
         width: 100%;
         height: 34px;
         margin-bottom: 14px;
@@ -113,15 +116,24 @@
         outline: none;
     }
 
-    label{
+    label {
         text-align: center;
         vertical-align: center;
+    }
+
+    input:invalid {
+        border-color: red;
+    }
+
+    input,
+    input:valid {
+        border-color: #ccc;
     }
 
 </style>
 <body>
 
-<form method="post" action="SignInFilter">
+<form method="post" action="LoginFilter" required>
     <center>
         <p>Online test system</p>
         <table border="0" width="30%" cellpadding="3">
@@ -132,21 +144,69 @@
             </thead>
             <tbody>
             <tr>
-                <td><input type="text" name="login" value="" placeholder="Login"/></td>
+                <td>
+                    <input id="text"
+                           type="text"
+                           value=""
+                           placeholder="Login"
+                           readonly
+                           onfocus="this.removeAttribute('readonly')"
+                           pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"
+                           title="'Please, use valid email.'"
+                           required/>
+                </td>
             </tr>
             <tr>
-                <td><input type="text" name="password" value="" placeholder="Password"/></td>
+                <td><input id="password"
+                           type="password"
+                           value=""
+                           placeholder="Password"
+                           readonly
+                           onfocus="this.removeAttribute('readonly')"
+                           pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*$"
+                           title="Your password must be at least 8 characters and include the following: 1 uppercase letter, 1 lowercase letter and 1 number."
+                           required/>
+                </td>
             </tr>
             <tr>
                 <td>
-                    <input type="submit" value="Sign In"/>
+                    <input id="submit" type="submit" value="Sign In"/>
                     <br><input type="reset" value="Reset form"/>
-                    <br><label colspan="2">Probably you  haven't an account.</label><a href="signUp.jsp">Sign Up</a>
+                    <br><label colspan="2">Probably you haven't an account.</label><a href="signUp.jsp">Sign Up</a>
                 </td>
             </tr>
             </tbody>
         </table>
     </center>
 </form>
+<script>
+    // var input = document.getElementById('text');
+    // input.oninvalid = function (event) {
+    //     event.target.setCustomValidity('Please, use valid email.');
+    // }
+    //
+    // var password = document.getElementById('password');
+    // password.oninvalid = function (event) {
+    //     event.target.setCustomValidity('Your password must be at least 8 characters and include the following: 1 uppercase letter, 1 lowercase letter and 1 number.');
+    // }
+
+    var input = document.getElementById('text');
+
+    var password = document.getElementById('password');
+
+    $("form").submit(function(e) {
+        var ref = $(this).find("[required]");
+        $(ref).each(function(){
+            if ( $(this).val() == '' )
+            {
+                // this.setCustomValidity("Required field should not be blank.");
+                $(this).focus();
+                e.preventDefault();
+                return false;
+            }
+        });  return true;
+    });
+
+</script>
 </body>
 </html>

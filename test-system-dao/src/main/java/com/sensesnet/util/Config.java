@@ -27,8 +27,9 @@ public class Config
     public static String getProperty(String constant)
     {
         String value = null;
-        value = getFile(databaseConfigFilePathPattern).exists() ?
-                ResourceBundle.getBundle(bungleConfigFilePathPattern).getString(constant) : null;
+//        value = getFile(databaseConfigFilePathPattern).exists() ?
+//                ResourceBundle.getBundle(bungleConfigFilePathPattern).getString(constant) : null;
+        value = ResourceBundle.getBundle(bungleConfigFilePathPattern).getString(constant);
         if (value == null)
             throw new UnknownPropertyException(
                     "[Config] Unable to find property [" + constant + " : " + value + "].");

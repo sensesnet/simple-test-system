@@ -19,13 +19,13 @@ import java.util.Objects;
 @ToString
 public class TestProcess
 {
-    private @NonNull Integer testProcessId;
-    private @NonNull Date testProcessDate;
-    private @NonNull Integer userId;
-    private @NonNull Integer resultId;
-    private @NonNull Integer testId;
-    private @NonNull Integer mainResultValue;
-    private @NonNull boolean isCompleted;
+    private Integer testProcessId;
+    private Date testProcessDate;
+    private Integer userId;
+    private Integer resultId;
+    private Integer testId;
+    private Integer mainResultValue;
+    private boolean isCompleted;
 
     @Override
     public boolean equals(Object obj)

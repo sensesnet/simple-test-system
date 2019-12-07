@@ -40,16 +40,11 @@ public class Controller extends HttpServlet
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        super.doGet(req, resp);
-    }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
         ICommand command = null;
-        User user = getSessionUser(request);
+        User user = (User) request.getSession().getAttribute("currentUser");
 
         String action = request.getParameter("action");
         log.info("[Controller] Get action:[" + action + "]");
@@ -59,16 +54,14 @@ public class Controller extends HttpServlet
         {
 
         }
-
-
-        command = commandProvider.getCommand(action.toUpperCase());
-
+        command = commandProvider.getCommand(action);
         command.execute(request, response);
+
     }
 
-    private User getSessionUser(HttpServletRequest request)
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        return (User) request.getSession().getAttribute("currentUser");
+        super.doGet(request, response);
     }
-
 }

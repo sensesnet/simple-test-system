@@ -136,28 +136,60 @@
             </thead>
             <tbody>
             <tr>
-                <td><input type="text" name="firstName" value="" placeholder="First name"/></td>
+                <td><input type="text"
+                           name="firstName"
+                           value=""
+                           placeholder="First name"
+                           autocomplete="new-password"/></td>
             </tr>
             <tr>
-                <td><input type="text" name="secondName" value="" placeholder="Second name"/></td>
+                <td><input type="text"
+                           name="secondName"
+                           value=""
+                           placeholder="Second name"
+                           autocomplete="new-password"/></td>
             </tr>
             <tr>
-                <td><input type="text" name="birthdayDate" value="" placeholder="Date of birth"/></td>
+                <td><input type="text"
+                           name="birthdayDate"
+                           value=""
+                           placeholder="Date of birth"
+                           autocomplete="new-password"/></td>
             </tr>
             <tr>
-                <td><input type="text" name="address" value="" placeholder="Local address"/></td>
+                <td><input type="text"
+                           name="address"
+                           value=""
+                           placeholder="Local address"
+                           autocomplete="new-password"/></td>
             </tr>
             <tr>
-                <td><input type="text" name="phone" value="" placeholder="Phone"/></td>
+                <td><input type="text"
+                           name="phone"
+                           value=""
+                           placeholder="Phone"
+                           autocomplete="new-password"/></td>
             </tr>
             <tr>
-                <td><input type="text" name="login" value="" placeholder="Login"/></td>
+                <td><input type="text"
+                           name="login"
+                           value=""
+                           placeholder="Login"
+                           autocomplete="new-password"/></td>
             </tr>
             <tr>
-                <td><input type="password" name="password" value="" placeholder="Password"/></td>
+                <td><input type="password"
+                           name="password"
+                           value=""
+                           placeholder="Password"
+                           data-errormessage-value-missing="Please input something"/></td>
             </tr>
             <tr>
-                <td><input type="text" name="confirmPassword" value="" placeholder="Password gain"/></td>
+                <td><input type="text"
+                           name="confirmPassword"
+                           value=""
+                           placeholder="Password gain"
+                           data-errormessage-value-missing="Please input something"/></td>
             </tr>
             <tr>
                 <td><input type="submit" value="Submit"/>

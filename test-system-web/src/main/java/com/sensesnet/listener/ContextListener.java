@@ -19,7 +19,7 @@ public class ContextListener implements ServletContextListener
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent)
     {
-       //before all sevlets
+       //before all servlets
     }
 
     @Override
