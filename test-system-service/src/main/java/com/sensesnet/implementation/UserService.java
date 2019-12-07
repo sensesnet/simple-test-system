@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author sensesnet <br />
@@ -22,7 +23,7 @@ public class UserService extends AbstractService<User>
 {
 
     private static final Logger log = LogManager.getLogger(UserService.class);
-    private UserDao userDao = DaoFactory.getUserDao();
+    private AtomicReference<UserDao> userDao = new AtomicReference<>(DaoFactory.getUserDao());
 
     /**
      * Authorization service
@@ -37,7 +38,7 @@ public class UserService extends AbstractService<User>
         User existingUser = null;
         try
         {
-            existingUser = userDao.getUserByLoginAndPassword(login, this.getEncryptPassword(password));
+            existingUser = userDao.get().getUserByLoginAndPassword(login, this.getEncryptPassword(password));
             log.info("[Auth Step] User has been found [" + login + ";"
                     + this.getEncryptPassword(password) + "]");
         }
@@ -64,7 +65,7 @@ public class UserService extends AbstractService<User>
         log.info("[" + this.getClass().getName() + "] Get users by id: [" + entity.getUserId() + "].");
         try
         {
-            user = userDao.getByIdentifier(entity);
+            user = userDao.get().getByIdentifier(entity);
         }
         catch (Exception e)
         {
@@ -78,7 +79,7 @@ public class UserService extends AbstractService<User>
     public List<User> getListOfEntity() throws ConnectionPoolException, DaoException
     {
         log.info("[" + this.getClass().getName() + "] Get list with all users.");
-        return userDao.getListOfEntity();
+        return userDao.get().getListOfEntity();
     }
 
     @Override
@@ -87,7 +88,7 @@ public class UserService extends AbstractService<User>
         log.info("[" + this.getClass().getName() + "] Add new user:[" + entity.toString() + "]");
         try
         {
-            userDao.addEntity(entity);
+            userDao.get().addEntity(entity);
         }
         catch (Exception e)
         {
@@ -102,7 +103,7 @@ public class UserService extends AbstractService<User>
         log.info("[" + this.getClass().getName() + "] Remove user:[" + entity.toString() + "].");
         try
         {
-            userDao.removeEntity(entity);
+            userDao.get().removeEntity(entity);
         }
         catch (Exception e)
         {
@@ -117,7 +118,7 @@ public class UserService extends AbstractService<User>
         log.info("[" + this.getClass().getName() + "] Edit user:[" + entity.toString() + "].");
         try
         {
-            userDao.editEntity(entity);
+            userDao.get().editEntity(entity);
         }
         catch (Exception e)
         {
