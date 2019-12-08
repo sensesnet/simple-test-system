@@ -145,19 +145,19 @@
             <tbody>
             <tr>
                 <td>
-                    <input id="text"
+                    <input id="textEmail"
                            type="text"
                            value=""
                            placeholder="Login"
                            readonly
                            onfocus="this.removeAttribute('readonly')"
                            pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"
-                           title="'Please, use valid email.'"
+                           title="Please, use valid email."
                            required/>
                 </td>
             </tr>
             <tr>
-                <td><input id="password"
+                <td><input id="textPassword"
                            type="password"
                            value=""
                            placeholder="Password"
@@ -170,8 +170,8 @@
             </tr>
             <tr>
                 <td>
-                    <input id="submit" type="submit" value="Sign In"/>
-                    <br><input type="reset" value="Reset form"/>
+                    <input type="submit" id="submit" value="Submit"/>
+                    <br><input type="reset" value="Reset"/>
                     <br><label colspan="2">Probably you haven't an account.</label><a href="signUp.jsp">Sign Up</a>
                 </td>
             </tr>
@@ -180,31 +180,31 @@
     </center>
 </form>
 <script>
-    // var input = document.getElementById('text');
+
+
+    // var input = document.getElementById('textEmail');
     // input.oninvalid = function (event) {
-    //     event.target.setCustomValidity('Please, use valid email.');
+    //     event.target.setCustomValidity("");
+    //     if (!event.target.validity.valid)
+    //         event.target.setCustomValidity('Please, use valid email.');
     // }
-    //
-    // var password = document.getElementById('password');
+
+    // var password = document.getElementById('textPassword');
     // password.oninvalid = function (event) {
     //     event.target.setCustomValidity('Your password must be at least 8 characters and include the following: 1 uppercase letter, 1 lowercase letter and 1 number.');
     // }
 
-    var input = document.getElementById('text');
-
-    var password = document.getElementById('password');
-
-    $("form").submit(function(e) {
+    $("form").submit(function (e) {
         var ref = $(this).find("[required]");
-        $(ref).each(function(){
-            if ( $(this).val() == '' )
-            {
-                // this.setCustomValidity("Required field should not be blank.");
+        $(ref).each(function () {
+            $(this).focus();
+            if ($(this).val() === '') {
                 $(this).focus();
                 e.preventDefault();
                 return false;
             }
-        });  return true;
+        });
+        return true;
     });
 
 </script>

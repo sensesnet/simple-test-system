@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
@@ -8,9 +8,10 @@
     <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Sign Up</title>
+        <meta charset="UTF-8"/>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
+        <title>Simple test system</title>
     </head>
-
     <style type="text/css">
 
         body {
@@ -54,8 +55,8 @@
             font-style: normal;
             margin: 0px 0px 7px;
         }
-        a{
 
+        a {
             z-index: 4;
             font-size: 20px;
             line-height: 3;
@@ -69,16 +70,17 @@
             display: inline-block;
             text-decoration: inherit;
             text-decoration-line: inherit;
-            margin-left:5px;
+            margin-left: 5px;
             white-space: nowrap;
         }
-        input[type=password], input[type=submit], input[type=text]{
+
+        input[type=password], input[type=submit], input[type=text] {
 
             font-size: 17px;
             line-height: 1.29412;
             font-weight: 400;
             letter-spacing: -.021em;
-            font-family: SF Pro Text,SF Pro Icons,Helvetica Neue,Helvetica,Arial,sans-serif;
+            font-family: SF Pro Text, SF Pro Icons, Helvetica Neue, Helvetica, Arial, sans-serif;
             display: inline-block;
             box-sizing: border-box;
             vertical-align: top;
@@ -95,15 +97,16 @@
             background-clip: padding-box;
         }
 
-        input[type=submit]{
+        input[type=submit] {
             background-color: rgb(240, 240, 240);
             text-align: center;
             vertical-align: center;
         }
-        input[type=reset]{
+
+        input[type=reset] {
             font-size: 17px;
             font-weight: 400;
-            font-family: SF Pro Text,SF Pro Icons,Helvetica Neue,Helvetica,Arial;
+            font-family: SF Pro Text, SF Pro Icons, Helvetica Neue, Helvetica, Arial;
             width: 100%;
             height: 34px;
             margin-bottom: 14px;
@@ -117,14 +120,23 @@
             outline: none;
         }
 
-        label{
+        label {
             text-align: center;
             vertical-align: center;
         }
 
+        input:invalid {
+            border-color: red;
+        }
+
+        input,
+        input:valid {
+            border-color: #ccc;
+        }
+
     </style>
 <body>
-<form method="post" action="Controller">
+<form method="post" action="LoginFilter" required>
     <input type="hidden" name="action" value="registration"/>
     <center>
         <p>Online test system</p>
@@ -136,71 +148,137 @@
             </thead>
             <tbody>
             <tr>
-                <td><input type="text"
+                <td>
+                    <input type="text"
                            name="firstName"
                            value=""
                            placeholder="First name"
-                           autocomplete="new-password"/></td>
+                           readonly
+                           onfocus="this.removeAttribute('readonly')"
+                           pattern="^[a-zA-Z]+$"
+                           title="Please, set your first name. Use only later."
+                           required/>
+                </td>
             </tr>
             <tr>
-                <td><input type="text"
+                <td>
+                    <input type="text"
                            name="secondName"
                            value=""
                            placeholder="Second name"
-                           autocomplete="new-password"/></td>
+                           readonly
+                           onfocus="this.removeAttribute('readonly')"
+                           pattern="^[a-zA-Z]+$"
+                           title="Please, set your second name. Use only later."
+                           required/>
+                </td>
             </tr>
             <tr>
-                <td><input type="text"
+                <td>
+                    <input type="text"
                            name="birthdayDate"
                            value=""
                            placeholder="Date of birth"
-                           autocomplete="new-password"/></td>
+                           readonly
+                           onfocus="this.removeAttribute('readonly')"
+                           pattern="^\d{4}-\d{2}-\d{2}$"
+                           title="'Please, use format like 'yyyy-mm-dd'"
+                           required/>
+                </td>
             </tr>
             <tr>
-                <td><input type="text"
+                <td>
+                    <input type="text"
                            name="address"
                            value=""
                            placeholder="Local address"
-                           autocomplete="new-password"/></td>
+                           readonly
+                           onfocus="this.removeAttribute('readonly')"
+                           title="'Please, set address'"
+                           required/>
+                </td>
             </tr>
             <tr>
-                <td><input type="text"
+                <td>
+                    <input type="text"
                            name="phone"
                            value=""
                            placeholder="Phone"
-                           autocomplete="new-password"/></td>
+                           readonly
+                           onfocus="this.removeAttribute('readonly')"
+                           pattern="(8 0(25|29|33|34) ([0-9]{3}( [0-9]{2}){2}))"
+                           title="like, '8 0xx xxx xx xx'"
+                           required/>
+                </td>
             </tr>
             <tr>
-                <td><input type="text"
-                           name="login"
-                           value=""
-                           placeholder="Login"
-                           autocomplete="new-password"/></td>
+                <td>
+                    <input
+                            id="textEmail"
+                            type="text"
+                            name="login"
+                            value=""
+                            placeholder="Login"
+                            readonly
+                            onfocus="this.removeAttribute('readonly')"
+                            pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"
+                            title="'Please, use valid email.'"
+                            required/>
+                </td>
             </tr>
             <tr>
-                <td><input type="password"
+                <td>
+                    <input type="password"
                            name="password"
                            value=""
+                           readonly
+                           onfocus="this.removeAttribute('readonly')"
                            placeholder="Password"
-                           data-errormessage-value-missing="Please input something"/></td>
+                           pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*$"
+                           title="Your password must be at least 8 characters and include the following: 1 uppercase letter, 1 lowercase letter and 1 number."
+                           required/>
+                </td>
             </tr>
             <tr>
-                <td><input type="text"
+                <td>
+                    <input type="password"
                            name="confirmPassword"
                            value=""
+                           readonly
+                           onfocus="this.removeAttribute('readonly')"
                            placeholder="Password gain"
-                           data-errormessage-value-missing="Please input something"/></td>
+                           pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*$"
+                           title="Your password must be at least 8 characters and include the following: 1 uppercase letter, 1 lowercase letter and 1 number."
+                           required/>
+                </td>
             </tr>
             <tr>
-                <td><input type="submit" value="Submit"/>
-                    <br><input type="reset" value="Reset"/></td>
-            </tr>
-            <tr>
-                <td colspan="2">Probably you have personal account <a href="signIn.jsp">Sign In</a></td>
+                <td>
+                    <input type="submit" id="submit" value="Submit"/>
+                    <br><input type="reset" value="Reset"/>
+                    <br><label colspan="2">Probably you have personal account</label> <a href="signIn.jsp">Sign In</a>
+                </td>
             </tr>
             </tbody>
         </table>
     </center>
 </form>
+
+<script>
+    $("form").submit(function (e) {
+        var ref = $(this).find("[required]");
+        $(ref).each(function () {
+            $(this).focus();
+            if ($(this).val() === '') {
+                $(this).focus();
+                e.preventDefault();
+                return false;
+            }
+        });
+        return true;
+    });
+
+</script>
+
 </body>
 </html>
