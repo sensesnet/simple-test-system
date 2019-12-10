@@ -1,5 +1,7 @@
 package com.sensesnet.connection;
 
+import com.sensesnet.constant.DaoConstant;
+import com.sensesnet.util.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,6 +22,19 @@ public class ConnectionPool implements ConnectionPoolConfig
     private static final ConnectionPool instance = new ConnectionPool();
     private BlockingQueue<Connection> freeConnections;
     private BlockingQueue<Connection> givenConnections;
+    private String databaseServerName = Config.getProperty(DaoConstant.dbConnection().DATABASE_SERVER_NAME);
+    private String databasePortNumber = Config.getProperty(DaoConstant.dbConnection().DATABASE_PORT_NUMBER);
+    private String databaseName = Config.getProperty(DaoConstant.dbConnection().DATABASE_NAME);
+    private String username = Config.getProperty(DaoConstant.dbConnection().DATABASE_USERNAME);
+    private String password = Config.getProperty(DaoConstant.dbConnection().DATABASE_PASSWORD);
+    private String databaseClass = Config.getProperty(DaoConstant.dbConnection().DATABASE_DB_CLASS);
+    private String databaseScheme = Config.getProperty(DaoConstant.dbConnection().DATABASE_SCHEME);
+    private String databaseLink =
+            "jdbc:mysql://"
+                    + databaseServerName + ":"
+                    + databasePortNumber + "/" + databaseScheme
+                    + "?useUnicode=true&serverTimezone=UTC&useSSL=false";
+    private Integer connectionCount = Integer.valueOf(Config.getProperty(DaoConstant.dbConnection().CONNECTION_COUNT));
 
     public static ConnectionPool getInstance() throws ConnectionPoolException
     {

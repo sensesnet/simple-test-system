@@ -146,6 +146,7 @@
             <tr>
                 <td>
                     <input id="textEmail"
+                           name="login"
                            type="text"
                            value=""
                            placeholder="Login"
@@ -158,6 +159,7 @@
             </tr>
             <tr>
                 <td><input id="textPassword"
+                           name="password"
                            type="password"
                            value=""
                            placeholder="Password"
@@ -172,6 +174,9 @@
                 <td>
                     <input type="submit" id="submit" value="Submit"/>
                     <br><input type="reset" value="Reset"/>
+                    <c:if test="${not empty param.errorMessage }">
+                        <c:out value="${param.errorMessage}"></c:out>
+                    </c:if>
                     <br><label colspan="2">Probably you haven't an account.</label><a href="signUp.jsp">Sign Up</a>
                 </td>
             </tr>

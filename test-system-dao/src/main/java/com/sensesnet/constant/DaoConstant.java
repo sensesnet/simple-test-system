@@ -6,7 +6,7 @@ package com.sensesnet.constant;
  * <p>
  * DAO: Common constant provider
  */
-public class DAOConstant
+public class DaoConstant
 {
     private final static SQLQueryConstant sqlQueryConstant = new SQLQueryConstant();
     private final static DbConnectionConstant dbConnectionConstant = new DbConnectionConstant();

@@ -55,6 +55,21 @@
     </servlet-mapping>
 
     <!-- Controller servlet -->
+    <servlet>
+        <servlet-name>Controller</servlet-name>
+        <servlet-class>com.sensesnet.servlet.Controller</servlet-class>
+<!--        <init-param>-->
+<!--            <param-name></param-name>-->
+<!--            <param-value></param-value>-->
+<!--        </init-param>-->
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Controller</servlet-name>
+        <url-pattern>/Controller</url-pattern>
+    </servlet-mapping>
+
+    <!-- Controller servlet -->
 <!--    <servlet>-->
 <!--        <display-name>Controller</display-name>-->
 <!--        <servlet-name>Controller</servlet-name>-->

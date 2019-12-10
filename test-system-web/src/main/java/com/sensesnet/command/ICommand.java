@@ -9,7 +9,7 @@ import java.io.IOException;
  * @author sensesnet <br />
  * Copyright 2019 Eshted LLC. All rights reserved.
  * <p>
- * Common command interface
+ * Common impl interface
  */
 public interface ICommand
 {

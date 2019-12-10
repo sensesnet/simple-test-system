@@ -1,11 +1,15 @@
 package com.sensesnet.dao;
 
+import com.sensesnet.connection.ConnectionPool;
+import com.sensesnet.connection.ConnectionPoolException;
 import com.sensesnet.dao.test.dao.*;
 import com.sensesnet.dao.user.dao.UserDao;
 import com.sensesnet.dao.user.dao.UserInfoDao;
 import com.sensesnet.dao.user.dao.UserRoleDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.sql.SQLException;
 
 /**
  * @author sensesnet <br />
@@ -64,5 +68,15 @@ public class DaoFactory
     public static UserRoleDao getUserRoleDao()
     {
         return userRoleDao == null ? userRoleDao = new UserRoleDao() : userRoleDao;
+    }
+
+    public static void initConnectionPool() throws ConnectionPoolException
+    {
+        ConnectionPool.getInstance().initPoolData();
+    }
+
+    public static void destroyConnectionPool() throws ConnectionPoolException, SQLException
+    {
+        ConnectionPool.getInstance().closeAllConnections();
     }
 }

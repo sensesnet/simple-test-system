@@ -1,7 +1,7 @@
 package com.sensesnet.dao.test.dao;
 
 import com.sensesnet.connection.ConnectionPoolException;
-import com.sensesnet.constant.DAOConstant;
+import com.sensesnet.constant.DaoConstant;
 import com.sensesnet.dao.AbstractDao;
 import com.sensesnet.dao.exception.DaoException;
 import com.sensesnet.pojo.test.Test;
@@ -37,7 +37,7 @@ public class TestDao extends AbstractDao<Test>
         CopyOnWriteArrayList<Test> testList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().SELECT_TEST_BY_ID))
+                .prepareStatement(DaoConstant.query().SELECT_TEST_BY_ID))
         {
             statement.setInt(1, entity.getTestId());
             try (ResultSet resultSet = statement.executeQuery())
@@ -77,7 +77,7 @@ public class TestDao extends AbstractDao<Test>
         CopyOnWriteArrayList<Test> testList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().SELECT_ALL_TEST))
+                .prepareStatement(DaoConstant.query().SELECT_ALL_TEST))
         {
             try (ResultSet resultSet = statement.executeQuery())
             {
@@ -109,7 +109,7 @@ public class TestDao extends AbstractDao<Test>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().INSERT_NEW_TEST))
+                .prepareStatement(DaoConstant.query().INSERT_NEW_TEST))
         {
             prepareStatementParams(
                     statement,
@@ -133,7 +133,7 @@ public class TestDao extends AbstractDao<Test>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().DELETE_TEST_BY_ID))
+                .prepareStatement(DaoConstant.query().DELETE_TEST_BY_ID))
         {
             statement.setInt(1, entity.getTestId());
             statement.execute();
@@ -154,7 +154,7 @@ public class TestDao extends AbstractDao<Test>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().UPDATE_TEST))
+                .prepareStatement(DaoConstant.query().UPDATE_TEST))
         {
             prepareStatementParams(
                     statement,

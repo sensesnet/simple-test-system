@@ -1,7 +1,7 @@
 package com.sensesnet.dao.test.dao;
 
 import com.sensesnet.connection.ConnectionPoolException;
-import com.sensesnet.constant.DAOConstant;
+import com.sensesnet.constant.DaoConstant;
 import com.sensesnet.dao.AbstractDao;
 import com.sensesnet.dao.exception.DaoException;
 import com.sensesnet.pojo.test.Test;
@@ -39,7 +39,7 @@ public class TestProcessDao extends AbstractDao<TestProcess>
         CopyOnWriteArrayList<TestProcess> testProcessList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().SELECT_TEST_PROCESS_BY_ID))
+                .prepareStatement(DaoConstant.query().SELECT_TEST_PROCESS_BY_ID))
         {
             statement.setInt(1, entity.getTestProcessId());
             try (ResultSet resultSet = statement.executeQuery())
@@ -80,7 +80,7 @@ public class TestProcessDao extends AbstractDao<TestProcess>
         CopyOnWriteArrayList<TestProcess> testProcessList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().SELECT_ALL_TEST_PROCESS))
+                .prepareStatement(DaoConstant.query().SELECT_ALL_TEST_PROCESS))
         {
             try (ResultSet resultSet = statement.executeQuery())
             {
@@ -113,7 +113,7 @@ public class TestProcessDao extends AbstractDao<TestProcess>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().INSERT_NEW_TEST_PROCESS))
+                .prepareStatement(DaoConstant.query().INSERT_NEW_TEST_PROCESS))
         {
             prepareStatementParams(
                     statement,
@@ -139,7 +139,7 @@ public class TestProcessDao extends AbstractDao<TestProcess>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().DELETE_TEST_PROCESS_BY_ID))
+                .prepareStatement(DaoConstant.query().DELETE_TEST_PROCESS_BY_ID))
         {
             statement.setInt(1, entity.getTestProcessId());
             statement.execute();
@@ -160,7 +160,7 @@ public class TestProcessDao extends AbstractDao<TestProcess>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().UPDATE_TEST_PROCESS))
+                .prepareStatement(DaoConstant.query().UPDATE_TEST_PROCESS))
         {
             prepareStatementParams(
                     statement,

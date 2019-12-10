@@ -16,28 +16,28 @@ public abstract class AbstractService<T>
 {
     /**
      * Service
-     * - get command
+     * - get impl
      *
      * @param entity
      * @return
      */
-    public abstract T getByIdentifier(T entity) throws DaoException, ServiceException;
+    public abstract T getByIdentifier(T entity) throws ServiceException;
 
     /**
      * Service
-     * - get List<T> of command
+     * - get List<T> of impl
      *
      * @return
      */
-    public abstract List<T> getListOfEntity() throws DaoException, ServiceException, ConnectionPoolException;
+    public abstract List<T> getListOfEntity() throws ServiceException;
 
     /**
      * Service
-     * - set command
+     * - set impl
      *
      * @param entity
      */
-    public abstract void addEntity(T entity) throws DaoException, ServiceException, ConnectionPoolException;
+    public abstract void addEntity(T entity) throws ServiceException;
 
     /**
      * Service
@@ -45,12 +45,12 @@ public abstract class AbstractService<T>
      *
      * @param entity
      */
-    public abstract void removeEntity(T entity) throws DaoException, ServiceException;
+    public abstract void removeEntity(T entity) throws ServiceException;
 
     /**
      * Service
-     * - edit command
+     * - edit impl
      */
-    public abstract void editEntity(T entity) throws DaoException, ServiceException;
+    public abstract void editEntity(T entity) throws ServiceException;
 
 }

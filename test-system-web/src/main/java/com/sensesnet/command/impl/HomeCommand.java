@@ -1,4 +1,4 @@
-package com.sensesnet.command.command;
+package com.sensesnet.command.impl;
 
 import com.sensesnet.command.ICommand;
 
@@ -11,11 +11,10 @@ import java.io.IOException;
  * @author sensesnet <br />
  * Copyright 2019 Eshted LLC. All rights reserved.
  * <p>
- * Command : Sign Up
+ * TODO: add description
  */
-public class SignUpCommand implements ICommand
+public class HomeCommand implements ICommand
 {
-
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {

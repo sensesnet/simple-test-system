@@ -1,7 +1,7 @@
 package com.sensesnet.dao.user.dao;
 
 import com.sensesnet.connection.ConnectionPoolException;
-import com.sensesnet.constant.DAOConstant;
+import com.sensesnet.constant.DaoConstant;
 import com.sensesnet.dao.AbstractDao;
 import com.sensesnet.dao.exception.DaoException;
 import com.sensesnet.pojo.authentication.UserRole;
@@ -37,7 +37,7 @@ public class UserRoleDao extends AbstractDao<UserRole>
         CopyOnWriteArrayList<UserRole> userRoleList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().SELECT_USER_ROLE_BY_ID))
+                .prepareStatement(DaoConstant.query().SELECT_USER_ROLE_BY_ID))
         {
             statement.setInt(1, entity.getRoleId());
             try (ResultSet resultSet = statement.executeQuery())
@@ -75,7 +75,7 @@ public class UserRoleDao extends AbstractDao<UserRole>
         CopyOnWriteArrayList<UserRole> roleList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().SELECT_ALL_USER_ROLE))
+                .prepareStatement(DaoConstant.query().SELECT_ALL_USER_ROLE))
         {
             try (ResultSet resultSet = statement.executeQuery())
             {
@@ -105,7 +105,7 @@ public class UserRoleDao extends AbstractDao<UserRole>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().INSERT_NEW_USER_ROLE))
+                .prepareStatement(DaoConstant.query().INSERT_NEW_USER_ROLE))
         {
             prepareStatementParams(
                     statement,
@@ -128,7 +128,7 @@ public class UserRoleDao extends AbstractDao<UserRole>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().DELETE_USER_ROLE_BY_ID))
+                .prepareStatement(DaoConstant.query().DELETE_USER_ROLE_BY_ID))
         {
             statement.setInt(1, entity.getRoleId());
             statement.execute();
@@ -149,7 +149,7 @@ public class UserRoleDao extends AbstractDao<UserRole>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().UPDATE_USER_ROLE))
+                .prepareStatement(DaoConstant.query().UPDATE_USER_ROLE))
         {
             prepareStatementParams(
                     statement,

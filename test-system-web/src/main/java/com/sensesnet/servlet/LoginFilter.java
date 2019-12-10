@@ -1,58 +1,64 @@
 package com.sensesnet.servlet;
 
-import com.sensesnet.exception.ServiceException;
+import com.sensesnet.ServiceProvider;
+import com.sensesnet.constant.ConstantProvider;
+import com.sensesnet.constant.DaoConstant;
 import com.sensesnet.implementation.UserService;
 import com.sensesnet.pojo.authentication.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
  * @author sensesnet <br />
  * Copyright 2019 Eshted LLC. All rights reserved.
  * <p>
- * TODO: add description
+ * Login Filter servlet
  */
 public class LoginFilter extends HttpServlet
 {
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
+    private static final Logger log = LogManager.getLogger(LoginFilter.class);
+    private UserService userService = ServiceProvider.getInstance().getUserService();
+
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         doPost(request, response);
-
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-     */
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
+        User user;
+        HttpSession session;
+        String login = request.getParameter(ConstantProvider.getRequestParameter().LOGIN);
+        String password = request.getParameter(ConstantProvider.getRequestParameter().PASSWORD);
 
-        String login = request.getParameter("login");
-        String password = request.getParameter("password");
-        UserService userService = new UserService();
-
-
-        User user = null;
-        if (login != null)
+        try
         {
             user = userService.authorization(login, password);
+            if (user == null)
+            {
+                response.sendRedirect("Controller?action=sign_in&errorMessage=Account is not found, check credentials.");
+//                response.sendRedirect("signUp.jsp");
+                return;
+            }
+            session = request.getSession(true);
+            session.setAttribute("currentUser", user);
+            response.sendRedirect("Controller?action=home");
         }
-        else
+        catch (SecurityException e)
         {
-            response.sendRedirect("reIndex.jsp");
+            log.warn("[LoginFilter] Security exception: lost connection to DB.");
+            response.sendRedirect("Controller?action=sign_in&errorMessage=Lost connection to DB. try later...");
         }
-        if (user != null)
-        {
-            request.getSession().setAttribute("currentUser", user);
-            response.sendRedirect("Controller");
-        }
-        else response.sendRedirect("reIndex.jsp");
 
     }
 }

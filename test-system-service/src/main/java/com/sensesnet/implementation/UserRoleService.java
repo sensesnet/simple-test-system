@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author sensesnet <br />
@@ -42,10 +43,20 @@ public class UserRoleService extends AbstractService<UserRole>
     }
 
     @Override
-    public List<UserRole> getListOfEntity() throws ConnectionPoolException, DaoException
+    public List<UserRole> getListOfEntity() throws ServiceException
     {
         log.info("[" + this.getClass().getName() + "] Get list with all roles.");
-        return userRoleDao.getListOfEntity();
+        CopyOnWriteArrayList<UserRole> userRoleList = null;
+        try
+        {
+            userRoleList = (CopyOnWriteArrayList<UserRole>) userRoleDao.getListOfEntity();
+        }
+        catch (Exception e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "Role list has not found at test system. Service exception", e);
+        }
+        return userRoleList;
     }
 
     @Override

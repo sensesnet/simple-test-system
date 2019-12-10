@@ -4,11 +4,11 @@ package com.sensesnet.constant;
  * @author sensesnet <br />
  * Copyright 2019 Eshted LLC. All rights reserved.
  * <p>
- * DAOConstant: page path
+ * DaoConstant: page path
  */
 public class Page
 {
-    public final String INDEX_PAGE = "";
+    public final String INDEX_PAGE = "index.jsp";
     public final String SIGN_IN_PAGE = "";
     public final String SIGN_UP_PAGE = "";
     public final String HOME_PAGE = "";

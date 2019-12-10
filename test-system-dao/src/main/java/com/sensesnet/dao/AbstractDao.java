@@ -132,7 +132,7 @@ public abstract class AbstractDao<T>
 
     /**
      * Dao
-     * - get command
+     * - get impl
      *
      * @param entity
      * @return
@@ -141,7 +141,7 @@ public abstract class AbstractDao<T>
 
     /**
      * Dao
-     * - get List<T> of command
+     * - get List<T> of impl
      *
      * @return
      */
@@ -149,7 +149,7 @@ public abstract class AbstractDao<T>
 
     /**
      * Dao
-     * - set command
+     * - set impl
      *
      * @param entity
      */
@@ -165,7 +165,7 @@ public abstract class AbstractDao<T>
 
     /**
      * Dao
-     * - edit command
+     * - edit impl
      */
     public abstract void editEntity(T entity) throws ConnectionPoolException, DaoException;
 }

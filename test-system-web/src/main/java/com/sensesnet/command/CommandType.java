@@ -4,12 +4,13 @@ package com.sensesnet.command;
  * @author sensesnet <br />
  * Copyright 2019 Eshted LLC. All rights reserved.
  * <p>
- * Enum: All command type
+ * Enum: All impl type
  */
 public enum CommandType
 {
     SIGN_IN,
     SIGN_UP,
+    HOME,
     TEST_ADD,
     TEST_VIEW,
     TEST_EDIT,

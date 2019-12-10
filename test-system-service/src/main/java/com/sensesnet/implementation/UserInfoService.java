@@ -6,12 +6,14 @@ import com.sensesnet.dao.exception.DaoException;
 import com.sensesnet.dao.user.dao.UserInfoDao;
 import com.sensesnet.dao.user.dao.UserRoleDao;
 import com.sensesnet.exception.ServiceException;
+import com.sensesnet.pojo.authentication.User;
 import com.sensesnet.pojo.authentication.UserInfo;
 import com.sensesnet.pojo.authentication.UserRole;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author sensesnet <br />
@@ -42,10 +44,20 @@ public class UserInfoService extends AbstractService<UserInfo>
     }
 
     @Override
-    public List<UserInfo> getListOfEntity() throws ConnectionPoolException, DaoException
+    public List<UserInfo> getListOfEntity() throws ServiceException
     {
-        log.info("[" + this.getClass().getName() + "] Get list with all roles.");
-        return userInfoDao.getListOfEntity();
+        log.info("[" + this.getClass().getName() + "] Get list with all user info.");
+        CopyOnWriteArrayList<UserInfo> userInfoList = null;
+        try
+        {
+            userInfoList = (CopyOnWriteArrayList<UserInfo>) userInfoDao.getListOfEntity();
+        }
+        catch (Exception e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "User info list has not found at test system. Service exception", e);
+        }
+        return  userInfoList;
     }
 
     @Override

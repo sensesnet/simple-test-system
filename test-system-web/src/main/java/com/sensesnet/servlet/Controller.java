@@ -42,10 +42,8 @@ public class Controller extends HttpServlet
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-
-        ICommand command = null;
+        ICommand command;
         User user = (User) request.getSession().getAttribute("currentUser");
-
         String action = request.getParameter("action");
         log.info("[Controller] Get action:[" + action + "]");
 

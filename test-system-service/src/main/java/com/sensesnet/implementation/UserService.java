@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -76,10 +77,20 @@ public class UserService extends AbstractService<User>
     }
 
     @Override
-    public List<User> getListOfEntity() throws ConnectionPoolException, DaoException
+    public List<User> getListOfEntity() throws ServiceException
     {
         log.info("[" + this.getClass().getName() + "] Get list with all users.");
-        return userDao.get().getListOfEntity();
+        CopyOnWriteArrayList<User> userList = null;
+        try
+        {
+            userList = (CopyOnWriteArrayList<User>) userDao.get().getListOfEntity();
+        }
+        catch (Exception e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "User list has not found at test system. Service exception", e);
+        }
+        return userList;
     }
 
     @Override

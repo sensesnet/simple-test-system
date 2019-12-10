@@ -1,7 +1,7 @@
 package com.sensesnet.dao.test.dao;
 
 import com.sensesnet.connection.ConnectionPoolException;
-import com.sensesnet.constant.DAOConstant;
+import com.sensesnet.constant.DaoConstant;
 import com.sensesnet.dao.AbstractDao;
 import com.sensesnet.dao.exception.DaoException;
 import com.sensesnet.pojo.test.TestQuestion;
@@ -38,7 +38,7 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
         CopyOnWriteArrayList<TestQuestion> testQuestionList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().SELECT_QUESTION_BY_ID))
+                .prepareStatement(DaoConstant.query().SELECT_QUESTION_BY_ID))
         {
             statement.setInt(1, entity.getQuestionId());
             try (ResultSet resultSet = statement.executeQuery())
@@ -79,7 +79,7 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
         CopyOnWriteArrayList<TestQuestion> testQuestionList = new CopyOnWriteArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().SELECT_ALL_QUESTION))
+                .prepareStatement(DaoConstant.query().SELECT_ALL_QUESTION))
         {
             try (ResultSet resultSet = statement.executeQuery())
             {
@@ -112,7 +112,7 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().INSERT_NEW_QUESTION))
+                .prepareStatement(DaoConstant.query().INSERT_NEW_QUESTION))
         {
             prepareStatementParams(
                     statement,
@@ -138,7 +138,7 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().DELETE_QUESTION_BY_ID))
+                .prepareStatement(DaoConstant.query().DELETE_QUESTION_BY_ID))
         {
             statement.setInt(1, entity.getQuestionId());
             statement.execute();
@@ -159,7 +159,7 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
-                .prepareStatement(DAOConstant.query().UPDATE_QUESTION))
+                .prepareStatement(DaoConstant.query().UPDATE_QUESTION))
         {
             prepareStatementParams(
                     statement,

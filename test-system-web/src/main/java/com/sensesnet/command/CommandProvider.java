@@ -1,7 +1,8 @@
 package com.sensesnet.command;
 
-import com.sensesnet.command.command.SignInCommand;
-import com.sensesnet.command.command.SignUpCommand;
+import com.sensesnet.command.impl.HomeCommand;
+import com.sensesnet.command.impl.SignInCommand;
+import com.sensesnet.command.impl.SignUpCommand;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +21,7 @@ public class CommandProvider
     {
         commands.put(CommandType.SIGN_IN, new SignInCommand());
         commands.put(CommandType.SIGN_UP, new SignUpCommand());
+        commands.put(CommandType.HOME, new HomeCommand());
     }
 
     public ICommand getCommand(String name)
