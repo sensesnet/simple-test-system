@@ -2,6 +2,7 @@ package com.sensesnet.servlet;
 
 import com.sensesnet.command.CommandProvider;
 import com.sensesnet.command.ICommand;
+import com.sensesnet.exception.ServiceException;
 import com.sensesnet.pojo.authentication.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,15 +47,22 @@ public class Controller extends HttpServlet
         User user = (User) request.getSession().getAttribute("currentUser");
         String action = request.getParameter("action");
         log.info("[Controller] Get action:[" + action + "]");
-
-
         if (user == null)
         {
-
+//            command = commandProvider.getCommand("closeSession");
+//            log.warn("[Controller] Session [" + request.getSession().getId() + "}has been expired!");
         }
-        command = commandProvider.getCommand(action);
-        command.execute(request, response);
-
+//        else
+            command = commandProvider.getCommand(action);
+        try
+        {
+            command.execute(request, response);
+        }
+        catch (ServiceException e)
+        {
+            log.warn("[Controller] Service exception: lost connection to DB.");
+            response.sendRedirect("Controller?action=sign_in&errorMessage=Lost connection to DB. try later...");
+        }
     }
 
     @Override

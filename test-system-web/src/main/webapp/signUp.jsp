@@ -246,7 +246,7 @@
                            value=""
                            readonly
                            onfocus="this.removeAttribute('readonly')"
-                           placeholder="Password gain"
+                           placeholder="Password again"
                            pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*$"
                            title="Your password must be at least 8 characters and include the following: 1 uppercase letter, 1 lowercase letter and 1 number."
                            required/>

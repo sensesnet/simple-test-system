@@ -3,8 +3,10 @@ package com.sensesnet.servlet;
 import com.sensesnet.ServiceProvider;
 import com.sensesnet.constant.ConstantProvider;
 import com.sensesnet.constant.DaoConstant;
+import com.sensesnet.implementation.UserRoleService;
 import com.sensesnet.implementation.UserService;
 import com.sensesnet.pojo.authentication.User;
+import com.sensesnet.pojo.authentication.UserRole;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,7 +27,7 @@ public class LoginFilter extends HttpServlet
 {
     private static final Logger log = LogManager.getLogger(LoginFilter.class);
     private UserService userService = ServiceProvider.getInstance().getUserService();
-
+    private UserRoleService userRoleService = ServiceProvider.getInstance().getUserRoleService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
@@ -47,7 +49,6 @@ public class LoginFilter extends HttpServlet
             if (user == null)
             {
                 response.sendRedirect("Controller?action=sign_in&errorMessage=Account is not found, check credentials.");
-//                response.sendRedirect("signUp.jsp");
                 return;
             }
             session = request.getSession(true);

@@ -18,5 +18,6 @@ public enum CommandType
     RESULT_VIEW,
     USER_ADD,
     USER_EDIT,
-    USER_VIEW;
+    USER_VIEW,
+    CLOSE_SESSION;
 }

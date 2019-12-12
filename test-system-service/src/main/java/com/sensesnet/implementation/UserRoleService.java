@@ -103,4 +103,20 @@ public class UserRoleService extends AbstractService<UserRole>
                     + "Role data [" + entity.toString() + " ] has NOT been changed.", e);
         }
     }
+
+    public UserRole getByIdentifier(Integer userRoleId) throws ServiceException
+    {
+        UserRole userRole = null;
+        log.info("[" + this.getClass().getName() + "] Get users by id: [" + userRoleId + "].");
+        try
+        {
+            userRole = userRoleDao.getByIdentifier(userRoleId);
+        }
+        catch (Exception e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "Role [" + userRoleId + " ] has NOT been found.", e);
+        }
+        return userRole;
+    }
 }

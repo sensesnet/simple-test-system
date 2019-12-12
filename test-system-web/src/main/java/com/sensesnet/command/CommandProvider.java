@@ -1,5 +1,6 @@
 package com.sensesnet.command;
 
+import com.sensesnet.command.impl.CloseSessionCommand;
 import com.sensesnet.command.impl.HomeCommand;
 import com.sensesnet.command.impl.SignInCommand;
 import com.sensesnet.command.impl.SignUpCommand;
@@ -22,6 +23,7 @@ public class CommandProvider
         commands.put(CommandType.SIGN_IN, new SignInCommand());
         commands.put(CommandType.SIGN_UP, new SignUpCommand());
         commands.put(CommandType.HOME, new HomeCommand());
+        commands.put(CommandType.CLOSE_SESSION, new CloseSessionCommand());
     }
 
     public ICommand getCommand(String name)

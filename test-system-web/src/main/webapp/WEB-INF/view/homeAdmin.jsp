@@ -73,44 +73,22 @@
 
 <body>
 <h1>Online Testing Platform</h1>
-<p><a href="Controller?action=closeSessionCommand">Log out</a></p>
 
+<div>
+    <h3 class="headline">'Admin' role</h3>
+    <div class="links">
+        <a href="Controller?action=test_view"><span class="more nowrap">List of Tests</span></a>
+        <a href="Controller?action=user_view"><span class="more nowrap">List of Users</span></a>
+        <a href="Controller?action=result_view"><span class="more nowrap">Search result</span></a>
+        <a href="Controller?action=close_session"><span class="more nowrap">Sign Out</span></a>
+    </div>
+</div>
 
-<form action="Controller">
-    <h2>List of User</h2>
-    <table border="1">
-        <tr>
-            <th>id</th>
-            <th>first_name</th>
-            <th>Last Name</th>
-            <th>login</th>
-            <th>PASSWORD</th>
-            <th>email</th>
-            <th>credits</th>
-            <th>status</th>
-
-        </tr>
-        <c:forEach items="${user}" var="user">
-            <tr>
-                <td>${user.getUSER_ID()}</td>
-                <td>${user.getFIRST_NAME()}</td>
-                <td>${user.getSECOND_NAME()}</td>
-                <td>${user.getLOGIN()}</td>
-                <td>${user.getPASSWORD()}</td>
-                <td>${user.getEMAIL()}</td>
-                <td>${user.getCREDITS()}</td>
-                <td>${user.getSTATUS()}</td>
-
-                <td><a
-                        href="Controller?action=editUser&userID=<c:out value ="${user.getUSER_ID()}"/>">Edit</a></td>
-                <td><a
-                        href="Controller?action=removeUser&userID=<c:out value ="${user.getUSER_ID()}"/>">Delete</a>
-                </td>
-            </tr>
-        </c:forEach>
-    </table>
-    <p><a href="Controller?action=addUserFormCommand">Add new User</a></p>
-</form>
-<p><a href="Controller?action=showOrderCommand">Admin main page</a></p>
+<p class="pd-billboard-subcopy pd-util-compact-large-12 pd-util-expand-small-1">
+    'Admin' role gives you main capabilities for:
+    <br>- Find and edit user details
+    <br>- Find and edit test details
+    <br>- Find and Investigate test result
+</p>
 </body>
 </html>
