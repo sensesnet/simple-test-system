@@ -54,20 +54,20 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
-    <!-- Controller servlet -->
-    <servlet>
-        <servlet-name>Controller</servlet-name>
-        <servlet-class>com.sensesnet.servlet.Controller</servlet-class>
-<!--        <init-param>-->
-<!--            <param-name></param-name>-->
-<!--            <param-value></param-value>-->
-<!--        </init-param>-->
-    </servlet>
+<!--    &lt;!&ndash; Controller servlet &ndash;&gt;-->
+<!--    <servlet>-->
+<!--        <servlet-name>Controller</servlet-name>-->
+<!--        <servlet-class>com.sensesnet.servlet.Controller</servlet-class>-->
+<!--&lt;!&ndash;        <init-param>&ndash;&gt;-->
+<!--&lt;!&ndash;            <param-name></param-name>&ndash;&gt;-->
+<!--&lt;!&ndash;            <param-value></param-value>&ndash;&gt;-->
+<!--&lt;!&ndash;        </init-param>&ndash;&gt;-->
+<!--    </servlet>-->
 
-    <servlet-mapping>
-        <servlet-name>Controller</servlet-name>
-        <url-pattern>/Controller</url-pattern>
-    </servlet-mapping>
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>Controller</servlet-name>-->
+<!--        <url-pattern>/Controller</url-pattern>-->
+<!--    </servlet-mapping>-->
 
     <!-- Controller servlet -->
 <!--    <servlet>-->
