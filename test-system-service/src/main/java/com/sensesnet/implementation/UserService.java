@@ -4,6 +4,7 @@ import com.sensesnet.connection.ConnectionPoolException;
 import com.sensesnet.dao.DaoFactory;
 import com.sensesnet.dao.exception.DaoException;
 import com.sensesnet.dao.user.dao.UserDao;
+import com.sensesnet.dto.UserDto;
 import com.sensesnet.exception.ServiceException;
 import com.sensesnet.pojo.authentication.User;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -20,7 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * <p>
  * Service: User service
  */
-public class UserService extends AbstractService<User>
+public class UserService extends AbstractService<UserDto>
 {
 
     private static final Logger log = LogManager.getLogger(UserService.class);
@@ -60,10 +61,10 @@ public class UserService extends AbstractService<User>
     }
 
     @Override
-    public User getByIdentifier(User entity) throws ServiceException
+    public UserDto getByIdentifier(UserDto entity) throws ServiceException
     {
-        User user = null;
-        log.info("[" + this.getClass().getName() + "] Get users by id: [" + entity.getUserId() + "].");
+        UserDto user = null;
+        log.info("[" + this.getClass().getName() + "] Get users by id: [" + entity.getUser().getUserId() + "].");
         try
         {
             user = userDao.get().getByIdentifier(entity);
@@ -71,19 +72,19 @@ public class UserService extends AbstractService<User>
         catch (Exception e)
         {
             throw new ServiceException("[" + this.getClass().getName() + "] "
-                    + "User [" + entity.getUserId() + " ] has NOT been found.", e);
+                    + "User [" + entity.getUser().getUserId() + " ] has NOT been found.", e);
         }
         return user;
     }
 
     @Override
-    public List<User> getListOfEntity() throws ServiceException
+    public List<UserDto> getListOfEntity() throws ServiceException
     {
         log.info("[" + this.getClass().getName() + "] Get list with all users.");
-        CopyOnWriteArrayList<User> userList = null;
+        CopyOnWriteArrayList<UserDto> userList = null;
         try
         {
-            userList = (CopyOnWriteArrayList<User>) userDao.get().getListOfEntity();
+            userList = (CopyOnWriteArrayList<UserDto>) userDao.get().getListOfEntity();
         }
         catch (Exception e)
         {
@@ -94,11 +95,13 @@ public class UserService extends AbstractService<User>
     }
 
     @Override
-    public void addEntity(User entity) throws ServiceException
+    public void addEntity(UserDto entity) throws ServiceException
     {
         log.info("[" + this.getClass().getName() + "] Add new user:[" + entity.toString() + "]");
         try
         {
+            entity.getUser()
+                    .setUserPassword(getEncryptPassword(entity.getUser().getUserPassword()));
             userDao.get().addEntity(entity);
         }
         catch (Exception e)
@@ -109,7 +112,7 @@ public class UserService extends AbstractService<User>
     }
 
     @Override
-    public void removeEntity(User entity) throws ServiceException
+    public void removeEntity(UserDto entity) throws ServiceException
     {
         log.info("[" + this.getClass().getName() + "] Remove user:[" + entity.toString() + "].");
         try
@@ -124,7 +127,7 @@ public class UserService extends AbstractService<User>
     }
 
     @Override
-    public void editEntity(User entity) throws ServiceException
+    public void editEntity(UserDto entity) throws ServiceException
     {
         log.info("[" + this.getClass().getName() + "] Edit user:[" + entity.toString() + "].");
         try
@@ -149,5 +152,49 @@ public class UserService extends AbstractService<User>
     {
         String SALT = "SALT";
         return DigestUtils.sha256Hex(password);// + DigestUtils.sha256Hex(SALT);
+    }
+
+    /**
+     * Get user by login
+     *
+     * @param login
+     * @return
+     */
+    public User getUserByLogin(String login)
+    {
+        User existingUser;
+        try
+        {
+            existingUser = userDao.get().getUserByLoginAndPassword(login);
+            log.info("[Auth Step] User has been found [" + login + "].");
+        }
+        catch (Exception e)
+        {
+            log.warn("[Auth step] User is not found by Login:[" + login + "].");
+            throw new SecurityException("Can't find user by Login [" + login + "].");
+        }
+        if (existingUser == null)
+        {
+            log.error("[Auth step] User account is not found for: [" + login + "].");
+            return null;
+        }
+        log.info("[User Service] Accoun has been found: [" + existingUser.toString() + "].");
+        return existingUser;
+    }
+
+    public UserDto getByIdentifier(Integer userId) throws ServiceException
+    {
+        UserDto user;
+        log.info("[" + this.getClass().getName() + "] Get users by id: [" + userId + "].");
+        try
+        {
+            user = userDao.get().getByIdentifier(userId);
+        }
+        catch (Exception e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "User [" + userId.toString() + " ] has NOT been found.", e);
+        }
+        return user;
     }
 }

@@ -22,7 +22,6 @@ public class User
     private @NonNull String userLogin;
     private @NonNull String userPassword;
     private Integer userRole;
-    private Integer userInfoId;
     private Integer userInfo;
 
     @Override
@@ -35,13 +34,12 @@ public class User
                 getUserLogin().equals(user.getUserLogin()) &&
                 getUserPassword().equals(user.getUserPassword()) &&
                 getUserRole().equals(user.getUserRole()) &&
-                getUserInfoId().equals(user.getUserInfoId()) &&
                 Objects.equals(getUserInfo(), user.getUserInfo());
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(getUserId(), getUserLogin(), getUserPassword(), getUserRole(), getUserInfoId(), getUserInfo());
+        return Objects.hash(getUserId(), getUserLogin(), getUserPassword(), getUserRole(), getUserInfo());
     }
 }

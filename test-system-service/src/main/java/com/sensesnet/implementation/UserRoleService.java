@@ -119,4 +119,20 @@ public class UserRoleService extends AbstractService<UserRole>
         }
         return userRole;
     }
+
+    public UserRole getByName(String roleName) throws ServiceException
+    {
+        UserRole userRole = null;
+        log.info("[" + this.getClass().getName() + "] Get users by name: [" + roleName + "].");
+        try
+        {
+            userRole = userRoleDao.getByName(roleName);
+        }
+        catch (Exception e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "Role [" + roleName + " ] has NOT been found.", e);
+        }
+        return userRole;
+    }
 }

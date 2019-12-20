@@ -104,4 +104,25 @@ public class UserInfoService extends AbstractService<UserInfo>
                     + "User info data [" + entity.toString() + " ] has NOT been changed.", e);
         }
     }
+
+    /**
+     * Get User Info by phone
+     * @param phoneNumber
+     * @return
+     */
+    public UserInfo getUserInfoByPhone(String phoneNumber) throws ServiceException
+    {
+        UserInfo userInfo = null;
+        log.info("[" + this.getClass().getName() + "] Get users info by phone: [" + phoneNumber + "].");
+        try
+        {
+            userInfo = userInfoDao.getUserInfoByPhone(phoneNumber);
+        }
+        catch (Exception e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "User info by phone [" + phoneNumber + " ] has NOT been found.", e);
+        }
+        return userInfo;
+    }
 }

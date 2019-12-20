@@ -83,7 +83,9 @@
         <a href="Controller?action=close_session"><span class="more nowrap">Sign Out</span></a>
     </div>
 </div>
-
+<c:if test="${not empty param.errorMessage }">
+    <c:out value="${param.errorMessage}"></c:out>
+</c:if>
 <p class="pd-billboard-subcopy pd-util-compact-large-12 pd-util-expand-small-1">
     'Admin' role gives you main capabilities for:
     <br>- Find and edit user details

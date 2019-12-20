@@ -22,7 +22,7 @@ public class UserInfo
     private String userName;
     private String userSurname;
     private String userAddress;
-    private Date userBirthday;
+    private String userBirthday;
     private String userPhone;
 
     @Override

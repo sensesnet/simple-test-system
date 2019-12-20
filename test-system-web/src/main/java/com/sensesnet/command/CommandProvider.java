@@ -1,9 +1,6 @@
 package com.sensesnet.command;
 
-import com.sensesnet.command.impl.CloseSessionCommand;
-import com.sensesnet.command.impl.HomeCommand;
-import com.sensesnet.command.impl.SignInCommand;
-import com.sensesnet.command.impl.SignUpCommand;
+import com.sensesnet.command.impl.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,8 +19,14 @@ public class CommandProvider
     {
         commands.put(CommandType.SIGN_IN, new SignInCommand());
         commands.put(CommandType.SIGN_UP, new SignUpCommand());
-        commands.put(CommandType.HOME, new HomeCommand());
         commands.put(CommandType.CLOSE_SESSION, new CloseSessionCommand());
+        commands.put(CommandType.HOME, new HomeCommand());
+        commands.put(CommandType.USER_VIEW, new UserViewCommand());
+        commands.put(CommandType.USER_ADD, new UserAddCommand());
+        commands.put(CommandType.USER_EDIT, new UserEditCommand());
+        commands.put(CommandType.USER_REMOVE, new UserRemoveCommand());
+        commands.put(CommandType.USER_EDIT_SAVE, new UserSaveEditCommand());
+        commands.put(CommandType.USER_NEW_SAVE, new UserSaveNewCommand());
     }
 
     public ICommand getCommand(String name)

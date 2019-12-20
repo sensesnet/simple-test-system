@@ -21,7 +21,7 @@ public class UserRole
 {
     private @NonNull Integer roleId;
     private @NonNull String roleName;
-    private @NonNull String roleDesc;
+    private String roleDesc;
 
     @Override
     public boolean equals(Object o)
@@ -38,5 +38,31 @@ public class UserRole
     public int hashCode()
     {
         return Objects.hash(getRoleId(), getRoleName(), getRoleDesc());
+    }
+
+    enum RoleType
+    {
+        ADMIN(1, "ADMIN"),
+        USER(2, "USER");
+
+
+        private int roleId;
+        private String roleName;
+
+        RoleType(int roleId, String roleName)
+        {
+            this.roleId = roleId;
+            this.roleName = roleName;
+        }
+
+        public int getRoleId()
+        {
+            return roleId;
+        }
+
+        public String getRoleName()
+        {
+            return roleName;
+        }
     }
 }

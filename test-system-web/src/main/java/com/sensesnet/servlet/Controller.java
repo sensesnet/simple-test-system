@@ -43,6 +43,24 @@ public class Controller extends HttpServlet
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
+        process(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+        process(request, response);
+    }
+
+    /**
+     *
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
+    private void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
         ICommand command;
         User user = (User) request.getSession().getAttribute("currentUser");
         String action = request.getParameter("action");
@@ -53,7 +71,7 @@ public class Controller extends HttpServlet
 //            log.warn("[Controller] Session [" + request.getSession().getId() + "}has been expired!");
         }
 //        else
-            command = commandProvider.getCommand(action);
+        command = commandProvider.getCommand(action);
         try
         {
             command.execute(request, response);
@@ -63,11 +81,5 @@ public class Controller extends HttpServlet
             log.warn("[Controller] Service exception: lost connection to DB.");
             response.sendRedirect("Controller?action=sign_in&errorMessage=Lost connection to DB. try later...");
         }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
-        super.doGet(request, response);
     }
 }

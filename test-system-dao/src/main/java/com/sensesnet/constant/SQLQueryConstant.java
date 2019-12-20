@@ -8,16 +8,48 @@ package com.sensesnet.constant;
  */
 public class SQLQueryConstant
 {
+
     /**
      * SQL queries for DB (test_system.user;)
      */
     public final String INSERT_NEW_USER = "INSERT INTO test_system.user (user_login, user_password, role_id, info_id) VALUES (?, ?, ?, ?)";
-    public final String DELETE_USER_BY_ID = "DELETE FROM test_system.user WHERE user_id=?";
-    public final String UPDATE_USER = "UPDATE test_system.user SET user_login = ?, user_password = ? WHERE user_id = ? AND role_id = ? AND info_id = ?";
-    public final String SELECT_ALL_USER = "SELECT * FROM test_system.user";
-    public final String SELECT_USER_BY_LOGIN_AND_PASSWORD = "SELECT * FROM test_system.user WHERE user_login = ? AND user_password = ?;";
-    public final String SELECT_USER_BY_ID = "SELECT * FROM test_system.user WHERE user_id = ?";
-
+    public final String DELETE_USER_BY_ID = "DELETE u, ui FROM user u LEFT JOIN user_info ui ON ui.info_id= u.info_id WHERE u.user_id=?";
+    public final String UPDATE_USER = "UPDATE test_system.user SET user_login = ?, user_password = ?, role_id = (SELECT role_id FROM user_role WHERE role_name = ?) WHERE user_id = ?";
+    public final String SELECT_ALL_USER = "SELECT u.user_id, u.user_login, u.user_password, u.role_id, u.info_id, ui.name, ui.surname, ui.address, ui.birthday, ui.phone, ur.role_name, ur.role_description FROM user_info ui LEFT JOIN user u ON ui.info_id = u.info_id LEFT JOIN user_role ur ON ur.role_id = u.role_id";
+    public final String SELECT_USER_BY_LOGIN_AND_PASSWORD = ""
+            + "SELECT U.USER_ID,\n"
+            + "       U.USER_LOGIN,\n"
+            + "       U.USER_PASSWORD,\n"
+            + "       U.INFO_ID,\n"
+            + "       U.ROLE_ID,\n"
+            + "       UI.NAME,\n"
+            + "       UI.SURNAME,\n"
+            + "       UI.ADDRESS,\n"
+            + "       UI.BIRTHDAY,\n"
+            + "       UI.PHONE,\n"
+            + "       UR.ROLE_NAME\n"
+            + "FROM USER U\n"
+            + "JOIN USER_INFO UI ON UI.info_id = U.info_id\n"
+            + "JOIN USER_ROLE UR ON UR.role_id = U.role_id\n"
+            + "WHERE U.user_login = ?\n"
+            + "  AND U.user_password = ?";
+    public final String SELECT_USER_BY_ID = "SELECT u.user_id, u.user_login, u.user_password, u.role_id, u.info_id, ui.name, ui.surname, ui.address, ui.birthday, ui.phone, ur.role_name, ur.role_description FROM user u JOIN user_info ui ON ui.info_id = u.info_id JOIN user_role ur ON ur.role_id = u.role_id WHERE u.user_id = ?";
+    public final String SELECT_USER_BY_LOGIN = ""
+            + "SELECT U.USER_ID,\n"
+            + "       U.USER_LOGIN,\n"
+            + "       U.USER_PASSWORD,\n"
+            + "       U.INFO_ID,\n"
+            + "       U.ROLE_ID,\n"
+            + "       UI.NAME,\n"
+            + "       UI.SURNAME,\n"
+            + "       UI.ADDRESS,\n"
+            + "       UI.BIRTHDAY,\n"
+            + "       UI.PHONE,\n"
+            + "       UR.ROLE_NAME\n"
+            + "FROM USER U\n"
+            + "JOIN USER_INFO UI ON UI.info_id = U.info_id\n"
+            + "JOIN USER_ROLE UR ON UR.role_id = U.role_id\n"
+            + "WHERE U.USER_LOGIN = ?";
     /**
      * SQL queries for DB (test_system.user_info;)
      */
@@ -27,6 +59,8 @@ public class SQLQueryConstant
     public final String SELECT_ALL_USER_INFO = "SELECT * FROM test_system.user_info";
     public final String SELECT_USER_INFO_BY_NAME = "SELECT * FROM test_system.user_info WHERE name = ? AND surname = ?";
     public final String SELECT_USER_INFO_BY_ID = "SELECT * FROM test_system.user_info WHERE info_id = ?";
+    public final String SELECT_USER_INFO_BY_PHONE = "SELECT * FROM test_system.user_info WHERE phone = ?";
+    public final String SELECT_USER_INFO_BY_ALL_DETAILS = "SELECT * FROM test_system.user_info WHERE name = ?, surname = ?, address = ?, birthday = ?, phone = ?";
 
     /**
      * SQL queries for DB (test_system.user_role)

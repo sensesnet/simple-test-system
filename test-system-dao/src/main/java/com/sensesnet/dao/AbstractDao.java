@@ -99,6 +99,7 @@ public abstract class AbstractDao<T>
             {
                 if (arg instanceof Date)
                 {
+                    Timestamp stamp = new Timestamp(((Date) arg).getTime());
                     statement.setTimestamp(i++, new Timestamp(((Date) arg).getTime()));
                 }
                 else if (arg instanceof Integer)

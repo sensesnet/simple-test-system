@@ -54,6 +54,17 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
+<!--    &lt;!&ndash; Sign Up filter &ndash;&gt;-->
+<!--    <servlet>-->
+<!--        <servlet-name>SignUpFilter</servlet-name>-->
+<!--        <servlet-class>com.sensesnet.servlet.SignUpFilter</servlet-class>-->
+<!--    </servlet>-->
+
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>SignUpFilter</servlet-name>-->
+<!--        <url-pattern>/</url-pattern>-->
+<!--    </servlet-mapping>-->
+
 <!--    &lt;!&ndash; Controller servlet &ndash;&gt;-->
 <!--    <servlet>-->
 <!--        <servlet-name>Controller</servlet-name>-->

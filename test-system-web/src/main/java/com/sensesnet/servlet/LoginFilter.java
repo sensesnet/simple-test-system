@@ -2,11 +2,9 @@ package com.sensesnet.servlet;
 
 import com.sensesnet.ServiceProvider;
 import com.sensesnet.constant.ConstantProvider;
-import com.sensesnet.constant.DaoConstant;
 import com.sensesnet.implementation.UserRoleService;
 import com.sensesnet.implementation.UserService;
 import com.sensesnet.pojo.authentication.User;
-import com.sensesnet.pojo.authentication.UserRole;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,7 +46,7 @@ public class LoginFilter extends HttpServlet
             user = userService.authorization(login, password);
             if (user == null)
             {
-                response.sendRedirect("Controller?action=sign_in&errorMessage=Account is not found, check credentials.");
+                response.sendRedirect("Controller?action=sign_in&errorMessage=Account is found, use other email.");
                 return;
             }
             session = request.getSession(true);

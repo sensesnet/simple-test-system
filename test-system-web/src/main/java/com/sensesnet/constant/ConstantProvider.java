@@ -8,10 +8,11 @@ package com.sensesnet.constant;
  */
 public class ConstantProvider
 {
-    private static Page page = new Page();
+    private static PagePath page = new PagePath();
     private static RequestParameter requestParameter = new RequestParameter();
+    private static DateFormat dateFormat = new DateFormat();
 
-    public static Page getPagePath()
+    public static PagePath getPagePath()
     {
         return page;
     }
@@ -20,4 +21,6 @@ public class ConstantProvider
     {
         return requestParameter;
     }
+
+    public static DateFormat dateFormat() { return dateFormat; }
 }

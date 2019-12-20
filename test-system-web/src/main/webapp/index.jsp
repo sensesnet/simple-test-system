@@ -68,6 +68,9 @@
         margin-left:30px;
         white-space: nowrap;
     }
+    h3 {
+        font-size: 25px;
+    }
 </style>
 
 <body>

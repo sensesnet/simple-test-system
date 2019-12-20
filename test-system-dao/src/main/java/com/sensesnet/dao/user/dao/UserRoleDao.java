@@ -204,4 +204,54 @@ public class UserRoleDao extends AbstractDao<UserRole>
         }
         return userRoleList.iterator().next();
     }
+
+    public UserRole getByName(String roleName) throws ConnectionPoolException, DaoException
+    {
+        CopyOnWriteArrayList<UserRole> userRoleList = new CopyOnWriteArrayList<>();
+        Connection connection = getConnection();
+        try
+        {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection
+                    .prepareStatement(DaoConstant.query().SELECT_USER_ROLE_BY_NAME))
+            {
+                statement.setString(1, roleName);
+                try (ResultSet resultSet = statement.executeQuery())
+                {
+                    while (resultSet.next())
+                    {
+                        userRoleList.add(UserRole.builder()
+                                .roleId(resultSet.getInt("role_id"))
+                                .roleName(resultSet.getString("role_name"))
+                                .roleDesc(resultSet.getString("role_description")).build());
+                    }
+                    if (userRoleList.size() != 1)
+                    {
+                        log.info("[UserDao] Role has been selected by name: " + roleName);
+                        connection.commit();
+                        return null;
+                    }
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            log.error("[Error] Account's info has NOT updated, DB access error. Error: " + e.getLocalizedMessage());
+            try
+            {
+                connection.rollback();
+                log.info("[Step] Transaction rollback is completed.");
+            }
+            catch (SQLException ex)
+            {
+                log.error("[Error] Rollback has NOT possible.");
+                throw new DaoException("SQL Error: Have no access to DB.", ex);
+            }
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
+        return userRoleList.iterator().next();
+    }
 }
