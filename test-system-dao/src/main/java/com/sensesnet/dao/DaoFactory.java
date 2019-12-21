@@ -6,6 +6,7 @@ import com.sensesnet.dao.test.dao.*;
 import com.sensesnet.dao.user.dao.UserDao;
 import com.sensesnet.dao.user.dao.UserInfoDao;
 import com.sensesnet.dao.user.dao.UserRoleDao;
+import com.sensesnet.pojo.authentication.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,53 +22,53 @@ public class DaoFactory
 {
     private static final Logger log = LogManager.getLogger(DaoFactory.class);
 
-    private static TestAnswerDao testAnswerDao;
-    private static TestDao testDao;
-    private static TestProcessDao testProcessDao;
-    private static TestQuestionDao testQuestionDao;
-    private static TestResultDao testResultDao;
-    private static UserDao userDao;
-    private static UserInfoDao userInfoDao;
-    private static UserRoleDao userRoleDao;
+    private static TestAnswerDao testAnswerDao = new TestAnswerDao();
+    private static TestDao testDao = new TestDao();
+    private static TestProcessDao testProcessDao = new TestProcessDao();
+    private static TestQuestionDao testQuestionDao = new TestQuestionDao();
+    private static TestResultDao testResultDao = new TestResultDao();
+    private static UserDao userDao = new UserDao();
+    private static UserInfoDao userInfoDao = new UserInfoDao();
+    private static UserRoleDao userRoleDao = new UserRoleDao();
 
     public static TestAnswerDao getTestAnswerDao()
     {
-        return testAnswerDao == null ? testAnswerDao = new TestAnswerDao() : testAnswerDao;
+        return testAnswerDao;
     }
 
     public static TestDao getTestDao()
     {
-        return testDao == null ? testDao = new TestDao() : testDao;
+        return testDao;
     }
 
     public static TestProcessDao getTestProcessDao()
     {
-        return testProcessDao == null ? testProcessDao = new TestProcessDao() : testProcessDao;
+        return testProcessDao;
     }
 
     public static TestQuestionDao getTestQuestionDao()
     {
-        return testQuestionDao == null ? testQuestionDao = new TestQuestionDao() : testQuestionDao;
+        return testQuestionDao;
     }
 
     public static TestResultDao getTestResultDao()
     {
-        return testResultDao == null ? testResultDao = new TestResultDao() : testResultDao;
+        return testResultDao;
     }
 
     public static UserDao getUserDao()
     {
-        return userDao == null ? userDao = new UserDao() : userDao;
+        return userDao;
     }
 
     public static UserInfoDao getUserInfoDao()
     {
-        return userInfoDao == null ? userInfoDao = new UserInfoDao() : userInfoDao;
+        return userInfoDao;
     }
 
     public static UserRoleDao getUserRoleDao()
     {
-        return userRoleDao == null ? userRoleDao = new UserRoleDao() : userRoleDao;
+        return userRoleDao;
     }
 
     public static void initConnectionPool() throws ConnectionPoolException
@@ -77,6 +78,6 @@ public class DaoFactory
 
     public static void destroyConnectionPool() throws ConnectionPoolException, SQLException
     {
-        ConnectionPool.getInstance().closeAllConnections();
+        ConnectionPool.getInstance().destroyConnectionPool();
     }
 }

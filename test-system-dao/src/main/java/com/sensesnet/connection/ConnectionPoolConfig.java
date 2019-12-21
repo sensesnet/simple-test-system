@@ -23,5 +23,5 @@ public interface ConnectionPoolConfig
                     + databaseServerName + ":"
                     + databasePortNumber + "/" + databaseScheme
                     + "?useUnicode=true&serverTimezone=UTC&useSSL=false";
-    Integer connectionCount = Integer.valueOf(Config.getProperty(DaoConstant.dbConnection().CONNECTION_COUNT));
+    Integer connectionCount = 20;
 }

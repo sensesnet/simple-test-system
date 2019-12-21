@@ -4,7 +4,7 @@ package com.sensesnet.connection;
  * @author sensesnet <br />
  * Copyright 2019 Eshted LLC. All rights reserved.
  * <p>
- * TODO: add description
+ * Connection Pool Exception
  */
 public class ConnectionPoolException extends Exception
 {

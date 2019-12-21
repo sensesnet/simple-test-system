@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
@@ -23,7 +22,7 @@ public class ConnectionPoolTest
         ConnectionPool pool = new ConnectionPool();
         pool.initPoolData();
         pool.takeConnection();
-        pool.closeAllConnections();
+        pool.destroyConnectionPool();
         log.info("[Test] Connection pool test completed!");
     }
 }
