@@ -147,37 +147,7 @@ public class UserDao extends AbstractDao<UserDto>
                         entity.getUserInfo().getUserBirthday(),
                         entity.getUserInfo().getUserPhone()).execute();
                 log.info("[UserDao] Account Info has been added: " + entity.toString());
-            }
-            try (PreparedStatement statement = connection
-                    .prepareStatement(DaoConstant.query().SELECT_USER_INFO_BY_ALL_DETAILS))
-            {
-                prepareStatementParams(
-                        statement,
-                        entity.getUserInfo().getUserName(),
-                        entity.getUserInfo().getUserSurname(),
-                        entity.getUserInfo().getUserAddress(),
-                        entity.getUserInfo().getUserBirthday(),
-                        entity.getUserInfo().getUserPhone());
-                try (ResultSet resultSet = statement.executeQuery())
-                {
-                    while (resultSet.next())
-                    {
-                        userInfoList.add(UserInfo.builder()
-                                .infoId(resultSet.getInt("info_id"))
-                                .userName(resultSet.getString("name"))
-                                .userSurname(resultSet.getString("surname"))
-                                .userAddress(resultSet.getString("address"))
-                                .userBirthday(resultSet.getString("birthday"))
-                                .userPhone(resultSet.getString("phone")).build());
-                    }
-                    if (userInfoList.size() != 1)
-                    {
-                        log.info("[UserDao] Account info has NOT been selected.");
-                        throw new DaoException("SQL Error: Instances is not unique.");
-                    }
-                    entity.setUserInfo(userInfoList.iterator().next());
-                    log.info("[UserDao] Account info has been selected");
-                }
+                connection.commit();
             }
             try (PreparedStatement statement = connection
                     .prepareStatement(DaoConstant.query().INSERT_NEW_USER))
@@ -186,8 +156,7 @@ public class UserDao extends AbstractDao<UserDto>
                         statement,
                         entity.getUser().getUserLogin(),
                         entity.getUser().getUserPassword(),
-                        entity.getUserRole().getRoleId(),
-                        entity.getUser().getUserInfo()).execute();
+                        entity.getUserRole().getRoleId()).execute();
                 log.info("[UserDao] Account has been added: " + entity.toString());
                 connection.commit();
             }

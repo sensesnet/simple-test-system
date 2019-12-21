@@ -12,7 +12,7 @@ public class SQLQueryConstant
     /**
      * SQL queries for DB (test_system.user;)
      */
-    public final String INSERT_NEW_USER = "INSERT INTO test_system.user (user_login, user_password, role_id, info_id) VALUES (?, ?, ?, ?)";
+    public final String INSERT_NEW_USER = "INSERT INTO test_system.user (user_login, user_password, role_id, info_id) VALUES (?, ?, ?, LAST_INSERT_ID())";
     public final String DELETE_USER_BY_ID = "DELETE u, ui FROM user u LEFT JOIN user_info ui ON ui.info_id= u.info_id WHERE u.user_id=?";
     public final String UPDATE_USER = "UPDATE test_system.user SET user_login = ?, user_password = ?, role_id = (SELECT role_id FROM user_role WHERE role_name = ?) WHERE user_id = ?";
     public final String SELECT_ALL_USER = "SELECT u.user_id, u.user_login, u.user_password, u.role_id, u.info_id, ui.name, ui.surname, ui.address, ui.birthday, ui.phone, ur.role_name, ur.role_description FROM user_info ui LEFT JOIN user u ON ui.info_id = u.info_id LEFT JOIN user_role ur ON ur.role_id = u.role_id";
@@ -53,7 +53,7 @@ public class SQLQueryConstant
     /**
      * SQL queries for DB (test_system.user_info;)
      */
-    public final String INSERT_NEW_USER_INFO = "INSERT INTO test_system.user_info (name, surname, address, birthday, phone) VALUES (?, ?, ?, ?)";
+    public final String INSERT_NEW_USER_INFO = "INSERT INTO test_system.user_info (name, surname, address, birthday, phone) VALUES (?, ?, ?, ?, ?)";
     public final String DELETE_USER_INFO_BY_ID = "DELETE FROM test_system.user_info WHERE info_id = ?";
     public final String UPDATE_USER_INFO = "UPDATE test_system.user_info SET name = ?, surname = ?, address = ?, birthday = ?, phone = ? WHERE info_id = ?";
     public final String SELECT_ALL_USER_INFO = "SELECT * FROM test_system.user_info";

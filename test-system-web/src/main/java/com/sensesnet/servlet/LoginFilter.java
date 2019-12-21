@@ -46,7 +46,7 @@ public class LoginFilter extends HttpServlet
             user = userService.authorization(login, password);
             if (user == null)
             {
-                response.sendRedirect("Controller?action=sign_in&errorMessage=Account is found, use other email.");
+                response.sendRedirect("Controller?action=sign_in&errorMessage=Account is found, try to sign up.");
                 return;
             }
             session = request.getSession(true);

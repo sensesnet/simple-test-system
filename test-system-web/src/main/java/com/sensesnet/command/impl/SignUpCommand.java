@@ -35,7 +35,8 @@ public class SignUpCommand implements ICommand
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        if (!isPost(request)) {
+        if (!isPost(request))
+        {
             request
                     .getRequestDispatcher(ConstantProvider.getPagePath().SIGN_UP_PAGE)
                     .forward(request, response);
@@ -84,18 +85,24 @@ public class SignUpCommand implements ICommand
                             UserRole.builder()
                                     .roleId(1)
                                     .roleName("USER").build()));
-            session.setAttribute("currentUser", userService.getUserByLogin(login));
-            session.setAttribute("errorMessage", "Account has been registered successfully");
+
+            User currentUser = userService.authorization(login, password);
+            if (currentUser == null)
+            {
+                response.sendRedirect("Controller?action=sign_in&errorMessage=Account is found, try to sign up.");
+                return;
+            }
+            session = request.getSession(true);
+            session.setAttribute("currentUser", user);
+            response.sendRedirect("Controller?action=home");
+            session.setAttribute("currentUser", currentUser);
+            session.setAttribute("message", "Account has been registered successfully");
             request.getRequestDispatcher(ConstantProvider.getPagePath().HOME_ADMIN_PAGE).forward(request, response);
-//            response.sendRedirect("Controller?action=home&errorMessage=Account has been registered successfully. Try to sign in...");
         }
         catch (SecurityException | ServiceException e)
         {
             log.warn("[LoginFilter] Security exception: lost connection to DB.");
             response.sendRedirect("Controller?action=sign_up&errorMessage=Lost connection to DB. try later...");
         }
-//        RequestDispatcher dispatcher = request
-//                .getRequestDispatcher(ConstantProvider.getPagePath().SIGN_UP_PAGE);
-//        dispatcher.forward(request, response);
     }
 }

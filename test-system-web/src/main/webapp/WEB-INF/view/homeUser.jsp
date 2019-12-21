@@ -73,9 +73,11 @@
 
 <body>
 <h1>Online Testing Platform</h1>
-
+<c:if test="${not empty param.errorMessage }">
+    <c:out value="${param.message}"></c:out>
+</c:if>
 <div>
-    <h3 class="headline">'Admin' role</h3>
+    <h3 class="headline">'User' role</h3>
     <div class="links">
         <a href="Controller?action=testList"><span class="more nowrap">Find Test</span></a>
         <a href="Controller?action=userTestResultsList"><span class="more nowrap">Investigate own Results</span></a>
