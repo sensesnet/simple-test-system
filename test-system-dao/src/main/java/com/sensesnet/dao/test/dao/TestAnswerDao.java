@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -34,7 +35,7 @@ public class TestAnswerDao extends AbstractDao<TestAnswer>
     @Override
     public TestAnswer getByIdentifier(TestAnswer entity) throws ConnectionPoolException, DaoException
     {
-        CopyOnWriteArrayList<TestAnswer> userList = new CopyOnWriteArrayList<>();
+        ArrayList<TestAnswer> userList = new ArrayList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_ANSWER_BY_ID))

@@ -12,6 +12,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -34,7 +36,7 @@ public class UserInfoDao extends AbstractDao<UserInfo>
     @Override
     public UserInfo getByIdentifier(UserInfo entity) throws ConnectionPoolException, DaoException
     {
-        CopyOnWriteArrayList<UserInfo> userInfoList = new CopyOnWriteArrayList<>();
+        LinkedList<UserInfo> userInfoList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_USER_INFO_BY_ID))
@@ -54,20 +56,15 @@ public class UserInfoDao extends AbstractDao<UserInfo>
                 }
                 if (userInfoList.size() != 1)
                 {
-                    log.info("[UserDao] Account info has NOT been selected by id: " + entity.getInfoId());
+                    log.warn("[UserInfoDao] Account info has NOT been selected by id: " + entity.getInfoId());
                     return null;
                 }
-                log.info("[UserDao] Account info has been selected by id: " + entity.getInfoId());
+                log.info("[UserInfoDao] Account info has been selected by id: " + entity.getInfoId());
             }
         }
         catch (SQLException e)
         {
             throw new DaoException("SQL Error: Have no access to DB.", e);
-        }
-        catch (AssertionError e)
-        {
-            log.info("[Auth] User Info [" + entity.getInfoId() + "] account is not exist!");
-            return null;
         }
         finally
         {
@@ -79,7 +76,7 @@ public class UserInfoDao extends AbstractDao<UserInfo>
     @Override
     public List<UserInfo> getListOfEntity() throws ConnectionPoolException, DaoException
     {
-        CopyOnWriteArrayList<UserInfo> userInfoList = new CopyOnWriteArrayList<>();
+        LinkedList<UserInfo> userInfoList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_ALL_USER_INFO))
@@ -96,7 +93,7 @@ public class UserInfoDao extends AbstractDao<UserInfo>
                             .userBirthday(resultSet.getString("birthday"))
                             .userPhone(resultSet.getString("phone")).build());
                 }
-                log.info("[UserDao] All account's info has been selected.");
+                log.info("[UserInfoDao] All account's info has been selected.");
             }
         }
         catch (SQLException e)
@@ -133,15 +130,15 @@ public class UserInfoDao extends AbstractDao<UserInfo>
         }
         catch (SQLException e)
         {
-            log.error("[Error] Account's info has NOT updated, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[UserInfoDao] Account's info has NOT updated, DB access error. Error: " + e.getLocalizedMessage());
             try
             {
                 connection.rollback();
-                log.info("[Step] Transaction rollback is completed.");
+                log.warn("[UserInfoDao] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[Error] Rollback has NOT possible.");
+                log.error("[UserInfoDao] Rollback has NOT possible.");
                 throw new DaoException("SQL Error: Have no access to DB.", ex);
             }
         }
@@ -155,16 +152,31 @@ public class UserInfoDao extends AbstractDao<UserInfo>
     public void removeEntity(UserInfo entity) throws ConnectionPoolException, DaoException
     {
         Connection connection = getConnection();
-        try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().DELETE_USER_INFO_BY_ID))
+        try
         {
-            statement.setInt(1, entity.getInfoId());
-            statement.execute();
-            log.info("[UserDao] Account info has been removed: " + entity.toString());
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection
+                    .prepareStatement(DaoConstant.query().DELETE_USER_INFO_BY_ID))
+            {
+                statement.setInt(1, entity.getInfoId());
+                statement.execute();
+                log.info("[UserDao] Account info has been removed: " + entity.toString());
+                connection.commit();
+            }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            log.error("[UserInfoDao] Account's info has NOT updated, DB access error. Error: " + e.getLocalizedMessage());
+            try
+            {
+                connection.rollback();
+                log.info("[UserInfoDao] Transaction rollback is completed.");
+            }
+            catch (SQLException ex)
+            {
+                log.warn("[UserInfoDao] Rollback has NOT possible.");
+                throw new DaoException("SQL Error: Have no access to DB.", ex);
+            }
         }
         finally
         {
@@ -190,21 +202,21 @@ public class UserInfoDao extends AbstractDao<UserInfo>
                         entity.getUserBirthday(),
                         entity.getUserPhone(),
                         entity.getInfoId()).execute();
-                log.info("[UserDao] Account Info has been updated: " + entity.toString());
+                log.info("[UserInfoDao] Account Info has been updated: " + entity.toString());
                 connection.commit();
             }
         }
         catch (SQLException e)
         {
-            log.error("[Error] Account's have NOT updated, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[UserInfoDao] Account's have NOT updated, DB access error. Error: " + e.getLocalizedMessage());
             try
             {
                 connection.rollback();
-                log.info("[Step] Transaction rollback is completed.");
+                log.warn("[UserInfoDao] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[Error] Rollback has NOT possible.");
+                log.error("[UserInfoDao] Rollback has NOT possible.");
                 throw new DaoException("SQL Error: Have no access to DB.", ex);
             }
         }
@@ -242,20 +254,15 @@ public class UserInfoDao extends AbstractDao<UserInfo>
                 }
                 if (userInfoList.size() != 1)
                 {
-                    log.info("[UserDao] Account info has NOT been selected by phone: " + phoneNumber);
+                    log.warn("[UserInfoDao] Account info has NOT been selected by phone: " + phoneNumber);
                     return null;
                 }
-                log.info("[UserDao] Account info has been selected by phone: " + phoneNumber);
+                log.info("[UserInfoDao] Account info has been selected by phone: " + phoneNumber);
             }
         }
         catch (SQLException e)
         {
             throw new DaoException("SQL Error: Have no access to DB.", e);
-        }
-        catch (AssertionError e)
-        {
-            log.info("[Auth] User Info by phone [" + phoneNumber + "] account is not exist!");
-            return null;
         }
         finally
         {

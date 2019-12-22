@@ -1,12 +1,8 @@
 package com.sensesnet.implementation;
 
-import com.sensesnet.connection.ConnectionPoolException;
 import com.sensesnet.dao.DaoFactory;
-import com.sensesnet.dao.exception.DaoException;
-import com.sensesnet.dao.user.dao.UserDao;
 import com.sensesnet.dao.user.dao.UserRoleDao;
 import com.sensesnet.exception.ServiceException;
-import com.sensesnet.pojo.authentication.User;
 import com.sensesnet.pojo.authentication.UserRole;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -126,7 +122,7 @@ public class UserRoleService extends AbstractService<UserRole>
         log.info("[" + this.getClass().getName() + "] Get users by name: [" + roleName + "].");
         try
         {
-            userRole = userRoleDao.getByName(roleName);
+            userRole = userRoleDao.getByRoleName(roleName);
         }
         catch (Exception e)
         {

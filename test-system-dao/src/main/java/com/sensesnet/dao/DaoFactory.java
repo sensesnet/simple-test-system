@@ -31,20 +31,36 @@ public class DaoFactory
     private static UserInfoDao userInfoDao = new UserInfoDao();
     private static UserRoleDao userRoleDao = new UserRoleDao();
 
-    public static TestAnswerDao getTestAnswerDao()
+    /**
+     * Initialize connection pool
+     * @throws ConnectionPoolException
+     */
+    public static void initConnectionPool() throws ConnectionPoolException
     {
-        return testAnswerDao;
+        ConnectionPool.getInstance().initPoolData();
     }
 
-    public static TestDao getTestDao()
+    /**
+     * Destroy connection pool
+     *
+     * @throws ConnectionPoolException
+     * @throws SQLException
+     */
+    public static void destroyConnectionPool() throws ConnectionPoolException, SQLException
     {
-        return testDao;
+        ConnectionPool.getInstance().destroyConnectionPool();
     }
 
-    public static TestProcessDao getTestProcessDao()
-    {
-        return testProcessDao;
-    }
+    /**
+     * Get test answer dao
+     *
+     * @return {@link #testAnswerDao}
+     */
+    public static TestAnswerDao getTestAnswerDao() { return testAnswerDao; }
+
+    public static TestDao getTestDao() { return testDao; }
+
+    public static TestProcessDao getTestProcessDao() { return testProcessDao; }
 
     public static TestQuestionDao getTestQuestionDao()
     {
@@ -71,13 +87,4 @@ public class DaoFactory
         return userRoleDao;
     }
 
-    public static void initConnectionPool() throws ConnectionPoolException
-    {
-        ConnectionPool.getInstance().initPoolData();
-    }
-
-    public static void destroyConnectionPool() throws ConnectionPoolException, SQLException
-    {
-        ConnectionPool.getInstance().destroyConnectionPool();
-    }
 }

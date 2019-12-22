@@ -17,7 +17,7 @@ import java.util.List;
  */
 public abstract class AbstractDao<T>
 {
-    private volatile ConnectionPool connectionPool;
+    private static ConnectionPool connectionPool;
     private static final Logger log = LogManager.getLogger(AbstractDao.class);
 
     /**
@@ -29,46 +29,19 @@ public abstract class AbstractDao<T>
      */
     protected Connection getConnection() throws ConnectionPoolException
     {
-        ConnectionPool localRef = connectionPool;
-        if (localRef == null)
+        if (connectionPool == null)
         {
-            synchronized (this)
+            synchronized (ConnectionPool.class)
             {
-                localRef = connectionPool;
-                if (localRef == null)
+                if (connectionPool == null)
                 {
                     connectionPool = ConnectionPool.getInstance();
                     connectionPool.initPoolData();
+                    log.info("[Abstract DAO] Connection pool has been initialized!");
                 }
             }
-            log.info("[Abstract DAO] Connection pool has been initialized!");
         }
         return connectionPool.takeConnection();
-    }
-
-    /**
-     * Close connection with connection, statement, resultSet
-     *
-     * @param connection
-     * @param statement
-     * @param resultSet
-     */
-    protected void closeConnection(Connection connection, Statement statement, ResultSet resultSet)
-    {
-        connectionPool.closeConnection(connection, statement, resultSet);
-        log.info("[Abstract DAO] Connection has been closed with statement and resultSet!");
-    }
-
-    /**
-     * Close connection with connection, statement
-     *
-     * @param connection
-     * @param statement
-     */
-    protected void closeConnection(Connection connection, Statement statement)
-    {
-        connectionPool.closeConnection(connection, statement);
-        log.info("[Abstract DAO] Connection has been closed with statement!");
     }
 
     /**
@@ -99,7 +72,6 @@ public abstract class AbstractDao<T>
             {
                 if (arg instanceof Date)
                 {
-                    Timestamp stamp = new Timestamp(((Date) arg).getTime());
                     statement.setTimestamp(i++, new Timestamp(((Date) arg).getTime()));
                 }
                 else if (arg instanceof Integer)
@@ -126,7 +98,8 @@ public abstract class AbstractDao<T>
         }
         catch (SQLException e)
         {
-            log.warn("[Error] Prepared statement has not been prepared:" + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] Prepared statement has not been prepared:"
+                    + e.getLocalizedMessage());
         }
         return statement;
     }

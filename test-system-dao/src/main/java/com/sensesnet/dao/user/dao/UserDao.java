@@ -15,8 +15,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author sensesnet <br />
@@ -38,44 +38,31 @@ public class UserDao extends AbstractDao<UserDto>
     @Override
     public UserDto getByIdentifier(UserDto entity) throws ConnectionPoolException, DaoException
     {
-        CopyOnWriteArrayList<UserDto> userList = new CopyOnWriteArrayList<>();
+        LinkedList<UserDto> userList = new LinkedList<>();
         Connection connection = getConnection();
-        try
+
+        try (PreparedStatement statement = connection
+                .prepareStatement(DaoConstant.query().SELECT_USER_BY_ID))
         {
-            connection.setAutoCommit(false);
-            try (PreparedStatement statement = connection
-                    .prepareStatement(DaoConstant.query().SELECT_USER_BY_ID))
+            statement.setInt(1, entity.getUser().getUserId());
+            try (ResultSet resultSet = statement.executeQuery())
             {
-                statement.setInt(1, entity.getUser().getUserId());
-                try (ResultSet resultSet = statement.executeQuery())
+                if (resultSet.next())
                 {
-                    while (resultSet.next())
-                    {
-                        userList.add(this.getUserDto(resultSet));
-                    }
-                    if (userList.size() != 1)
-                    {
-                        log.info("[Auth] User [" + entity.getUser().getUserLogin() + "] account is not exist!");
-                        return null;
-                    }
-                    log.info("[UserDao] Account has been found: " + userList.get(0).toString());
-                    connection.commit();
+                    userList.add(this.getUserDto(resultSet));
                 }
+                if (userList.size() != 1)
+                {
+                    log.info("[UserDao] User [" + entity.getUser().getUserLogin() + "] account is not exist!");
+                    return null;
+                }
+                log.info("[UserDao] Account has been found: " + userList.get(0).toString());
             }
         }
+
         catch (SQLException e)
         {
-            log.error("[Error] Account has NOT found, DB access error. Error: " + e.getLocalizedMessage());
-            try
-            {
-                connection.rollback();
-                log.info("[Step] Transaction rollback is completed.");
-            }
-            catch (SQLException ex)
-            {
-                log.error("[Error] Rollback has NOT possible.");
-                throw new DaoException("SQL Error: Have no access to DB.", ex);
-            }
+            throw new DaoException("SQL Error: Have no access to DB.", e);
         }
         finally
         {
@@ -88,38 +75,24 @@ public class UserDao extends AbstractDao<UserDto>
     @Override
     public List<UserDto> getListOfEntity() throws ConnectionPoolException, DaoException
     {
-        CopyOnWriteArrayList<UserDto> userList = new CopyOnWriteArrayList<>();
+        LinkedList<UserDto> userList = new LinkedList<>();
         Connection connection = getConnection();
-        try
+        try (PreparedStatement statement = connection
+                .prepareStatement(DaoConstant.query().SELECT_ALL_USER))
         {
-            connection.setAutoCommit(false);
-            try (PreparedStatement statement = connection
-                    .prepareStatement(DaoConstant.query().SELECT_ALL_USER))
+            try (ResultSet resultSet = statement.executeQuery())
             {
-                try (ResultSet resultSet = statement.executeQuery())
+                while (resultSet.next())
                 {
-                    while (resultSet.next())
-                    {
-                        userList.add(this.getUserDto(resultSet));
-                    }
-                    log.info("[UserDao] Account's has been selected.");
-                    connection.commit();
+                    userList.add(this.getUserDto(resultSet));
                 }
+                log.info("[UserDao] Account's has been selected.");
+                connection.commit();
             }
         }
         catch (SQLException e)
         {
-            log.error("[Error] Account's have NOT found, DB access error. Error: " + e.getLocalizedMessage());
-            try
-            {
-                connection.rollback();
-                log.info("[Step] Transaction rollback is completed.");
-            }
-            catch (SQLException ex)
-            {
-                log.error("[Error] Rollback has NOT possible.");
-                throw new DaoException("SQL Error: Have no access to DB.", ex);
-            }
+            throw new DaoException("SQL Error: Have no access to DB.", e);
         }
         finally
         {
@@ -131,7 +104,7 @@ public class UserDao extends AbstractDao<UserDto>
     @Override
     public void addEntity(UserDto entity) throws ConnectionPoolException, DaoException
     {
-        CopyOnWriteArrayList<UserInfo> userInfoList = new CopyOnWriteArrayList<>();
+        LinkedList<UserInfo> userInfoList = new LinkedList<>();
         Connection connection = getConnection();
         try
         {
@@ -163,15 +136,15 @@ public class UserDao extends AbstractDao<UserDto>
         }
         catch (SQLException e)
         {
-            log.error("[Error] Account's have NOT added, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[UserDao] Account's have NOT added, DB access error. Error: " + e.getLocalizedMessage());
             try
             {
                 connection.rollback();
-                log.info("[Step] Transaction rollback is completed.");
+                log.warn("[UserDao] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[Error] Rollback has NOT possible.");
+                log.error("[UserDao] Rollback has NOT possible.");
                 throw new DaoException("SQL Error: Have no access to DB.", ex);
             }
         }
@@ -199,15 +172,15 @@ public class UserDao extends AbstractDao<UserDto>
         }
         catch (SQLException e)
         {
-            log.error("[Error] Account has NOT removed, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[UserDao] Account has NOT removed, DB access error. Error: " + e.getLocalizedMessage());
             try
             {
                 connection.rollback();
-                log.info("[Step] Transaction rollback is completed.");
+                log.warn("[UserDao] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[Error] Rollback has NOT possible.");
+                log.error("[UserDao] Rollback has NOT possible.");
                 throw new DaoException("SQL Error: Have no access to DB.", ex);
             }
         }
@@ -239,15 +212,15 @@ public class UserDao extends AbstractDao<UserDto>
         }
         catch (SQLException e)
         {
-            log.error("[Error] Account's have NOT updated, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[UserDao] Account's have NOT updated, DB access error. Error: " + e.getLocalizedMessage());
             try
             {
                 connection.rollback();
-                log.info("[Step] Transaction rollback is completed.");
+                log.warn("[UserDao] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[Error] Rollback has NOT possible.");
+                log.error("[UserDao] Rollback has NOT possible.");
                 throw new DaoException("SQL Error: Have no access to DB.", ex);
             }
         }
@@ -260,7 +233,7 @@ public class UserDao extends AbstractDao<UserDto>
     public User getUserByLoginAndPassword(String login, String password) throws
             DaoException, ConnectionPoolException
     {
-        CopyOnWriteArrayList<User> userList = new CopyOnWriteArrayList<>();
+        LinkedList<User> userList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_USER_BY_LOGIN_AND_PASSWORD))
@@ -280,7 +253,7 @@ public class UserDao extends AbstractDao<UserDto>
                 }
                 if (userList.size() != 1)
                 {
-                    log.info("[Auth] User [" + login + ";" + password + "] account is not exist!");
+                    log.info("[UserDao] User [" + login + ";" + password + "] account is not exist!");
                     return null;
                 }
                 log.info("[UserDao] Account has been found: " + userList.get(0).toString());
@@ -299,7 +272,7 @@ public class UserDao extends AbstractDao<UserDto>
 
     public User getUserByLoginAndPassword(String login) throws ConnectionPoolException, DaoException
     {
-        CopyOnWriteArrayList<User> userList = new CopyOnWriteArrayList<>();
+        LinkedList<User> userList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_USER_BY_LOGIN))
@@ -318,7 +291,7 @@ public class UserDao extends AbstractDao<UserDto>
                 }
                 if (userList.size() != 1)
                 {
-                    log.info("[Auth] User [" + login + "] account is not exist!");
+                    log.warn("[UserDao] User [" + login + "] account is not exist!");
                     return null;
                 }
                 log.info("[UserDao] Account has been found: " + userList.get(0).toString());
@@ -337,44 +310,30 @@ public class UserDao extends AbstractDao<UserDto>
 
     public UserDto getByIdentifier(Integer userId) throws ConnectionPoolException, DaoException
     {
-        CopyOnWriteArrayList<UserDto> userList = new CopyOnWriteArrayList<>();
+        LinkedList<UserDto> userList = new LinkedList<>();
         Connection connection = getConnection();
-        try
+        try (PreparedStatement statement = connection
+                .prepareStatement(DaoConstant.query().SELECT_USER_BY_ID))
         {
-            connection.setAutoCommit(false);
-            try (PreparedStatement statement = connection
-                    .prepareStatement(DaoConstant.query().SELECT_USER_BY_ID))
+            statement.setInt(1, userId);
+            try (ResultSet resultSet = statement.executeQuery())
             {
-                statement.setInt(1, userId);
-                try (ResultSet resultSet = statement.executeQuery())
+                while (resultSet.next())
                 {
-                    while (resultSet.next())
-                    {
-                        userList.add(this.getUserDto(resultSet));
-                    }
-                    if (userList.size() != 1)
-                    {
-                        log.info("[Auth] User [" + userId + "] account is not exist!");
-                        return null;
-                    }
-                    log.info("[UserDao] Account has been found: " + userList.get(0).toString());
-                    connection.commit();
+                    userList.add(this.getUserDto(resultSet));
                 }
+                if (userList.size() != 1)
+                {
+                    log.warn("[UserDao] User [" + userId + "] account is not exist!");
+                    return null;
+                }
+                log.info("[UserDao] Account has been found: " + userList.get(0).toString());
+                connection.commit();
             }
         }
         catch (SQLException e)
         {
-            log.error("[Error] Account has NOT found, DB access error. Error: " + e.getLocalizedMessage());
-            try
-            {
-                connection.rollback();
-                log.info("[Step] Transaction rollback is completed.");
-            }
-            catch (SQLException ex)
-            {
-                log.error("[Error] Rollback has NOT possible.");
-                throw new DaoException("SQL Error: Have no access to DB.", ex);
-            }
+            throw new DaoException("SQL Error: Have no access to DB.", e);
         }
         finally
         {

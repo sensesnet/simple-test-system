@@ -1,7 +1,5 @@
 package com.sensesnet.connection;
 
-import com.sensesnet.constant.DaoConstant;
-import com.sensesnet.util.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,11 +18,11 @@ public class ConnectionPool implements ConnectionPoolConfig
 {
     private static final Logger log = LogManager.getLogger(ConnectionPool.class);
     private static final ConnectionPool instance = new ConnectionPool();
-    private BlockingQueue<Connection> freeConnections;
-    private BlockingQueue<Connection> givenConnections;
+    private BlockingQueue<Connection> freeConnectionsQueue;
+    private BlockingQueue<Connection> givenAwayConnectionsQueue;
 
 
-    public static ConnectionPool getInstance() throws ConnectionPoolException
+    public static ConnectionPool getInstance()
     {
         return instance;
     }
@@ -36,15 +34,15 @@ public class ConnectionPool implements ConnectionPoolConfig
      */
     public void initPoolData() throws ConnectionPoolException
     {
-        freeConnections = new ArrayBlockingQueue<>(connectionCount);
-        givenConnections = new ArrayBlockingQueue<>(connectionCount);
+        freeConnectionsQueue = new ArrayBlockingQueue<>(connectionCount);
+        givenAwayConnectionsQueue = new ArrayBlockingQueue<>(connectionCount);
 
         try
         {
             Class.forName(databaseClass);
             for (int i = 0; i < connectionCount; i++)
             {
-                freeConnections.put(DriverManager.getConnection(databaseLink, username, password));
+                freeConnectionsQueue.put(DriverManager.getConnection(databaseLink, username, password));
             }
         }
         catch (ClassNotFoundException e)
@@ -72,8 +70,8 @@ public class ConnectionPool implements ConnectionPoolConfig
         Connection connection;
         try
         {
-            connection = freeConnections.take();
-            givenConnections.add(connection);
+            connection = freeConnectionsQueue.take();
+            givenAwayConnectionsQueue.add(connection);
         }
         catch (InterruptedException e)
         {
@@ -83,15 +81,15 @@ public class ConnectionPool implements ConnectionPoolConfig
     }
 
     /**
-     * Close all connections
+     * Close all connections & destroy connection pool
      *
      * @throws ConnectionPoolException
      * @throws SQLException
      */
     public void destroyConnectionPool() throws ConnectionPoolException, SQLException
     {
-        this.closeConnectionQueue(freeConnections);
-        this.closeConnectionQueue(givenConnections);
+        closeConnectionQueue(freeConnectionsQueue);
+        closeConnectionQueue(givenAwayConnectionsQueue);
         log.info("[ConnectionPool] All Db connections closed.");
     }
 
@@ -104,9 +102,9 @@ public class ConnectionPool implements ConnectionPoolConfig
      */
     private void closeConnectionQueue(BlockingQueue<Connection> queue) throws SQLException, ConnectionPoolException
     {
-        for (int i = 0; i < queue.size(); i++)
+        Connection connection;
+        while ((connection = queue.poll()) != null)
         {
-            Connection connection = queue.poll();
             try
             {
                 connection.close();
@@ -119,72 +117,6 @@ public class ConnectionPool implements ConnectionPoolConfig
     }
 
     /**
-     * Close connection statement and resultSet
-     *
-     * @param connection
-     * @param statement
-     * @param resultSet
-     */
-    public void closeConnection(Connection connection, Statement statement, ResultSet resultSet)
-    {
-        try
-        {
-            connection.close();
-        }
-        catch (SQLException e)
-        {
-            log.error("[ConnectionPoll] Connection has not returned to the pool.");
-            e.printStackTrace();
-        }
-        try
-        {
-            resultSet.close();
-        }
-        catch (SQLException e)
-        {
-            log.error("[ConnectionPoll] ResultSet has not been closed.");
-            e.printStackTrace();
-        }
-        try
-        {
-            statement.close();
-        }
-        catch (SQLException e)
-        {
-            log.error("[ConnectionPoll] Statement has not been closed.");
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Close statement and connection
-     *
-     * @param connection
-     * @param statement
-     */
-    public void closeConnection(Connection connection, Statement statement)
-    {
-        try
-        {
-            connection.close();
-        }
-        catch (SQLException e)
-        {
-            log.error("[ConnectionPoll] Connection has not returned to the pool.");
-            e.printStackTrace();
-        }
-        try
-        {
-            statement.close();
-        }
-        catch (SQLException e)
-        {
-            log.error("[ConnectionPoll] Statement has not been closed.");
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * Close connection
      *
      * @param connection
@@ -192,12 +124,15 @@ public class ConnectionPool implements ConnectionPoolConfig
     public void closeConnection(Connection connection) throws SQLException
     {
         if (connection.isClosed())
-            throw new SQLException("Attempting to close closed connection.");
+            throw new SQLException("Attempting to close closed connection. Already closed connection.");
         if (connection.isReadOnly())
+        {
+            log.info("[ConnectionPool] Connection set attribute ['readOnly' : false]");
             connection.setReadOnly(false);
-        if (!givenConnections.remove(connection))
+        }
+        if (!givenAwayConnectionsQueue.remove(connection))
             throw new SQLException("Error deleting connection from the given away pool.");
-        if (!freeConnections.offer(connection))
+        if (!freeConnectionsQueue.offer(connection))
             throw new SQLException("Error allocating connection in the pool.");
     }
 }

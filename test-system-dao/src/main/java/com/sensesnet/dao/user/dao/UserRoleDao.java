@@ -12,6 +12,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -34,7 +36,7 @@ public class UserRoleDao extends AbstractDao<UserRole>
     @Override
     public UserRole getByIdentifier(UserRole entity) throws ConnectionPoolException, DaoException
     {
-        CopyOnWriteArrayList<UserRole> userRoleList = new CopyOnWriteArrayList<>();
+        LinkedList<UserRole> userRoleList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_USER_ROLE_BY_ID))
@@ -49,18 +51,17 @@ public class UserRoleDao extends AbstractDao<UserRole>
                             .roleName(resultSet.getString("role_name"))
                             .roleDesc(resultSet.getString("role_description")).build());
                 }
-                assert userRoleList.size() == 1;
+                if (userRoleList.size() != 1)
+                {
+                    log.info("[Auth] User [" + entity.getRoleName() + "] is not exist!");
+                    return null;
+                }
                 log.info("[UserDao] Role has been selected by id: " + entity.getRoleId());
             }
         }
         catch (SQLException e)
         {
             throw new DaoException("SQL Error: Have no access to DB.", e);
-        }
-        catch (AssertionError e)
-        {
-            log.info("[Auth] Role [" + entity.getRoleId() + "] account is not exist!");
-            return null;
         }
         finally
         {
@@ -72,7 +73,7 @@ public class UserRoleDao extends AbstractDao<UserRole>
     @Override
     public List<UserRole> getListOfEntity() throws DaoException, ConnectionPoolException
     {
-        CopyOnWriteArrayList<UserRole> roleList = new CopyOnWriteArrayList<>();
+        LinkedList<UserRole> roleList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_ALL_USER_ROLE))
@@ -104,18 +105,33 @@ public class UserRoleDao extends AbstractDao<UserRole>
     public void addEntity(UserRole entity) throws ConnectionPoolException, DaoException
     {
         Connection connection = getConnection();
-        try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().INSERT_NEW_USER_ROLE))
+        try
         {
-            prepareStatementParams(
-                    statement,
-                    entity.getRoleName(),
-                    entity.getRoleDesc()).executeUpdate();
-            log.info("[UserDao] New account role has been added: " + entity.toString());
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection
+                    .prepareStatement(DaoConstant.query().INSERT_NEW_USER_ROLE))
+            {
+                prepareStatementParams(
+                        statement,
+                        entity.getRoleName(),
+                        entity.getRoleDesc()).executeUpdate();
+                log.info("[UserRoleDao] New account role has been added: " + entity.toString());
+                connection.commit();
+            }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            log.error("[UserRoleDao] Account's have NOT updated, DB access error. Error: " + e.getLocalizedMessage());
+            try
+            {
+                connection.rollback();
+                log.warn("[UserRoleDao] Transaction rollback is completed.");
+            }
+            catch (SQLException ex)
+            {
+                log.error("[UserRoleDao] Rollback has NOT possible.");
+                throw new DaoException("SQL Error: Have no access to DB.", ex);
+            }
         }
         finally
         {
@@ -127,16 +143,32 @@ public class UserRoleDao extends AbstractDao<UserRole>
     public void removeEntity(UserRole entity) throws ConnectionPoolException, DaoException
     {
         Connection connection = getConnection();
-        try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().DELETE_USER_ROLE_BY_ID))
+        try
         {
-            statement.setInt(1, entity.getRoleId());
-            statement.execute();
-            log.info("[UserDao] Account role has been removed: " + entity.toString());
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection
+                    .prepareStatement(DaoConstant.query().DELETE_USER_ROLE_BY_ID))
+            {
+                statement.setInt(1, entity.getRoleId());
+                statement.execute();
+                log.info("[UserRoleDao] Account role has been removed: " + entity.toString());
+                connection.commit();
+            }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            log.error("[UserRoleDao] Account's info has NOT updated, DB access error. Error: "
+                    + e.getLocalizedMessage());
+            try
+            {
+                connection.rollback();
+                log.warn("[UserRoleDao] Transaction rollback is completed.");
+            }
+            catch (SQLException ex)
+            {
+                log.error("[UserRoleDao] Rollback has NOT possible.");
+                throw new DaoException("SQL Error: Have no access to DB.", ex);
+            }
         }
         finally
         {
@@ -148,19 +180,35 @@ public class UserRoleDao extends AbstractDao<UserRole>
     public void editEntity(UserRole entity) throws ConnectionPoolException, DaoException
     {
         Connection connection = getConnection();
-        try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().UPDATE_USER_ROLE))
+        try
         {
-            prepareStatementParams(
-                    statement,
-                    entity.getRoleName(),
-                    entity.getRoleDesc(),
-                    entity.getRoleId()).executeQuery();
-            log.info("[UserDao] Account role Info has been updated: " + entity.toString());
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection
+                    .prepareStatement(DaoConstant.query().UPDATE_USER_ROLE))
+            {
+                prepareStatementParams(
+                        statement,
+                        entity.getRoleName(),
+                        entity.getRoleDesc(),
+                        entity.getRoleId()).executeQuery();
+                log.info("[UserRoleDao] Account role Info has been updated: " + entity.toString());
+                connection.commit();
+            }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            log.error("[UserRoleDao] Account's info has NOT updated, DB access error. Error: "
+                    + e.getLocalizedMessage());
+            try
+            {
+                connection.rollback();
+                log.warn("[UserRoleDao] Transaction rollback is completed.");
+            }
+            catch (SQLException ex)
+            {
+                log.error("[UserRoleDao] Rollback has NOT possible.");
+                throw new DaoException("SQL Error: Have no access to DB.", ex);
+            }
         }
         finally
         {
@@ -170,7 +218,7 @@ public class UserRoleDao extends AbstractDao<UserRole>
 
     public UserRole getByIdentifier(Integer userRoleId) throws ConnectionPoolException, DaoException
     {
-        CopyOnWriteArrayList<UserRole> userRoleList = new CopyOnWriteArrayList<>();
+        LinkedList<UserRole> userRoleList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_USER_ROLE_BY_ID))
@@ -186,17 +234,12 @@ public class UserRoleDao extends AbstractDao<UserRole>
                             .roleDesc(resultSet.getString("role_description")).build());
                 }
                 assert userRoleList.size() == 1;
-                log.info("[UserDao] Role has been selected by id: " + userRoleId);
+                log.info("[UserRoleDao] Role has been selected by id: " + userRoleId);
             }
         }
         catch (SQLException e)
         {
             throw new DaoException("SQL Error: Have no access to DB.", e);
-        }
-        catch (AssertionError e)
-        {
-            log.info("[Auth] Role [" + userRoleId + "] account is not exist!");
-            return null;
         }
         finally
         {
@@ -205,48 +248,34 @@ public class UserRoleDao extends AbstractDao<UserRole>
         return userRoleList.iterator().next();
     }
 
-    public UserRole getByName(String roleName) throws ConnectionPoolException, DaoException
+    public UserRole getByRoleName(String roleName) throws ConnectionPoolException, DaoException
     {
-        CopyOnWriteArrayList<UserRole> userRoleList = new CopyOnWriteArrayList<>();
+        LinkedList<UserRole> userRoleList = new LinkedList<>();
         Connection connection = getConnection();
-        try
+
+        try (PreparedStatement statement = connection
+                .prepareStatement(DaoConstant.query().SELECT_USER_ROLE_BY_NAME))
         {
-            connection.setAutoCommit(false);
-            try (PreparedStatement statement = connection
-                    .prepareStatement(DaoConstant.query().SELECT_USER_ROLE_BY_NAME))
+            statement.setString(1, roleName);
+            try (ResultSet resultSet = statement.executeQuery())
             {
-                statement.setString(1, roleName);
-                try (ResultSet resultSet = statement.executeQuery())
+                while (resultSet.next())
                 {
-                    while (resultSet.next())
-                    {
-                        userRoleList.add(UserRole.builder()
-                                .roleId(resultSet.getInt("role_id"))
-                                .roleName(resultSet.getString("role_name"))
-                                .roleDesc(resultSet.getString("role_description")).build());
-                    }
-                    if (userRoleList.size() != 1)
-                    {
-                        log.info("[UserDao] Role has been selected by name: " + roleName);
-                        connection.commit();
-                        return null;
-                    }
+                    userRoleList.add(UserRole.builder()
+                            .roleId(resultSet.getInt("role_id"))
+                            .roleName(resultSet.getString("role_name"))
+                            .roleDesc(resultSet.getString("role_description")).build());
+                }
+                if (userRoleList.size() != 1)
+                {
+                    log.info("[UserRoleDao] Role has been selected by name: " + roleName);
+                    return null;
                 }
             }
         }
         catch (SQLException e)
         {
-            log.error("[Error] Account's info has NOT updated, DB access error. Error: " + e.getLocalizedMessage());
-            try
-            {
-                connection.rollback();
-                log.info("[Step] Transaction rollback is completed.");
-            }
-            catch (SQLException ex)
-            {
-                log.error("[Error] Rollback has NOT possible.");
-                throw new DaoException("SQL Error: Have no access to DB.", ex);
-            }
+            throw new DaoException("SQL Error: Have no access to DB.", e);
         }
         finally
         {
