@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -35,7 +36,7 @@ public class TestAnswerDao extends AbstractDao<TestAnswer>
     @Override
     public TestAnswer getByIdentifier(TestAnswer entity) throws ConnectionPoolException, DaoException
     {
-        ArrayList<TestAnswer> userList = new ArrayList<>();
+        LinkedList<TestAnswer> answerList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_ANSWER_BY_ID))
@@ -45,29 +46,28 @@ public class TestAnswerDao extends AbstractDao<TestAnswer>
             {
                 while (resultSet.next())
                 {
-                    userList.add(TestAnswer.builder()
+                    answerList.add(TestAnswer.builder()
                             .answerId(resultSet.getInt("answer_id"))
                             .answerDescription(resultSet.getString("answer_description"))
                             .questionId(resultSet.getInt("question_id")).build());
                 }
-                assert userList.size() == 1;
-                log.info("[UserDao] Answer has been selected by id: " + entity.getAnswerId());
+                if (answerList.size() != 1)
+                {
+                    log.warn("[TestAnswerDao] Answer is not exist!");
+                    return null;
+                }
+                log.info("[TestAnswerDao] Answer has been selected by id: " + entity.getAnswerId());
             }
         }
         catch (SQLException e)
         {
             throw new DaoException("SQL Error: Have no access to DB.", e);
         }
-        catch (AssertionError e)
-        {
-            log.info("[Auth] Answer info by id [" + entity.getAnswerId() + "] is not exist!");
-            return null;
-        }
         finally
         {
             closeConnection(connection);
         }
-        return userList.iterator().next();
+        return answerList.iterator().next();
     }
 
     @Override
@@ -87,7 +87,7 @@ public class TestAnswerDao extends AbstractDao<TestAnswer>
                             .answerDescription(resultSet.getString("answer_description"))
                             .questionId(resultSet.getInt("question_id")).build());
                 }
-                log.info("[UserDao] All answers has been selected.");
+                log.info("[TestAnswerDao] All answers has been selected.");
             }
         }
         catch (SQLException e)
@@ -112,7 +112,7 @@ public class TestAnswerDao extends AbstractDao<TestAnswer>
                     statement,
                     entity.getAnswerDescription(),
                     entity.getQuestionId()).executeUpdate();
-            log.info("[UserDao] Answer has been added: " + entity.toString());
+            log.info("[TestAnswerDao] Answer has been added: " + entity.toString());
         }
         catch (SQLException e)
         {
@@ -133,7 +133,7 @@ public class TestAnswerDao extends AbstractDao<TestAnswer>
         {
             statement.setInt(1, entity.getAnswerId());
             statement.execute();
-            log.info("[UserDao] Answer has been removed: " + entity.toString());
+            log.info("[TestAnswerDao] Answer has been removed: " + entity.toString());
         }
         catch (SQLException e)
         {
@@ -157,7 +157,7 @@ public class TestAnswerDao extends AbstractDao<TestAnswer>
                     entity.getAnswerDescription(),
                     entity.getQuestionId(),
                     entity.getAnswerId()).executeQuery();
-            log.info("[UserDao] Answer has been updated: " + entity.toString());
+            log.info("[TestAnswerDao] Answer has been updated: " + entity.toString());
         }
         catch (SQLException e)
         {

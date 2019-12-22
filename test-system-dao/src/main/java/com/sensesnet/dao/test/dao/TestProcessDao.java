@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -36,7 +37,7 @@ public class TestProcessDao extends AbstractDao<TestProcess>
     @Override
     public TestProcess getByIdentifier(TestProcess entity) throws ConnectionPoolException, DaoException
     {
-        CopyOnWriteArrayList<TestProcess> testProcessList = new CopyOnWriteArrayList<>();
+       LinkedList<TestProcess> testProcessList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_TEST_PROCESS_BY_ID))
@@ -54,18 +55,17 @@ public class TestProcessDao extends AbstractDao<TestProcess>
                             .mainResultValue(resultSet.getInt("main_result_value"))
                             .isCompleted(resultSet.getBoolean("is_completed")).build());
                 }
-                assert testProcessList.size() == 1;
-                log.info("[UserDao] Test Process has been selected by id: " + entity.getResultId());
+                if (testProcessList.size() != 1)
+                {
+                    log.warn("[TestProcessDao] Test " + entity.getTestId() + " is not exist!");
+                    return null;
+                }
+                log.info("[TestProcessDao] Test Process has been selected by id: " + entity.getResultId());
             }
         }
         catch (SQLException e)
         {
             throw new DaoException("SQL Error: Have no access to DB.", e);
-        }
-        catch (AssertionError e)
-        {
-            log.info("[Auth] Test info by id [" + entity.getResultId() + "] is not exist!");
-            return null;
         }
         finally
         {
@@ -77,7 +77,7 @@ public class TestProcessDao extends AbstractDao<TestProcess>
     @Override
     public List<TestProcess> getListOfEntity() throws ConnectionPoolException, DaoException
     {
-        CopyOnWriteArrayList<TestProcess> testProcessList = new CopyOnWriteArrayList<>();
+        LinkedList<TestProcess> testProcessList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_ALL_TEST_PROCESS))
@@ -94,7 +94,7 @@ public class TestProcessDao extends AbstractDao<TestProcess>
                             .mainResultValue(resultSet.getInt("main_result_value"))
                             .isCompleted(resultSet.getBoolean("is_completed")).build());
                 }
-                log.info("[UserDao] All test processes has been selected.");
+                log.info("[TestProcessDao] All test processes has been selected.");
             }
         }
         catch (SQLException e)
@@ -122,7 +122,7 @@ public class TestProcessDao extends AbstractDao<TestProcess>
                     entity.getTestId(),
                     entity.getMainResultValue(),
                     entity.isCompleted()).executeUpdate();
-            log.info("[UserDao] New test process has been added: " + entity.toString());
+            log.info("[TestProcessDao] New test process has been added: " + entity.toString());
         }
         catch (SQLException e)
         {
@@ -143,7 +143,7 @@ public class TestProcessDao extends AbstractDao<TestProcess>
         {
             statement.setInt(1, entity.getTestProcessId());
             statement.execute();
-            log.info("[UserDao] Test process has been removed: " + entity.toString());
+            log.info("[TestProcessDao] Test process has been removed: " + entity.toString());
         }
         catch (SQLException e)
         {
@@ -170,7 +170,7 @@ public class TestProcessDao extends AbstractDao<TestProcess>
                     entity.getMainResultValue(),
                     entity.isCompleted(),
                     entity.getTestProcessId()).executeQuery();
-            log.info("[UserDao] Test process has been updated: " + entity.toString());
+            log.info("[TestProcessDao] Test process has been updated: " + entity.toString());
         }
         catch (SQLException e)
         {

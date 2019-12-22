@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -34,7 +35,7 @@ public class TestResultDao extends AbstractDao<TestResult>
     @Override
     public TestResult getByIdentifier(TestResult entity) throws ConnectionPoolException, DaoException
     {
-        CopyOnWriteArrayList<TestResult> resultList = new CopyOnWriteArrayList<>();
+        LinkedList<TestResult> resultList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_RESULT_BY_ID))
@@ -50,18 +51,17 @@ public class TestResultDao extends AbstractDao<TestResult>
                             .questionId(resultSet.getInt("question_id"))
                             .answerId(resultSet.getInt("answer_id")).build());
                 }
-                assert resultList.size() == 1;
-                log.info("[UserDao] Result has been selected by id: " + entity.getResultId());
+                if (resultList.size() != 1)
+                {
+                    log.warn("[TestResultDao] Test " + entity.getResultId() + " is not exist!");
+                    return null;
+                }
+                log.info("[TestResultDao] Result has been selected by id: " + entity.getResultId());
             }
         }
         catch (SQLException e)
         {
             throw new DaoException("SQL Error: Have no access to DB.", e);
-        }
-        catch (AssertionError e)
-        {
-            log.info("[Auth] Test info by id [" + entity.getResultId() + "] is not exist!");
-            return null;
         }
         finally
         {
@@ -73,7 +73,7 @@ public class TestResultDao extends AbstractDao<TestResult>
     @Override
     public List<TestResult> getListOfEntity() throws ConnectionPoolException, DaoException
     {
-        CopyOnWriteArrayList<TestResult> resultList = new CopyOnWriteArrayList<>();
+        LinkedList<TestResult> resultList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_ALL_RESULT))
@@ -88,7 +88,7 @@ public class TestResultDao extends AbstractDao<TestResult>
                             .questionId(resultSet.getInt("question_id"))
                             .answerId(resultSet.getInt("answer_id")).build());
                 }
-                log.info("[UserDao] All results has been selected.");
+                log.info("[TestResultDao] All results has been selected.");
             }
         }
         catch (SQLException e)
@@ -115,7 +115,7 @@ public class TestResultDao extends AbstractDao<TestResult>
                     entity.getTestProcessId(),
                     entity.getQuestionId(),
                     entity.getAnswerId()).executeUpdate();
-            log.info("[UserDao] New result has been added: " + entity.toString());
+            log.info("[TestResultDao] New result has been added: " + entity.toString());
         }
         catch (SQLException e)
         {
@@ -136,7 +136,7 @@ public class TestResultDao extends AbstractDao<TestResult>
         {
             statement.setInt(1, entity.getResultId());
             statement.execute();
-            log.info("[UserDao] Result has been removed: " + entity.toString());
+            log.info("[TestResultDao] Result has been removed: " + entity.toString());
         }
         catch (SQLException e)
         {
@@ -161,7 +161,7 @@ public class TestResultDao extends AbstractDao<TestResult>
                     entity.getQuestionId(),
                     entity.getAnswerId(),
                     entity.getResultId()).executeQuery();
-            log.info("[UserDao] Result has been updated: " + entity.toString());
+            log.info("[TestResultDao] Result has been updated: " + entity.toString());
         }
         catch (SQLException e)
         {

@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -35,7 +36,7 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
     @Override
     public TestQuestion getByIdentifier(TestQuestion entity) throws ConnectionPoolException, DaoException
     {
-        CopyOnWriteArrayList<TestQuestion> testQuestionList = new CopyOnWriteArrayList<>();
+        LinkedList<TestQuestion> testQuestionList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_QUESTION_BY_ID))
@@ -53,18 +54,17 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
                             .answerId(resultSet.getInt("answer_id"))
                             .questionClarification(resultSet.getString("question_clarification")).build());
                 }
-                assert testQuestionList.size() == 1;
-                log.info("[UserDao] Question has been selected by id: " + entity.getQuestionId());
+                if (testQuestionList.size() != 1)
+                {
+                    log.warn("[TestQuestionDao] Test question " + entity.getTestId() + " is not exist!");
+                    return null;
+                }
+                log.info("[TestQuestionDao] Question has been selected by id: " + entity.getQuestionId());
             }
         }
         catch (SQLException e)
         {
             throw new DaoException("SQL Error: Have no access to DB.", e);
-        }
-        catch (AssertionError e)
-        {
-            log.info("[Auth] Test question by id [" + entity.getQuestionId() + "] is not exist!");
-            return null;
         }
         finally
         {
@@ -76,7 +76,7 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
     @Override
     public List<TestQuestion> getListOfEntity() throws ConnectionPoolException, DaoException
     {
-        CopyOnWriteArrayList<TestQuestion> testQuestionList = new CopyOnWriteArrayList<>();
+       LinkedList<TestQuestion> testQuestionList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_ALL_QUESTION))
@@ -93,7 +93,7 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
                             .answerId(resultSet.getInt("answer_id"))
                             .questionClarification(resultSet.getString("question_clarification")).build());
                 }
-                log.info("[UserDao] All questions has been selected.");
+                log.info("[TestQuestionDao] All questions has been selected.");
             }
         }
         catch (SQLException e)
@@ -121,7 +121,7 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
                     entity.getTestId(),
                     entity.getAnswerId(),
                     entity.getQuestionClarification()).executeUpdate();
-            log.info("[UserDao] New result has been added: " + entity.toString());
+            log.info("[TestQuestionDao] New result has been added: " + entity.toString());
         }
         catch (SQLException e)
         {
@@ -142,7 +142,7 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
         {
             statement.setInt(1, entity.getQuestionId());
             statement.execute();
-            log.info("[UserDao] Question has been removed: " + entity.toString());
+            log.info("[TestQuestionDao] Question has been removed: " + entity.toString());
         }
         catch (SQLException e)
         {
@@ -168,7 +168,7 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
                     entity.getTestId(),
                     entity.getAnswerId(),
                     entity.getQuestionClarification()).executeQuery();
-            log.info("[UserDao] Question has been updated: " + entity.toString());
+            log.info("[TestQuestionDao] Question has been updated: " + entity.toString());
         }
         catch (SQLException e)
         {

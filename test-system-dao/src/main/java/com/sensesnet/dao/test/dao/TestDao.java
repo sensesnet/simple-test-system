@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -34,7 +35,7 @@ public class TestDao extends AbstractDao<Test>
     @Override
     public Test getByIdentifier(Test entity) throws ConnectionPoolException, DaoException
     {
-        CopyOnWriteArrayList<Test> testList = new CopyOnWriteArrayList<>();
+        LinkedList<Test> testList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_TEST_BY_ID))
@@ -51,18 +52,17 @@ public class TestDao extends AbstractDao<Test>
                             .testValue(resultSet.getInt("test_value"))
                             .testTime(resultSet.getTime("test_time")).build());
                 }
-                assert testList.size() == 1;
-                log.info("[UserDao] Test has been selected by id: " + entity.getTestId());
+                if (testList.size() != 1)
+                {
+                    log.warn("[TestDao] Test " + entity.getTestId() + " is not exist!");
+                    return null;
+                }
+                log.info("[TestDao] Test has been selected by id: " + entity.getTestId());
             }
         }
         catch (SQLException e)
         {
             throw new DaoException("SQL Error: Have no access to DB.", e);
-        }
-        catch (AssertionError e)
-        {
-            log.info("[Auth] Test info by id [" + entity.getTestId() + "] is not exist!");
-            return null;
         }
         finally
         {
@@ -74,7 +74,7 @@ public class TestDao extends AbstractDao<Test>
     @Override
     public List<Test> getListOfEntity() throws ConnectionPoolException, DaoException
     {
-        CopyOnWriteArrayList<Test> testList = new CopyOnWriteArrayList<>();
+        LinkedList<Test> testList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_ALL_TEST))
@@ -90,7 +90,7 @@ public class TestDao extends AbstractDao<Test>
                             .testValue(resultSet.getInt("test_value"))
                             .testTime(resultSet.getTime("test_time")).build());
                 }
-                log.info("[UserDao] All tests has been selected.");
+                log.info("[TestDao] All tests has been selected.");
             }
         }
         catch (SQLException e)
@@ -116,7 +116,7 @@ public class TestDao extends AbstractDao<Test>
                     entity.getTestDescription(),
                     entity.getTestValue(),
                     entity.getTestTime()).executeUpdate();
-            log.info("[UserDao] New test has been added: " + entity.toString());
+            log.info("[TestDao] New test has been added: " + entity.toString());
         }
         catch (SQLException e)
         {
@@ -137,7 +137,7 @@ public class TestDao extends AbstractDao<Test>
         {
             statement.setInt(1, entity.getTestId());
             statement.execute();
-            log.info("[UserDao] Test has been removed: " + entity.toString());
+            log.info("[TestDao] Test has been removed: " + entity.toString());
         }
         catch (SQLException e)
         {
@@ -162,7 +162,7 @@ public class TestDao extends AbstractDao<Test>
                     entity.getTestDescription(),
                     entity.getTestValue(),
                     entity.getTestTime()).executeQuery();
-            log.info("[UserDao] Answer has been updated: " + entity.toString());
+            log.info("[TestDao] Answer has been updated: " + entity.toString());
         }
         catch (SQLException e)
         {
