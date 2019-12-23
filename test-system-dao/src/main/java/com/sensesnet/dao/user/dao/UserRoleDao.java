@@ -4,6 +4,7 @@ import com.sensesnet.connection.ConnectionPoolException;
 import com.sensesnet.constant.DaoConstant;
 import com.sensesnet.dao.AbstractDao;
 import com.sensesnet.dao.exception.DaoException;
+import com.sensesnet.pojo.authentication.User;
 import com.sensesnet.pojo.authentication.UserRole;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,15 +29,79 @@ public class UserRoleDao extends AbstractDao<UserRole>
 {
     private static final Logger log = LogManager.getLogger(UserRoleDao.class);
 
-    public UserRoleDao()
+    public UserRole getByIdentifier(Integer userRoleId) throws ConnectionPoolException, DaoException
     {
-        log.info("[UserRoleDao] UserRoleDao has been initialized.");
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(DaoConstant.query().SELECT_USER_ROLE_BY_ID))
+        {
+            statement.setInt(1, userRoleId);
+            try (ResultSet resultSet = statement.executeQuery())
+            {
+                if (resultSet.next())
+                {
+                    return this.buildEntity(resultSet);
+                }
+                log.info("[UserRoleDao] Role has been selected by id: " + userRoleId);
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DaoException("SQL Error: Have no access to DB.", e);
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
+        return null;
     }
 
+    /**
+     * get role by name
+     *
+     * @param roleName
+     * @return
+     * @throws ConnectionPoolException
+     * @throws DaoException
+     */
+    public UserRole getByRoleName(String roleName) throws ConnectionPoolException, DaoException
+    {
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(DaoConstant.query().SELECT_USER_ROLE_BY_NAME))
+        {
+            statement.setString(1, roleName);
+            try (ResultSet resultSet = statement.executeQuery())
+            {
+                if (resultSet.next())
+                {
+                    return this.buildEntity(resultSet);
+                }
+                log.info("[UserDao] Role has been selected by name: " + roleName);
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DaoException("SQL Error: Have no access to DB.", e);
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
+        return null;
+    }
+
+    /**
+     * get role by id
+     *
+     * @param entity
+     * @return
+     * @throws ConnectionPoolException
+     * @throws DaoException
+     */
     @Override
     public UserRole getByIdentifier(UserRole entity) throws ConnectionPoolException, DaoException
     {
-        LinkedList<UserRole> userRoleList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_USER_ROLE_BY_ID))
@@ -44,17 +109,9 @@ public class UserRoleDao extends AbstractDao<UserRole>
             statement.setInt(1, entity.getRoleId());
             try (ResultSet resultSet = statement.executeQuery())
             {
-                while (resultSet.next())
+                if (resultSet.next())
                 {
-                    userRoleList.add(UserRole.builder()
-                            .roleId(resultSet.getInt("role_id"))
-                            .roleName(resultSet.getString("role_name"))
-                            .roleDesc(resultSet.getString("role_description")).build());
-                }
-                if (userRoleList.size() != 1)
-                {
-                    log.info("[Auth] User [" + entity.getRoleName() + "] is not exist!");
-                    return null;
+                    return this.buildEntity(resultSet);
                 }
                 log.info("[UserDao] Role has been selected by id: " + entity.getRoleId());
             }
@@ -67,9 +124,16 @@ public class UserRoleDao extends AbstractDao<UserRole>
         {
             closeConnection(connection);
         }
-        return userRoleList.iterator().next();
+        return null;
     }
 
+    /**
+     * list of roles
+     *
+     * @return
+     * @throws DaoException
+     * @throws ConnectionPoolException
+     */
     @Override
     public List<UserRole> getListOfEntity() throws DaoException, ConnectionPoolException
     {
@@ -82,10 +146,7 @@ public class UserRoleDao extends AbstractDao<UserRole>
             {
                 while (resultSet.next())
                 {
-                    roleList.add(UserRole.builder()
-                            .roleId(resultSet.getInt("role_id"))
-                            .roleName(resultSet.getString("role_name"))
-                            .roleDesc(resultSet.getString("role_description")).build());
+                    roleList.add(this.buildEntity(resultSet));
                 }
                 log.info("[UserDao] All account's roles has been selected.");
             }
@@ -101,6 +162,13 @@ public class UserRoleDao extends AbstractDao<UserRole>
         return roleList;
     }
 
+    /**
+     * add new role
+     *
+     * @param entity
+     * @throws ConnectionPoolException
+     * @throws DaoException
+     */
     @Override
     public void addEntity(UserRole entity) throws ConnectionPoolException, DaoException
     {
@@ -115,13 +183,13 @@ public class UserRoleDao extends AbstractDao<UserRole>
                         statement,
                         entity.getRoleName(),
                         entity.getRoleDesc()).executeUpdate();
-                log.info("[UserRoleDao] New account role has been added: " + entity.toString());
+                log.info("[UserRoleDao] Role has been added: " + entity.toString());
                 connection.commit();
             }
         }
         catch (SQLException e)
         {
-            log.error("[UserRoleDao] Account's have NOT updated, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[UserRoleDao] Role has NOT added, DB access error. Error: " + e.getLocalizedMessage());
             try
             {
                 connection.rollback();
@@ -139,6 +207,13 @@ public class UserRoleDao extends AbstractDao<UserRole>
         }
     }
 
+    /**
+     * remove role entity
+     *
+     * @param entity
+     * @throws ConnectionPoolException
+     * @throws DaoException
+     */
     @Override
     public void removeEntity(UserRole entity) throws ConnectionPoolException, DaoException
     {
@@ -157,7 +232,7 @@ public class UserRoleDao extends AbstractDao<UserRole>
         }
         catch (SQLException e)
         {
-            log.error("[UserRoleDao] Account's info has NOT updated, DB access error. Error: "
+            log.error("[UserRoleDao] Account role has NOT removed, DB access error. Error: "
                     + e.getLocalizedMessage());
             try
             {
@@ -191,13 +266,13 @@ public class UserRoleDao extends AbstractDao<UserRole>
                         entity.getRoleName(),
                         entity.getRoleDesc(),
                         entity.getRoleId()).executeQuery();
-                log.info("[UserRoleDao] Account role Info has been updated: " + entity.toString());
+                log.info("[UserRoleDao] Account role has been updated: " + entity.toString());
                 connection.commit();
             }
         }
         catch (SQLException e)
         {
-            log.error("[UserRoleDao] Account's info has NOT updated, DB access error. Error: "
+            log.error("[UserRoleDao] Role has NOT updated, DB access error. Error: "
                     + e.getLocalizedMessage());
             try
             {
@@ -216,71 +291,19 @@ public class UserRoleDao extends AbstractDao<UserRole>
         }
     }
 
-    public UserRole getByIdentifier(Integer userRoleId) throws ConnectionPoolException, DaoException
+    /**
+     * user role builder
+     *
+     * @param resultSet
+     * @return
+     * @throws SQLException
+     */
+    @Override
+    public UserRole buildEntity(ResultSet resultSet) throws SQLException
     {
-        LinkedList<UserRole> userRoleList = new LinkedList<>();
-        Connection connection = getConnection();
-        try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().SELECT_USER_ROLE_BY_ID))
-        {
-            statement.setInt(1, userRoleId);
-            try (ResultSet resultSet = statement.executeQuery())
-            {
-                while (resultSet.next())
-                {
-                    userRoleList.add(UserRole.builder()
-                            .roleId(resultSet.getInt("role_id"))
-                            .roleName(resultSet.getString("role_name"))
-                            .roleDesc(resultSet.getString("role_description")).build());
-                }
-                assert userRoleList.size() == 1;
-                log.info("[UserRoleDao] Role has been selected by id: " + userRoleId);
-            }
-        }
-        catch (SQLException e)
-        {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
-        }
-        finally
-        {
-            closeConnection(connection);
-        }
-        return userRoleList.iterator().next();
-    }
-
-    public UserRole getByRoleName(String roleName) throws ConnectionPoolException, DaoException
-    {
-        LinkedList<UserRole> userRoleList = new LinkedList<>();
-        Connection connection = getConnection();
-
-        try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().SELECT_USER_ROLE_BY_NAME))
-        {
-            statement.setString(1, roleName);
-            try (ResultSet resultSet = statement.executeQuery())
-            {
-                while (resultSet.next())
-                {
-                    userRoleList.add(UserRole.builder()
-                            .roleId(resultSet.getInt("role_id"))
-                            .roleName(resultSet.getString("role_name"))
-                            .roleDesc(resultSet.getString("role_description")).build());
-                }
-                if (userRoleList.size() != 1)
-                {
-                    log.info("[UserRoleDao] Role has been selected by name: " + roleName);
-                    return null;
-                }
-            }
-        }
-        catch (SQLException e)
-        {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
-        }
-        finally
-        {
-            closeConnection(connection);
-        }
-        return userRoleList.iterator().next();
+        return UserRole.builder()
+                .roleId(resultSet.getInt("role_id"))
+                .roleName(resultSet.getString("role_name"))
+                .roleDesc(resultSet.getString("role_description")).build();
     }
 }

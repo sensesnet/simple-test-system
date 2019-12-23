@@ -2,6 +2,8 @@ package com.sensesnet.servlet;
 
 import com.sensesnet.command.CommandProvider;
 import com.sensesnet.command.ICommand;
+import com.sensesnet.connection.ConnectionPoolException;
+import com.sensesnet.dao.exception.DaoException;
 import com.sensesnet.exception.ServiceException;
 import com.sensesnet.pojo.authentication.User;
 import org.apache.logging.log4j.LogManager;

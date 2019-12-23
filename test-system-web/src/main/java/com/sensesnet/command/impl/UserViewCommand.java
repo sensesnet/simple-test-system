@@ -1,13 +1,14 @@
 package com.sensesnet.command.impl;
 
-import com.sensesnet.ServiceProvider;
+import com.sensesnet.IUserRoleService;
+import com.sensesnet.IUserService;
+import com.sensesnet.ServiceFactory;
 import com.sensesnet.command.ICommand;
 import com.sensesnet.constant.ConstantProvider;
 import com.sensesnet.dto.UserDto;
 import com.sensesnet.exception.ServiceException;
-import com.sensesnet.implementation.UserInfoService;
-import com.sensesnet.implementation.UserRoleService;
-import com.sensesnet.implementation.UserService;
+import com.sensesnet.impl.UserService;
+import com.sensesnet.pojo.authentication.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -27,14 +29,19 @@ import java.util.List;
 public class UserViewCommand implements ICommand
 {
     private static final Logger log = LogManager.getLogger(UserViewCommand.class);
-    private UserService userService = ServiceProvider.getInstance().getUserService();
+    private IUserService userService = ServiceFactory.getInstance().getUserService();
+    private IUserRoleService userRoleService = ServiceFactory.getInstance().getUserRoleService();
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException
     {
         RequestDispatcher dispatcher = request
                 .getRequestDispatcher(ConstantProvider.getPagePath().USER_LIST_PAGE);
-        List<UserDto> userList = userService.getListOfEntity();
+        List<UserDto> userList = new LinkedList<>();
+        for (User user : userService.getListOfEntity())
+        {
+            userList.add(new UserDto(user, userRoleService.getRoleById(user.getUserRole())));
+        }
         if (userList.size() == 0)
         {
             response.sendRedirect("Controller?action=home&errorMessage=Have no found any accounts at test systems.");

@@ -1,5 +1,7 @@
 package com.sensesnet.command;
 
+import com.sensesnet.connection.ConnectionPoolException;
+import com.sensesnet.dao.exception.DaoException;
 import com.sensesnet.exception.ServiceException;
 
 import javax.servlet.ServletException;

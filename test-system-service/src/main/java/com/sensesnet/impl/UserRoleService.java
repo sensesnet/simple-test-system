@@ -1,6 +1,10 @@
-package com.sensesnet.implementation;
+package com.sensesnet.impl;
 
+import com.sensesnet.IUserRoleService;
+import com.sensesnet.connection.ConnectionPool;
+import com.sensesnet.connection.ConnectionPoolException;
 import com.sensesnet.dao.DaoFactory;
+import com.sensesnet.dao.exception.DaoException;
 import com.sensesnet.dao.user.dao.UserRoleDao;
 import com.sensesnet.exception.ServiceException;
 import com.sensesnet.pojo.authentication.UserRole;
@@ -16,54 +20,50 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * <p>
  * Service: User role service
  */
-public class UserRoleService extends AbstractService<UserRole>
+public class UserRoleService implements IUserRoleService
 {
     private static final Logger log = LogManager.getLogger(UserRoleService.class);
     private UserRoleDao userRoleDao = DaoFactory.getUserRoleDao();
 
     @Override
-    public UserRole getByIdentifier(UserRole entity) throws ServiceException
+    public UserRole getRoleById(UserRole entity) throws ServiceException
     {
-        UserRole userRole = null;
-        log.info("[" + this.getClass().getName() + "] Get users by id: [" + entity.getRoleId() + "].");
+        log.info("[UserRoleService] Get users by id: [" + entity.getRoleId() + "].");
         try
         {
-            userRole = userRoleDao.getByIdentifier(entity);
+            return userRoleDao.getByIdentifier(entity);
         }
-        catch (Exception e)
+        catch (ConnectionPoolException | DaoException e)
         {
             throw new ServiceException("[" + this.getClass().getName() + "] "
                     + "Role [" + entity.getRoleId() + " ] has NOT been found.", e);
         }
-        return userRole;
     }
 
     @Override
-    public List<UserRole> getListOfEntity() throws ServiceException
+    public List<UserRole> getListOfRoles() throws ServiceException
     {
-        log.info("[" + this.getClass().getName() + "] Get list with all roles.");
-        CopyOnWriteArrayList<UserRole> userRoleList = null;
+        log.info("[UserRoleService] Get list with all roles.");
         try
         {
-            userRoleList = (CopyOnWriteArrayList<UserRole>) userRoleDao.getListOfEntity();
+            return userRoleDao.getListOfEntity();
         }
-        catch (Exception e)
+        catch (ConnectionPoolException | DaoException e)
         {
             throw new ServiceException("[" + this.getClass().getName() + "] "
                     + "Role list has not found at test system. Service exception", e);
         }
-        return userRoleList;
     }
 
     @Override
-    public void addEntity(UserRole entity) throws ServiceException
+    public void createRole(UserRole entity) throws ServiceException
     {
-        log.info("[" + this.getClass().getName() + "] Add new role:[" + entity.toString() + "]");
+        log.info("[UserRoleService] Add new role:[" + entity.toString() + "]");
         try
         {
             userRoleDao.addEntity(entity);
         }
-        catch (Exception e)
+        catch (ConnectionPoolException | DaoException e)
         {
             throw new ServiceException("[" + this.getClass().getName() + "] "
                     + "New role [" + entity.toString() + " ] has NOT added to test system.", e);
@@ -71,14 +71,14 @@ public class UserRoleService extends AbstractService<UserRole>
     }
 
     @Override
-    public void removeEntity(UserRole entity) throws ServiceException
+    public void removeRole(UserRole entity) throws ServiceException
     {
         log.info("[" + this.getClass().getName() + "] Remove role:[" + entity.toString() + "].");
         try
         {
             userRoleDao.removeEntity(entity);
         }
-        catch (Exception e)
+        catch (ConnectionPoolException | DaoException e)
         {
             throw new ServiceException("[" + this.getClass().getName() + "] "
                     + "Role [" + entity.toString() + " ] has NOT been removed from test system.", e);
@@ -86,21 +86,22 @@ public class UserRoleService extends AbstractService<UserRole>
     }
 
     @Override
-    public void editEntity(UserRole entity) throws ServiceException
+    public void editRole(UserRole entity) throws ServiceException
     {
         log.info("[" + this.getClass().getName() + "] Edit security role:[" + entity.toString() + "].");
         try
         {
             userRoleDao.editEntity(entity);
         }
-        catch (Exception e)
+        catch (ConnectionPoolException | DaoException e)
         {
             throw new ServiceException("[" + this.getClass().getName() + "] "
                     + "Role data [" + entity.toString() + " ] has NOT been changed.", e);
         }
     }
 
-    public UserRole getByIdentifier(Integer userRoleId) throws ServiceException
+    @Override
+    public UserRole getRoleById(Integer userRoleId) throws ServiceException
     {
         UserRole userRole = null;
         log.info("[" + this.getClass().getName() + "] Get users by id: [" + userRoleId + "].");
@@ -116,7 +117,7 @@ public class UserRoleService extends AbstractService<UserRole>
         return userRole;
     }
 
-    public UserRole getByName(String roleName) throws ServiceException
+    public UserRole getRoleByName(String roleName) throws ServiceException
     {
         UserRole userRole = null;
         log.info("[" + this.getClass().getName() + "] Get users by name: [" + roleName + "].");

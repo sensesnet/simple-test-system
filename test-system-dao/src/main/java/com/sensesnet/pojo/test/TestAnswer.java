@@ -23,19 +23,26 @@ public class TestAnswer
     public @NonNull Integer questionId;
 
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(Object object)
     {
-        if (this == obj) return true;
-        if (!(obj instanceof TestAnswer)) return false;
-        TestAnswer that = (TestAnswer) obj;
-        return getAnswerId().equals(that.getAnswerId()) &&
-                getAnswerDescription().equals(that.getAnswerDescription()) &&
-                getQuestionId().equals(that.getQuestionId());
+        if (this == object) return true;
+        if (!super.equals(object)) return false;
+        if (getClass() != object.getClass()) return false;
+
+        TestAnswer that = (TestAnswer) object;
+
+        if (!getAnswerId().equals(that.getAnswerId())) return false;
+        if (!getAnswerDescription().equals(that.getAnswerDescription())) return false;
+        return getQuestionId().equals(that.getQuestionId());
+
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(getAnswerId(), getAnswerDescription(), getQuestionId());
+        int result = getAnswerId().hashCode();
+        result = 31 * result + getAnswerDescription().hashCode();
+        result = 31 * result + getQuestionId().hashCode();
+        return result;
     }
 }

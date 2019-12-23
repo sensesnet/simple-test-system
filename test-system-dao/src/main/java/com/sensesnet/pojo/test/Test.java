@@ -26,22 +26,30 @@ public class Test
     private @NonNull Time testTime;
 
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(Object object)
     {
-        if (this == obj) return true;
-        if (!(obj instanceof Test)) return false;
-        Test test = (Test) obj;
-        return testId.equals(test.testId) &&
-                testName.equals(test.testName) &&
-                testDescription.equals(test.testDescription) &&
-                testValue.equals(test.testValue) &&
-                testTime.equals(test.testTime);
+        if (this == object) return true;
+        if (!super.equals(object)) return false;
+        if (getClass() != object.getClass()) return false;
+
+        Test test = (Test) object;
+
+        if (!getTestId().equals(test.getTestId())) return false;
+        if (!getTestName().equals(test.getTestName())) return false;
+        if (!getTestDescription().equals(test.getTestDescription())) return false;
+        if (!getTestValue().equals(test.getTestValue())) return false;
+        return getTestTime().equals(test.getTestTime());
+
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(testId, testName, testDescription, testValue, testTime);
+        int result = getTestId().hashCode();
+        result = 31 * result + getTestName().hashCode();
+        result = 31 * result + getTestDescription().hashCode();
+        result = 31 * result + getTestValue().hashCode();
+        result = 31 * result + getTestTime().hashCode();
+        return result;
     }
-
 }

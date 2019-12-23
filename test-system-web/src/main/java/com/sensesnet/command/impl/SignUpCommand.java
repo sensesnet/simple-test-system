@@ -1,13 +1,13 @@
 package com.sensesnet.command.impl;
 
-import com.sensesnet.ServiceProvider;
+import com.sensesnet.IUserService;
+import com.sensesnet.ServiceFactory;
 import com.sensesnet.command.ICommand;
 import com.sensesnet.constant.ConstantProvider;
 import com.sensesnet.dto.UserDto;
 import com.sensesnet.exception.ServiceException;
-import com.sensesnet.implementation.UserService;
+import com.sensesnet.impl.UserService;
 import com.sensesnet.pojo.authentication.User;
-import com.sensesnet.pojo.authentication.UserInfo;
 import com.sensesnet.pojo.authentication.UserRole;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +29,7 @@ import static com.sensesnet.util.HttpRequestValidator.isPost;
 public class SignUpCommand implements ICommand
 {
     private static final Logger log = LogManager.getLogger(SignUpCommand.class);
-    private UserService userService = ServiceProvider.getInstance().getUserService();
+    private IUserService userService = ServiceFactory.getInstance().getUserService();
     private UserDto userDto;
 
     @Override
@@ -61,32 +61,26 @@ public class SignUpCommand implements ICommand
 
         try
         {
-            User user = userService.getUserByLogin(login);
+            User user = userService.getUserByEmail(login);
             if (user != null)
             {
                 response.sendRedirect("Controller?action=sign_up&errorMessage=Account is found, use other email.");
                 return;
             }
             HttpSession session = request.getSession(true);
-            userService.addEntity(
-                    new UserDto(
+            userService.createUser(
                             User.builder()
                                     .userLogin(login)
                                     .userPassword(password)
                                     .userRole(1)
-                                    .build(),
-                            UserInfo.builder()
                                     .userName(firstName)
                                     .userSurname(secondName)
                                     .userBirthday(birthday)
                                     .userPhone(phone)
                                     .userAddress(address)
-                                    .build(),
-                            UserRole.builder()
-                                    .roleId(1)
-                                    .roleName("USER").build()));
+                                    .build());
 
-            User currentUser = userService.authorization(login, password);
+            User currentUser = userService.getUserByEmailAndPassword(login, password);
             if (currentUser == null)
             {
                 response.sendRedirect("Controller?action=sign_in&errorMessage=Account is found, try to sign up.");

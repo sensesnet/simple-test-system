@@ -25,20 +25,32 @@ public class TestQuestion
     private @NonNull String questionClarification;
 
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(Object object)
     {
-        if (this == obj) return true;
-        if (!(obj instanceof TestQuestion)) return false;
-        TestQuestion that = (TestQuestion) obj;
-        return getQuestionId().equals(that.getQuestionId()) &&
-                getQuestionDesc().equals(that.getQuestionDesc()) &&
-                getQuestionValue().equals(that.getQuestionValue()) &&
-                getAnswerId().equals(that.getAnswerId());
+        if (this == object) return true;
+        if (!super.equals(object)) return false;
+        if (getClass() != object.getClass()) return false;
+
+        TestQuestion that = (TestQuestion) object;
+
+        if (!getQuestionId().equals(that.getQuestionId())) return false;
+        if (!getQuestionDesc().equals(that.getQuestionDesc())) return false;
+        if (!getQuestionValue().equals(that.getQuestionValue())) return false;
+        if (!getAnswerId().equals(that.getAnswerId())) return false;
+        if (!getTestId().equals(that.getTestId())) return false;
+        return getQuestionClarification().equals(that.getQuestionClarification());
+
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(getQuestionId(), getQuestionDesc(), getQuestionValue(), getAnswerId());
+        int result = getQuestionId().hashCode();
+        result = 31 * result + getQuestionDesc().hashCode();
+        result = 31 * result + getQuestionValue().hashCode();
+        result = 31 * result + getAnswerId().hashCode();
+        result = 31 * result + getTestId().hashCode();
+        result = 31 * result + getQuestionClarification().hashCode();
+        return result;
     }
 }

@@ -23,20 +23,28 @@ public class TestResult
     private @NonNull Integer answerId;
 
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(Object object)
     {
-        if (this == obj) return true;
-        if (!(obj instanceof TestResult)) return false;
-        TestResult that = (TestResult) obj;
-        return getResultId().equals(that.getResultId()) &&
-                getTestProcessId().equals(that.getTestProcessId()) &&
-                getQuestionId().equals(that.getQuestionId()) &&
-                getAnswerId().equals(that.getAnswerId());
+        if (this == object) return true;
+        if (!super.equals(object)) return false;
+        if (getClass() != object.getClass()) return false;
+
+        TestResult that = (TestResult) object;
+
+        if (!getResultId().equals(that.getResultId())) return false;
+        if (!getTestProcessId().equals(that.getTestProcessId())) return false;
+        if (!getQuestionId().equals(that.getQuestionId())) return false;
+        return getAnswerId().equals(that.getAnswerId());
+
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(getResultId(), getTestProcessId(), getQuestionId(), getAnswerId());
+        int result = getResultId().hashCode();
+        result = 31 * result + getTestProcessId().hashCode();
+        result = 31 * result + getQuestionId().hashCode();
+        result = 31 * result + getAnswerId().hashCode();
+        return result;
     }
 }

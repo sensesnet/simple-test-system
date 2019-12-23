@@ -26,18 +26,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class TestProcessDao extends AbstractDao<TestProcess>
 {
-
-    private static final Logger log = LogManager.getLogger(Test.class);
-
-    public TestProcessDao()
-    {
-        log.info("[TestProcessDao] TestProcessDao has been initialized.");
-    }
+    private static final Logger log = LogManager.getLogger(TestProcessDao.class);
 
     @Override
     public TestProcess getByIdentifier(TestProcess entity) throws ConnectionPoolException, DaoException
     {
-       LinkedList<TestProcess> testProcessList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_TEST_PROCESS_BY_ID))
@@ -45,20 +38,9 @@ public class TestProcessDao extends AbstractDao<TestProcess>
             statement.setInt(1, entity.getTestProcessId());
             try (ResultSet resultSet = statement.executeQuery())
             {
-                while (resultSet.next())
+                if (resultSet.next())
                 {
-                    testProcessList.add(TestProcess.builder()
-                            .testProcessId(resultSet.getInt("test_process_id"))
-                            .testProcessDate(resultSet.getDate("test_process_date"))
-                            .userId(resultSet.getInt("user_id"))
-                            .testId(resultSet.getInt("test_id"))
-                            .mainResultValue(resultSet.getInt("main_result_value"))
-                            .isCompleted(resultSet.getBoolean("is_completed")).build());
-                }
-                if (testProcessList.size() != 1)
-                {
-                    log.warn("[TestProcessDao] Test " + entity.getTestId() + " is not exist!");
-                    return null;
+                    return this.buildEntity(resultSet);
                 }
                 log.info("[TestProcessDao] Test Process has been selected by id: " + entity.getResultId());
             }
@@ -71,7 +53,7 @@ public class TestProcessDao extends AbstractDao<TestProcess>
         {
             closeConnection(connection);
         }
-        return testProcessList.iterator().next();
+        return null;
     }
 
     @Override
@@ -86,13 +68,7 @@ public class TestProcessDao extends AbstractDao<TestProcess>
             {
                 while (resultSet.next())
                 {
-                    testProcessList.add(TestProcess.builder()
-                            .testProcessId(resultSet.getInt("test_process_id"))
-                            .testProcessDate(resultSet.getDate("test_process_date"))
-                            .userId(resultSet.getInt("user_id"))
-                            .testId(resultSet.getInt("test_id"))
-                            .mainResultValue(resultSet.getInt("main_result_value"))
-                            .isCompleted(resultSet.getBoolean("is_completed")).build());
+                    testProcessList.add(this.buildEntity(resultSet));
                 }
                 log.info("[TestProcessDao] All test processes has been selected.");
             }
@@ -112,21 +88,36 @@ public class TestProcessDao extends AbstractDao<TestProcess>
     public void addEntity(TestProcess entity) throws ConnectionPoolException, DaoException
     {
         Connection connection = getConnection();
-        try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().INSERT_NEW_TEST_PROCESS))
+        try
         {
-            prepareStatementParams(
-                    statement,
-                    entity.getTestProcessDate(),
-                    entity.getUserId(),
-                    entity.getTestId(),
-                    entity.getMainResultValue(),
-                    entity.isCompleted()).executeUpdate();
-            log.info("[TestProcessDao] New test process has been added: " + entity.toString());
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection
+                    .prepareStatement(DaoConstant.query().INSERT_NEW_TEST_PROCESS))
+            {
+                prepareStatementParams(
+                        statement,
+                        entity.getTestProcessDate(),
+                        entity.getUserId(),
+                        entity.getTestId(),
+                        entity.getMainResultValue(),
+                        entity.isCompleted()).executeUpdate();
+                log.info("[TestProcessDao] New test process has been added: " + entity.toString());
+                connection.commit();
+            }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            log.error("[TestProcessDao] Test has NOT added, DB access error. Error: " + e.getLocalizedMessage());
+            try
+            {
+                connection.rollback();
+                log.warn("[TestProcessDao] Transaction rollback is completed.");
+            }
+            catch (SQLException ex)
+            {
+                log.error("[TestProcessDao] Rollback has NOT possible.");
+                throw new DaoException("SQL Error: Have no access to DB.", ex);
+            }
         }
         finally
         {
@@ -138,16 +129,31 @@ public class TestProcessDao extends AbstractDao<TestProcess>
     public void removeEntity(TestProcess entity) throws ConnectionPoolException, DaoException
     {
         Connection connection = getConnection();
-        try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().DELETE_TEST_PROCESS_BY_ID))
+        try
         {
-            statement.setInt(1, entity.getTestProcessId());
-            statement.execute();
-            log.info("[TestProcessDao] Test process has been removed: " + entity.toString());
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection
+                    .prepareStatement(DaoConstant.query().DELETE_TEST_PROCESS_BY_ID))
+            {
+                statement.setInt(1, entity.getTestProcessId());
+                statement.execute();
+                log.info("[TestProcessDao] Test process has been removed: " + entity.toString());
+                connection.commit();
+            }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            log.error("[TestProcessDao] Test has NOT removed, DB access error. Error: " + e.getLocalizedMessage());
+            try
+            {
+                connection.rollback();
+                log.warn("[TestProcessDao] Transaction rollback is completed.");
+            }
+            catch (SQLException ex)
+            {
+                log.error("[TestProcessDao] Rollback has NOT possible.");
+                throw new DaoException("SQL Error: Have no access to DB.", ex);
+            }
         }
         finally
         {
@@ -159,26 +165,53 @@ public class TestProcessDao extends AbstractDao<TestProcess>
     public void editEntity(TestProcess entity) throws ConnectionPoolException, DaoException
     {
         Connection connection = getConnection();
-        try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().UPDATE_TEST_PROCESS))
+        try
         {
-            prepareStatementParams(
-                    statement,
-                    entity.getTestProcessDate(),
-                    entity.getUserId(),
-                    entity.getTestId(),
-                    entity.getMainResultValue(),
-                    entity.isCompleted(),
-                    entity.getTestProcessId()).executeQuery();
-            log.info("[TestProcessDao] Test process has been updated: " + entity.toString());
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection
+                    .prepareStatement(DaoConstant.query().UPDATE_TEST_PROCESS))
+            {
+                prepareStatementParams(
+                        statement,
+                        entity.getTestProcessDate(),
+                        entity.getUserId(),
+                        entity.getTestId(),
+                        entity.getMainResultValue(),
+                        entity.isCompleted(),
+                        entity.getTestProcessId()).executeQuery();
+                log.info("[TestProcessDao] Test process has been updated: " + entity.toString());
+                connection.commit();
+            }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            log.error("[TTestProcessDao] Test has NOT updated, DB access error. Error: " + e.getLocalizedMessage());
+            try
+            {
+                connection.rollback();
+                log.warn("[TestProcessDao] Transaction rollback is completed.");
+            }
+            catch (SQLException ex)
+            {
+                log.error("[TestDao] Rollback has NOT possible.");
+                throw new DaoException("SQL Error: Have no access to DB.", ex);
+            }
         }
         finally
         {
             closeConnection(connection);
         }
+    }
+
+    @Override
+    public TestProcess buildEntity(ResultSet resultSet) throws SQLException
+    {
+        return TestProcess.builder()
+                .testProcessId(resultSet.getInt("test_process_id"))
+                .testProcessDate(resultSet.getDate("test_process_date"))
+                .userId(resultSet.getInt("user_id"))
+                .testId(resultSet.getInt("test_id"))
+                .mainResultValue(resultSet.getInt("main_result_value"))
+                .isCompleted(resultSet.getBoolean("is_completed")).build();
     }
 }

@@ -1,8 +1,7 @@
 package com.sensesnet.listener;
 
-import com.sensesnet.ServiceProvider;
+import com.sensesnet.ServiceFactory;
 import com.sensesnet.exception.ServiceException;
-import com.sensesnet.servlet.Controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,9 +25,9 @@ public class ContextListener implements ServletContextListener
     {
         try
         {
-            ServiceProvider.getInstance().initConnectionPool();
+            ServiceFactory.getInstance().initConnectionPool();
             log.info("[ContextListener] Classes "
-                    + "[ConnectionPool; DaoFactory; ServiceProvider] has been initialized.");
+                    + "[ConnectionPool; DaoFactory; ServiceFactory] has been initialized.");
         }
         catch (ServiceException e)
         {
@@ -42,7 +41,7 @@ public class ContextListener implements ServletContextListener
     {
         try
         {
-            ServiceProvider.getInstance().destroyConnectionPool();
+            ServiceFactory.getInstance().destroyConnectionPool();
             log.info("[ContextListener] ConnectionPool has been destroyed");
         }
         catch (ServiceException e)

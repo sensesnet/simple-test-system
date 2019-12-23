@@ -6,7 +6,7 @@ package com.sensesnet.constant.enums;
  * <p>
  * Enum: Type of roles
  */
-enum RoleType
+public enum RoleType
 {
     ADMIN(1, "ADMIN"),
     USER(2, "USER");

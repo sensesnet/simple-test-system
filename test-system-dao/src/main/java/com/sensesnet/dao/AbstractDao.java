@@ -3,6 +3,7 @@ package com.sensesnet.dao;
 import com.sensesnet.connection.ConnectionPool;
 import com.sensesnet.connection.ConnectionPoolException;
 import com.sensesnet.dao.exception.DaoException;
+import com.sensesnet.pojo.authentication.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -142,4 +143,13 @@ public abstract class AbstractDao<T>
      * - edit impl
      */
     public abstract void editEntity(T entity) throws ConnectionPoolException, DaoException;
+
+    /**
+     * Dao
+     * - build entity
+     *
+     * @param resultSet
+     * @return
+     */
+    public abstract T buildEntity(ResultSet resultSet) throws SQLException;
 }

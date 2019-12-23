@@ -1,4 +1,4 @@
-package com.sensesnet.util.exception;
+package com.sensesnet.dao.exception;
 
 /**
  * @author sensesnet <br />

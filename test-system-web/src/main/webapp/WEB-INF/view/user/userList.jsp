@@ -123,12 +123,12 @@
             </tr>
             <c:forEach items="${userList}" var="user">
                 <tr>
-                    <td>${user.getUserInfo().getUserName()}</td>
-                    <td>${user.getUserInfo().getUserSurname()}</td>
+                    <td>${user.getUser().getUserName()}</td>
+                    <td>${user.getUser().getUserSurname()}</td>
                     <td>${user.getUser().getUserLogin()}</td>
-                    <td>${user.getUserInfo().getUserAddress()}</td>
-                    <td>${user.getUserInfo().getUserBirthday()}</td>
-                    <td>${user.getUserInfo().getUserPhone()}</td>
+                    <td>${user.getUser().getUserAddress()}</td>
+                    <td>${user.getUser().getUserBirthday()}</td>
+                    <td>${user.getUser().getUserPhone()}</td>
                     <td>${user.getUserRole().getRoleName()}</td>
                     <td>
                         <a href="Controller?action=user_edit&userId=<c:out value ="${user.getUser().getUserId()}"/>">

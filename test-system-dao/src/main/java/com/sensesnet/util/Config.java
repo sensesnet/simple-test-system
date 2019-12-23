@@ -1,6 +1,6 @@
 package com.sensesnet.util;
 
-import com.sensesnet.util.exception.UnknownPropertyException;
+import com.sensesnet.dao.exception.UnknownPropertyException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

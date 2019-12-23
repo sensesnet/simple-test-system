@@ -27,15 +27,9 @@ public class TestResultDao extends AbstractDao<TestResult>
 {
     private static final Logger log = LogManager.getLogger(TestResult.class);
 
-    public TestResultDao()
-    {
-        log.info("[TestResultDao] TestResultDao has been initialized.");
-    }
-
     @Override
     public TestResult getByIdentifier(TestResult entity) throws ConnectionPoolException, DaoException
     {
-        LinkedList<TestResult> resultList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_RESULT_BY_ID))
@@ -43,18 +37,9 @@ public class TestResultDao extends AbstractDao<TestResult>
             statement.setInt(1, entity.getResultId());
             try (ResultSet resultSet = statement.executeQuery())
             {
-                while (resultSet.next())
+                if (resultSet.next())
                 {
-                    resultList.add(TestResult.builder()
-                            .resultId(resultSet.getInt("result_id"))
-                            .testProcessId(resultSet.getInt("test_process_id"))
-                            .questionId(resultSet.getInt("question_id"))
-                            .answerId(resultSet.getInt("answer_id")).build());
-                }
-                if (resultList.size() != 1)
-                {
-                    log.warn("[TestResultDao] Test " + entity.getResultId() + " is not exist!");
-                    return null;
+                    return this.buildEntity(resultSet);
                 }
                 log.info("[TestResultDao] Result has been selected by id: " + entity.getResultId());
             }
@@ -67,7 +52,7 @@ public class TestResultDao extends AbstractDao<TestResult>
         {
             closeConnection(connection);
         }
-        return resultList.iterator().next();
+        return null;
     }
 
     @Override
@@ -82,11 +67,7 @@ public class TestResultDao extends AbstractDao<TestResult>
             {
                 while (resultSet.next())
                 {
-                    resultList.add(TestResult.builder()
-                            .resultId(resultSet.getInt("result_id"))
-                            .testProcessId(resultSet.getInt("test_process_id"))
-                            .questionId(resultSet.getInt("question_id"))
-                            .answerId(resultSet.getInt("answer_id")).build());
+                    resultList.add(this.buildEntity(resultSet));
                 }
                 log.info("[TestResultDao] All results has been selected.");
             }
@@ -107,19 +88,34 @@ public class TestResultDao extends AbstractDao<TestResult>
     public void addEntity(TestResult entity) throws ConnectionPoolException, DaoException
     {
         Connection connection = getConnection();
-        try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().INSERT_RESULT))
+        try
         {
-            prepareStatementParams(
-                    statement,
-                    entity.getTestProcessId(),
-                    entity.getQuestionId(),
-                    entity.getAnswerId()).executeUpdate();
-            log.info("[TestResultDao] New result has been added: " + entity.toString());
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection
+                    .prepareStatement(DaoConstant.query().INSERT_RESULT))
+            {
+                prepareStatementParams(
+                        statement,
+                        entity.getTestProcessId(),
+                        entity.getQuestionId(),
+                        entity.getAnswerId()).executeUpdate();
+                log.info("[TestResultDao] New result has been added: " + entity.toString());
+                connection.commit();
+            }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            log.error("[TestResultDao] Test has NOT added, DB access error. Error: " + e.getLocalizedMessage());
+            try
+            {
+                connection.rollback();
+                log.warn("[TestResultDao] Transaction rollback is completed.");
+            }
+            catch (SQLException ex)
+            {
+                log.error("[TestResultDao] Rollback has NOT possible.");
+                throw new DaoException("SQL Error: Have no access to DB.", ex);
+            }
         }
         finally
         {
@@ -131,16 +127,31 @@ public class TestResultDao extends AbstractDao<TestResult>
     public void removeEntity(TestResult entity) throws ConnectionPoolException, DaoException
     {
         Connection connection = getConnection();
-        try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().DELETE_RESULT_BY_ID))
+        try
         {
-            statement.setInt(1, entity.getResultId());
-            statement.execute();
-            log.info("[TestResultDao] Result has been removed: " + entity.toString());
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection
+                    .prepareStatement(DaoConstant.query().DELETE_RESULT_BY_ID))
+            {
+                statement.setInt(1, entity.getResultId());
+                statement.execute();
+                log.info("[TestResultDao] Result has been removed: " + entity.toString());
+                connection.commit();
+            }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            log.error("[TestResultDao] Test has NOT removed, DB access error. Error: " + e.getLocalizedMessage());
+            try
+            {
+                connection.rollback();
+                log.warn("[TestResultDao] Transaction rollback is completed.");
+            }
+            catch (SQLException ex)
+            {
+                log.error("[TestResultDao] Rollback has NOT possible.");
+                throw new DaoException("SQL Error: Have no access to DB.", ex);
+            }
         }
         finally
         {
@@ -152,24 +163,49 @@ public class TestResultDao extends AbstractDao<TestResult>
     public void editEntity(TestResult entity) throws ConnectionPoolException, DaoException
     {
         Connection connection = getConnection();
-        try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().UPDATE_RESULT))
+        try
         {
-            prepareStatementParams(
-                    statement,
-                    entity.getTestProcessId(),
-                    entity.getQuestionId(),
-                    entity.getAnswerId(),
-                    entity.getResultId()).executeQuery();
-            log.info("[TestResultDao] Result has been updated: " + entity.toString());
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection
+                    .prepareStatement(DaoConstant.query().UPDATE_RESULT))
+            {
+                prepareStatementParams(
+                        statement,
+                        entity.getTestProcessId(),
+                        entity.getQuestionId(),
+                        entity.getAnswerId(),
+                        entity.getResultId()).executeQuery();
+                log.info("[TestResultDao] Result has been updated: " + entity.toString());
+                connection.commit();
+            }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            log.error("[TestResultDao] Test has NOT updated, DB access error. Error: " + e.getLocalizedMessage());
+            try
+            {
+                connection.rollback();
+                log.warn("[TestResultDao] Transaction rollback is completed.");
+            }
+            catch (SQLException ex)
+            {
+                log.error("[TestResultDao] Rollback has NOT possible.");
+                throw new DaoException("SQL Error: Have no access to DB.", ex);
+            }
         }
         finally
         {
             closeConnection(connection);
         }
+    }
+
+    @Override
+    public TestResult buildEntity(ResultSet resultSet) throws SQLException
+    {
+        return TestResult.builder()
+                .resultId(resultSet.getInt("result_id"))
+                .testProcessId(resultSet.getInt("test_process_id"))
+                .questionId(resultSet.getInt("question_id"))
+                .answerId(resultSet.getInt("answer_id")).build();
     }
 }

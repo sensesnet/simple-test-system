@@ -24,19 +24,26 @@ public class UserRole
     private String roleDesc;
 
     @Override
-    public boolean equals(Object o)
+    public boolean equals(Object object)
     {
-        if (this == o) return true;
-        if (!(o instanceof UserRole)) return false;
-        UserRole userRole = (UserRole) o;
-        return getRoleId().equals(userRole.getRoleId()) &&
-                getRoleName().equals(userRole.getRoleName()) &&
-                Objects.equals(getRoleDesc(), userRole.getRoleDesc());
+        if (this == object) return true;
+        if (!super.equals(object)) return false;
+        if (getClass() != object.getClass()) return false;
+
+        UserRole userRole = (UserRole) object;
+
+        if (!getRoleId().equals(userRole.getRoleId())) return false;
+        if (!getRoleName().equals(userRole.getRoleName())) return false;
+        return getRoleDesc().equals(userRole.getRoleDesc());
+
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(getRoleId(), getRoleName(), getRoleDesc());
+        int result = getRoleId().hashCode();
+        result = 31 * result + getRoleName().hashCode();
+        result = 31 * result + getRoleDesc().hashCode();
+        return result;
     }
 }

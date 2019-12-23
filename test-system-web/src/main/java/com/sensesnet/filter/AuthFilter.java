@@ -1,15 +1,5 @@
 package com.sensesnet.filter;
 
-import com.sensesnet.implementation.UserService;
-
-import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
-import javax.servlet.annotation.WebListener;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
-
 /**
  * @author sensesnet <br />
  * Copyright 2019 Eshted LLC. All rights reserved.

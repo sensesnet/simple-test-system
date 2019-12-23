@@ -27,15 +27,9 @@ public class TestDao extends AbstractDao<Test>
 {
     private static final Logger log = LogManager.getLogger(Test.class);
 
-    public TestDao()
-    {
-        log.info("[TestDao] TestDao has been initialized.");
-    }
-
     @Override
     public Test getByIdentifier(Test entity) throws ConnectionPoolException, DaoException
     {
-        LinkedList<Test> testList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_TEST_BY_ID))
@@ -45,17 +39,7 @@ public class TestDao extends AbstractDao<Test>
             {
                 while (resultSet.next())
                 {
-                    testList.add(Test.builder()
-                            .testId(resultSet.getInt("test_id"))
-                            .testName(resultSet.getString("test_name"))
-                            .testDescription(resultSet.getString("test_description"))
-                            .testValue(resultSet.getInt("test_value"))
-                            .testTime(resultSet.getTime("test_time")).build());
-                }
-                if (testList.size() != 1)
-                {
-                    log.warn("[TestDao] Test " + entity.getTestId() + " is not exist!");
-                    return null;
+                    return this.buildEntity(resultSet);
                 }
                 log.info("[TestDao] Test has been selected by id: " + entity.getTestId());
             }
@@ -68,7 +52,7 @@ public class TestDao extends AbstractDao<Test>
         {
             closeConnection(connection);
         }
-        return testList.iterator().next();
+        return null;
     }
 
     @Override
@@ -83,12 +67,7 @@ public class TestDao extends AbstractDao<Test>
             {
                 while (resultSet.next())
                 {
-                    testList.add(Test.builder()
-                            .testId(resultSet.getInt("test_id"))
-                            .testName(resultSet.getString("test_name"))
-                            .testDescription(resultSet.getString("test_description"))
-                            .testValue(resultSet.getInt("test_value"))
-                            .testTime(resultSet.getTime("test_time")).build());
+                    testList.add(this.buildEntity(resultSet));
                 }
                 log.info("[TestDao] All tests has been selected.");
             }
@@ -108,19 +87,34 @@ public class TestDao extends AbstractDao<Test>
     public void addEntity(Test entity) throws ConnectionPoolException, DaoException
     {
         Connection connection = getConnection();
-        try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().INSERT_NEW_TEST))
+        try
         {
-            prepareStatementParams(
-                    statement,
-                    entity.getTestDescription(),
-                    entity.getTestValue(),
-                    entity.getTestTime()).executeUpdate();
-            log.info("[TestDao] New test has been added: " + entity.toString());
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection
+                    .prepareStatement(DaoConstant.query().INSERT_NEW_TEST))
+            {
+                prepareStatementParams(
+                        statement,
+                        entity.getTestDescription(),
+                        entity.getTestValue(),
+                        entity.getTestTime()).executeUpdate();
+                log.info("[TestDao] New test has been added: " + entity.toString());
+                connection.commit();
+            }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            log.error("[TestDao] Test has NOT added, DB access error. Error: " + e.getLocalizedMessage());
+            try
+            {
+                connection.rollback();
+                log.warn("[TestDao] Transaction rollback is completed.");
+            }
+            catch (SQLException ex)
+            {
+                log.error("[TestDao] Rollback has NOT possible.");
+                throw new DaoException("SQL Error: Have no access to DB.", ex);
+            }
         }
         finally
         {
@@ -132,16 +126,30 @@ public class TestDao extends AbstractDao<Test>
     public void removeEntity(Test entity) throws ConnectionPoolException, DaoException
     {
         Connection connection = getConnection();
-        try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().DELETE_TEST_BY_ID))
+        try
         {
-            statement.setInt(1, entity.getTestId());
-            statement.execute();
-            log.info("[TestDao] Test has been removed: " + entity.toString());
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection
+                    .prepareStatement(DaoConstant.query().DELETE_TEST_BY_ID))
+            {
+                statement.setInt(1, entity.getTestId());
+                statement.execute();
+                log.info("[TestDao] Test has been removed: " + entity.toString());
+            }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            log.error("[TestDao] Test has NOT removed, DB access error. Error: " + e.getLocalizedMessage());
+            try
+            {
+                connection.rollback();
+                log.warn("[TestDao] Transaction rollback is completed.");
+            }
+            catch (SQLException ex)
+            {
+                log.error("[TestDao] Rollback has NOT possible.");
+                throw new DaoException("SQL Error: Have no access to DB.", ex);
+            }
         }
         finally
         {
@@ -153,20 +161,36 @@ public class TestDao extends AbstractDao<Test>
     public void editEntity(Test entity) throws ConnectionPoolException, DaoException
     {
         Connection connection = getConnection();
-        try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().UPDATE_TEST))
+        try
         {
-            prepareStatementParams(
-                    statement,
-                    entity.getTestName(),
-                    entity.getTestDescription(),
-                    entity.getTestValue(),
-                    entity.getTestTime()).executeQuery();
-            log.info("[TestDao] Answer has been updated: " + entity.toString());
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection
+                    .prepareStatement(DaoConstant.query().UPDATE_TEST))
+            {
+                prepareStatementParams(
+                        statement,
+                        entity.getTestName(),
+                        entity.getTestDescription(),
+                        entity.getTestValue(),
+                        entity.getTestTime(),
+                        entity.getTestId()).execute();
+                log.info("[TestDao] Test has been updated: " + entity.toString());
+                connection.commit();
+            }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            log.error("[TestDao] Test has NOT updated, DB access error. Error: " + e.getLocalizedMessage());
+            try
+            {
+                connection.rollback();
+                log.warn("[TestDao] Transaction rollback is completed.");
+            }
+            catch (SQLException ex)
+            {
+                log.error("[TestDao] Rollback has NOT possible.");
+                throw new DaoException("SQL Error: Have no access to DB.", ex);
+            }
         }
         finally
         {
@@ -174,4 +198,14 @@ public class TestDao extends AbstractDao<Test>
         }
     }
 
+    @Override
+    public Test buildEntity(ResultSet resultSet) throws SQLException
+    {
+        return Test.builder()
+                .testId(resultSet.getInt("test_id"))
+                .testName(resultSet.getString("test_name"))
+                .testDescription(resultSet.getString("test_description"))
+                .testValue(resultSet.getInt("test_value"))
+                .testTime(resultSet.getTime("test_time")).build();
+    }
 }

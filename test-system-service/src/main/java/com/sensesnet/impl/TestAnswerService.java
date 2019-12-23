@@ -1,4 +1,4 @@
-package com.sensesnet.implementation;
+package com.sensesnet.impl;
 
 import com.sensesnet.pojo.test.TestAnswer;
 
@@ -10,33 +10,33 @@ import java.util.List;
  * <p>
  * Service: Test answer service
  */
-public class TestAnswerService extends AbstractService<TestAnswer>
+public class TestAnswerService
 {
-    @Override
+
     public TestAnswer getByIdentifier(TestAnswer entity)
     {
         return null;
     }
 
-    @Override
+
     public List<TestAnswer> getListOfEntity()
     {
         return null;
     }
 
-    @Override
+
     public void addEntity(TestAnswer entity)
     {
 
     }
 
-    @Override
+
     public void removeEntity(TestAnswer entity)
     {
 
     }
 
-    @Override
+
     public void editEntity(TestAnswer entity)
     {
 

@@ -22,24 +22,45 @@ public class User
     private @NonNull String userLogin;
     private @NonNull String userPassword;
     private Integer userRole;
-    private Integer userInfo;
+    private String userName;
+    private String userSurname;
+    private String userAddress;
+    private String userBirthday;
+    private String userPhone;
 
     @Override
-    public boolean equals(Object o)
+    public boolean equals(Object object)
     {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return getUserId().equals(user.getUserId()) &&
-                getUserLogin().equals(user.getUserLogin()) &&
-                getUserPassword().equals(user.getUserPassword()) &&
-                getUserRole().equals(user.getUserRole()) &&
-                Objects.equals(getUserInfo(), user.getUserInfo());
+        if (this == object) return true;
+        if (!super.equals(object)) return false;
+        if (getClass() != object.getClass()) return false;
+
+        User user = (User) object;
+
+        if (!getUserId().equals(user.getUserId())) return false;
+        if (!getUserLogin().equals(user.getUserLogin())) return false;
+        if (!getUserPassword().equals(user.getUserPassword())) return false;
+        if (!getUserRole().equals(user.getUserRole())) return false;
+        if (!getUserName().equals(user.getUserName())) return false;
+        if (!getUserSurname().equals(user.getUserSurname())) return false;
+        if (!getUserAddress().equals(user.getUserAddress())) return false;
+        if (!getUserBirthday().equals(user.getUserBirthday())) return false;
+        return getUserPhone().equals(user.getUserPhone());
+
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(getUserId(), getUserLogin(), getUserPassword(), getUserRole(), getUserInfo());
+        int result = getUserId().hashCode();
+        result = 31 * result + getUserLogin().hashCode();
+        result = 31 * result + getUserPassword().hashCode();
+        result = 31 * result + getUserRole().hashCode();
+        result = 31 * result + getUserName().hashCode();
+        result = 31 * result + getUserSurname().hashCode();
+        result = 31 * result + getUserAddress().hashCode();
+        result = 31 * result + getUserBirthday().hashCode();
+        result = 31 * result + getUserPhone().hashCode();
+        return result;
     }
 }

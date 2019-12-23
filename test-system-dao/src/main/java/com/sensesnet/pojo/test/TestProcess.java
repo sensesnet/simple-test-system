@@ -28,23 +28,34 @@ public class TestProcess
     private boolean isCompleted;
 
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(Object object)
     {
-        if (this == obj) return true;
-        if (!(obj instanceof TestProcess)) return false;
-        TestProcess that = (TestProcess) obj;
-        return isCompleted() == that.isCompleted() &&
-                getTestProcessId().equals(that.getTestProcessId()) &&
-                getTestProcessDate().equals(that.getTestProcessDate()) &&
-                getUserId().equals(that.getUserId()) &&
-                getResultId().equals(that.getResultId()) &&
-                getTestId().equals(that.getTestId()) &&
-                getMainResultValue().equals(that.getMainResultValue());
+        if (this == object) return true;
+        if (!super.equals(object)) return false;
+        if (getClass() != object.getClass()) return false;
+
+        TestProcess that = (TestProcess) object;
+
+        if (isCompleted() != that.isCompleted()) return false;
+        if (!getTestProcessId().equals(that.getTestProcessId())) return false;
+        if (!getTestProcessDate().equals(that.getTestProcessDate())) return false;
+        if (!getUserId().equals(that.getUserId())) return false;
+        if (!getResultId().equals(that.getResultId())) return false;
+        if (!getTestId().equals(that.getTestId())) return false;
+        return getMainResultValue().equals(that.getMainResultValue());
+
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(getTestProcessId(), getTestProcessDate(), getUserId(), getResultId(), getTestId(), getMainResultValue(), isCompleted());
+        int result = getTestProcessId().hashCode();
+        result = 31 * result + getTestProcessDate().hashCode();
+        result = 31 * result + getUserId().hashCode();
+        result = 31 * result + getResultId().hashCode();
+        result = 31 * result + getTestId().hashCode();
+        result = 31 * result + getMainResultValue().hashCode();
+        result = 31 * result + (isCompleted() ? 1 : 0);
+        return result;
     }
 }

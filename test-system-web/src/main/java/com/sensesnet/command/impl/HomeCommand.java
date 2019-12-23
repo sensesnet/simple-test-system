@@ -1,13 +1,12 @@
 package com.sensesnet.command.impl;
 
-import com.sensesnet.ServiceProvider;
+import com.sensesnet.ServiceFactory;
 import com.sensesnet.command.ICommand;
 import com.sensesnet.constant.ConstantProvider;
 import com.sensesnet.exception.ServiceException;
-import com.sensesnet.implementation.UserRoleService;
+import com.sensesnet.impl.UserRoleService;
 import com.sensesnet.pojo.authentication.User;
 import com.sensesnet.pojo.authentication.UserRole;
-import com.sensesnet.servlet.Controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,7 +14,6 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 
@@ -31,7 +29,7 @@ import java.io.IOException;
 public class HomeCommand implements ICommand
 {
     private static final Logger log = LogManager.getLogger(HomeCommand.class);
-    private UserRoleService userRoleService = ServiceProvider.getInstance().getUserRoleService();
+    private UserRoleService userRoleService = ServiceFactory.getInstance().getUserRoleService();
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
@@ -43,8 +41,8 @@ public class HomeCommand implements ICommand
         user = (User) request.getSession().getAttribute("currentUser");
         try
         {
-            userRole = userRoleService.getByIdentifier(user.getUserRole());
-            request.getSession().setAttribute("userRole", userRoleService.getByIdentifier(user.getUserRole()));
+            userRole = userRoleService.getRoleById(user.getUserRole());
+            request.getSession().setAttribute("userRole", userRoleService.getRoleById(user.getUserRole()));
 
             if (userRole.getRoleName().equalsIgnoreCase("Admin"))
             {

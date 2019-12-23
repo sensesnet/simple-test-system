@@ -4,10 +4,7 @@ import com.sensesnet.connection.ConnectionPoolException;
 import com.sensesnet.constant.DaoConstant;
 import com.sensesnet.dao.AbstractDao;
 import com.sensesnet.dao.exception.DaoException;
-import com.sensesnet.dto.UserDto;
 import com.sensesnet.pojo.authentication.User;
-import com.sensesnet.pojo.authentication.UserInfo;
-import com.sensesnet.pojo.authentication.UserRole;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,41 +22,29 @@ import java.util.List;
  * DAO: User
  * Standart CRUD operation
  */
-public class UserDao extends AbstractDao<UserDto>
+public class UserDao extends AbstractDao<User>
 {
 
     private static final Logger log = LogManager.getLogger(UserDao.class);
 
-    public UserDao()
+    public User getUserByLoginAndPassword(String login, String password) throws
+            DaoException, ConnectionPoolException
     {
-        log.info("[UserDao] UserDao has been initialized.");
-    }
-
-    @Override
-    public UserDto getByIdentifier(UserDto entity) throws ConnectionPoolException, DaoException
-    {
-        LinkedList<UserDto> userList = new LinkedList<>();
         Connection connection = getConnection();
-
         try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().SELECT_USER_BY_ID))
+                .prepareStatement(DaoConstant.query().SELECT_USER_BY_LOGIN_AND_PASSWORD))
         {
-            statement.setInt(1, entity.getUser().getUserId());
+            statement.setString(1, login);
+            statement.setString(2, password);
             try (ResultSet resultSet = statement.executeQuery())
             {
                 if (resultSet.next())
                 {
-                    userList.add(this.getUserDto(resultSet));
+                    return this.buildEntity(resultSet);
                 }
-                if (userList.size() != 1)
-                {
-                    log.info("[UserDao] User [" + entity.getUser().getUserLogin() + "] account is not exist!");
-                    return null;
-                }
-                log.info("[UserDao] Account has been found: " + userList.get(0).toString());
+                log.info("[UserDao] Account has been found by login and password: [" + login + ";" + password + "].");
             }
         }
-
         catch (SQLException e)
         {
             throw new DaoException("SQL Error: Have no access to DB.", e);
@@ -68,14 +53,95 @@ public class UserDao extends AbstractDao<UserDto>
         {
             closeConnection(connection);
         }
-        return userList.iterator().next();
+        return null;
     }
 
+    public User getUserByLogin(String login) throws ConnectionPoolException, DaoException
+    {
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(DaoConstant.query().SELECT_USER_BY_LOGIN))
+        {
+            statement.setString(1, login);
+            try (ResultSet resultSet = statement.executeQuery())
+            {
+                if (resultSet.next())
+                {
+                    return this.buildEntity(resultSet);
+                }
+                log.info("[UserDao] Account has been found by login : " + login);
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DaoException("SQL Error: Have no access to DB.", e);
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
+        return null;
+    }
+
+    public User getByIdentifier(Integer userId) throws ConnectionPoolException, DaoException
+    {
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(DaoConstant.query().SELECT_USER_BY_ID))
+        {
+            statement.setInt(1, userId);
+            try (ResultSet resultSet = statement.executeQuery())
+            {
+                if (resultSet.next())
+                {
+                    return this.buildEntity(resultSet);
+                }
+                log.info("[UserDao] Account has been found by id: " + userId);
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DaoException("SQL Error: Have no access to DB.", e);
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
+        return null;
+    }
 
     @Override
-    public List<UserDto> getListOfEntity() throws ConnectionPoolException, DaoException
+    public User getByIdentifier(User entity) throws ConnectionPoolException, DaoException
     {
-        LinkedList<UserDto> userList = new LinkedList<>();
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(DaoConstant.query().SELECT_USER_BY_ID))
+        {
+            statement.setInt(1, entity.getUserId());
+            try (ResultSet resultSet = statement.executeQuery())
+            {
+                if (resultSet.next())
+                {
+                    return this.buildEntity(resultSet);
+                }
+                log.info("[UserDao] Account has been found: " + entity.toString());
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DaoException("SQL Error: Have no access to DB.", e);
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
+        return null;
+    }
+
+    @Override
+    public List<User> getListOfEntity() throws ConnectionPoolException, DaoException
+    {
+        LinkedList<User> userList = new LinkedList<>();
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_ALL_USER))
@@ -84,10 +150,9 @@ public class UserDao extends AbstractDao<UserDto>
             {
                 while (resultSet.next())
                 {
-                    userList.add(this.getUserDto(resultSet));
+                    userList.add(this.buildEntity(resultSet));
                 }
                 log.info("[UserDao] Account's has been selected.");
-                connection.commit();
             }
         }
         catch (SQLException e)
@@ -102,35 +167,26 @@ public class UserDao extends AbstractDao<UserDto>
     }
 
     @Override
-    public void addEntity(UserDto entity) throws ConnectionPoolException, DaoException
+    public void addEntity(User entity) throws ConnectionPoolException, DaoException
     {
-        LinkedList<UserInfo> userInfoList = new LinkedList<>();
         Connection connection = getConnection();
         try
         {
             connection.setAutoCommit(false);
             try (PreparedStatement statement = connection
-                    .prepareStatement(DaoConstant.query().INSERT_NEW_USER_INFO))
-            {
-                prepareStatementParams(
-                        statement,
-                        entity.getUserInfo().getUserName(),
-                        entity.getUserInfo().getUserSurname(),
-                        entity.getUserInfo().getUserAddress(),
-                        entity.getUserInfo().getUserBirthday(),
-                        entity.getUserInfo().getUserPhone()).execute();
-                log.info("[UserDao] Account Info has been added: " + entity.toString());
-                connection.commit();
-            }
-            try (PreparedStatement statement = connection
                     .prepareStatement(DaoConstant.query().INSERT_NEW_USER))
             {
                 prepareStatementParams(
                         statement,
-                        entity.getUser().getUserLogin(),
-                        entity.getUser().getUserPassword(),
-                        entity.getUserRole().getRoleId()).execute();
-                log.info("[UserDao] Account has been added: " + entity.toString());
+                        entity.getUserLogin(),
+                        entity.getUserPassword(),
+                        entity.getUserRole(),
+                        entity.getUserName(),
+                        entity.getUserSurname(),
+                        entity.getUserAddress(),
+                        entity.getUserBirthday(),
+                        entity.getUserPhone()).execute();
+                log.info("[UserDao] Account Info has been added: " + entity.toString());
                 connection.commit();
             }
         }
@@ -155,7 +211,7 @@ public class UserDao extends AbstractDao<UserDto>
     }
 
     @Override
-    public void removeEntity(UserDto entity) throws DaoException, ConnectionPoolException
+    public void removeEntity(User entity) throws DaoException, ConnectionPoolException
     {
         Connection connection = getConnection();
         try
@@ -164,7 +220,7 @@ public class UserDao extends AbstractDao<UserDto>
             try (PreparedStatement statement = connection
                     .prepareStatement(DaoConstant.query().DELETE_USER_BY_ID))
             {
-                statement.setInt(1, entity.getUser().getUserId());
+                statement.setInt(1, entity.getUserId());
                 statement.execute();
                 log.info("[UserDao] Account has been removed: " + entity.toString());
                 connection.commit();
@@ -191,7 +247,7 @@ public class UserDao extends AbstractDao<UserDto>
     }
 
     @Override
-    public void editEntity(UserDto entity) throws ConnectionPoolException, DaoException
+    public void editEntity(User entity) throws ConnectionPoolException, DaoException
     {
         Connection connection = getConnection();
         try
@@ -202,10 +258,16 @@ public class UserDao extends AbstractDao<UserDto>
             {
                 prepareStatementParams(
                         statement,
-                        entity.getUser().getUserLogin(),
-                        entity.getUser().getUserPassword(),
-                        entity.getUserRole().getRoleName(),
-                        entity.getUser().getUserId()).execute();
+                        entity.getUserLogin(),
+                        entity.getUserPassword(),
+                        entity.getUserRole(),
+                        entity.getUserName(),
+                        entity.getUserSurname(),
+                        entity.getUserAddress(),
+                        entity.getUserAddress(),
+                        entity.getUserBirthday(),
+                        entity.getUserPhone(),
+                        entity.getUserId()).execute();
                 log.info("[UserDao] Account has been updated: " + entity.toString());
                 connection.commit();
             }
@@ -230,137 +292,24 @@ public class UserDao extends AbstractDao<UserDto>
         }
     }
 
-    public User getUserByLoginAndPassword(String login, String password) throws
-            DaoException, ConnectionPoolException
+    /**
+     * build User entity
+     *
+     * @param resultSet
+     * @return
+     * @throws SQLException
+     */
+    public User buildEntity(ResultSet resultSet) throws SQLException
     {
-        LinkedList<User> userList = new LinkedList<>();
-        Connection connection = getConnection();
-        try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().SELECT_USER_BY_LOGIN_AND_PASSWORD))
-        {
-            statement.setString(1, login);
-            statement.setString(2, password);
-            try (ResultSet resultSet = statement.executeQuery())
-            {
-                while (resultSet.next())
-                {
-                    userList.add(User.builder()
-                            .userId(resultSet.getInt("user_id"))
-                            .userLogin(resultSet.getString("user_login"))
-                            .userPassword(resultSet.getString("user_password"))
-                            .userRole(resultSet.getInt("role_id"))
-                            .userInfo(resultSet.getInt("info_id")).build());
-                }
-                if (userList.size() != 1)
-                {
-                    log.info("[UserDao] User [" + login + ";" + password + "] account is not exist!");
-                    return null;
-                }
-                log.info("[UserDao] Account has been found: " + userList.get(0).toString());
-            }
-        }
-        catch (SQLException e)
-        {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
-        }
-        finally
-        {
-            closeConnection(connection);
-        }
-        return userList.iterator().next();
-    }
-
-    public User getUserByLoginAndPassword(String login) throws ConnectionPoolException, DaoException
-    {
-        LinkedList<User> userList = new LinkedList<>();
-        Connection connection = getConnection();
-        try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().SELECT_USER_BY_LOGIN))
-        {
-            statement.setString(1, login);
-            try (ResultSet resultSet = statement.executeQuery())
-            {
-                while (resultSet.next())
-                {
-                    userList.add(User.builder()
-                            .userId(resultSet.getInt("user_id"))
-                            .userLogin(resultSet.getString("user_login"))
-                            .userPassword(resultSet.getString("user_password"))
-                            .userRole(resultSet.getInt("role_id"))
-                            .userInfo(resultSet.getInt("info_id")).build());
-                }
-                if (userList.size() != 1)
-                {
-                    log.warn("[UserDao] User [" + login + "] account is not exist!");
-                    return null;
-                }
-                log.info("[UserDao] Account has been found: " + userList.get(0).toString());
-            }
-        }
-        catch (SQLException e)
-        {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
-        }
-        finally
-        {
-            closeConnection(connection);
-        }
-        return userList.iterator().next();
-    }
-
-    public UserDto getByIdentifier(Integer userId) throws ConnectionPoolException, DaoException
-    {
-        LinkedList<UserDto> userList = new LinkedList<>();
-        Connection connection = getConnection();
-        try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().SELECT_USER_BY_ID))
-        {
-            statement.setInt(1, userId);
-            try (ResultSet resultSet = statement.executeQuery())
-            {
-                while (resultSet.next())
-                {
-                    userList.add(this.getUserDto(resultSet));
-                }
-                if (userList.size() != 1)
-                {
-                    log.warn("[UserDao] User [" + userId + "] account is not exist!");
-                    return null;
-                }
-                log.info("[UserDao] Account has been found: " + userList.get(0).toString());
-                connection.commit();
-            }
-        }
-        catch (SQLException e)
-        {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
-        }
-        finally
-        {
-            closeConnection(connection);
-        }
-        return userList.iterator().next();
-    }
-
-    private UserDto getUserDto(ResultSet resultSet) throws SQLException
-    {
-        return new UserDto(
-                User.builder()
-                        .userId(resultSet.getInt("user_id"))
-                        .userLogin(resultSet.getString("user_login"))
-                        .userPassword(resultSet.getString("user_password"))
-                        .userInfo(resultSet.getInt("info_id"))
-                        .userRole(resultSet.getInt("role_id")).build(),
-                UserInfo.builder()
-                        .infoId(resultSet.getInt("info_id"))
-                        .userName(resultSet.getString("name"))
-                        .userSurname(resultSet.getString("surname"))
-                        .userAddress(resultSet.getString("address"))
-                        .userBirthday(resultSet.getString("birthday"))
-                        .userPhone(resultSet.getString("phone")).build(),
-                UserRole.builder()
-                        .roleId(resultSet.getInt("role_id"))
-                        .roleName(resultSet.getString("role_name"))
-                        .roleDesc(resultSet.getString("role_description")).build());
+        return User.builder()
+                .userId(resultSet.getInt("user_id"))
+                .userLogin(resultSet.getString("user_login"))
+                .userPassword(resultSet.getString("user_password"))
+                .userRole(resultSet.getInt("role_id"))
+                .userName(resultSet.getString("user_name"))
+                .userSurname(resultSet.getString("user_surname"))
+                .userAddress(resultSet.getString("user_address"))
+                .userBirthday(resultSet.getString("user_birthday"))
+                .userPhone(resultSet.getString("user_phone")).build();
     }
 }

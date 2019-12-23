@@ -1,15 +1,14 @@
 package com.sensesnet.command.impl;
 
-import com.sensesnet.ServiceProvider;
+import com.sensesnet.IUserService;
+import com.sensesnet.ServiceFactory;
 import com.sensesnet.command.ICommand;
 import com.sensesnet.constant.ConstantProvider;
 import com.sensesnet.dto.UserDto;
 import com.sensesnet.exception.ServiceException;
-import com.sensesnet.implementation.UserInfoService;
-import com.sensesnet.implementation.UserRoleService;
-import com.sensesnet.implementation.UserService;
+import com.sensesnet.impl.UserRoleService;
+import com.sensesnet.impl.UserService;
 import com.sensesnet.pojo.authentication.User;
-import com.sensesnet.pojo.authentication.UserInfo;
 import com.sensesnet.pojo.authentication.UserRole;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,15 +28,13 @@ import java.io.IOException;
 public class UserSaveNewCommand implements ICommand
 {
     private static final Logger log = LogManager.getLogger(UserSaveNewCommand.class);
-    private UserService userService = ServiceProvider.getInstance().getUserService();
-    private UserInfoService userInfoService = ServiceProvider.getInstance().getUserInfoService();
-    private UserRoleService userRoleService = ServiceProvider.getInstance().getUserRoleService();
+    private IUserService userService = ServiceFactory.getInstance().getUserService();
+    private UserRoleService userRoleService = ServiceFactory.getInstance().getUserRoleService();
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException
     {
         User user;
-        UserInfo userInfo;
         UserRole role;
         HttpSession session;
 
@@ -51,29 +48,26 @@ public class UserSaveNewCommand implements ICommand
         String confurmPassword = request.getParameter(ConstantProvider.getRequestParameter().CONFIRM_PASSWORD);
         String roleName = request.getParameter(ConstantProvider.getRequestParameter().ROLE);
 
-        user = userService.getUserByLogin(login);
+        user = userService.getUserByEmail(login);
         if (user != null)
         {
             response.sendRedirect("Controller?action=user_add&errorMessage=Account is found, use other email.");
             return;
         }
-        role = userRoleService.getByName(roleName);
-        userService.addEntity(
-                new UserDto(
+        role = userRoleService.getRoleByName(roleName);
+        userService.createUser(
                         User.builder()
                                 .userLogin(login)
                                 .userPassword(password)
-                                .build(),
-                        UserInfo.builder()
                                 .userName(firstName)
+                                .userRole(role.getRoleId())
                                 .userSurname(secondName)
                                 .userBirthday(birthday)
                                 .userPhone(phone)
                                 .userAddress(address)
-                                .build(),
-                        role));
+                                .build());
 
-        user = userService.getUserByLogin(login);
+        user = userService.getUserByEmail(login);
         if (user != null)
             response.sendRedirect("Controller?action=user_view&errorMessage=Account has been registered successfully.");
         else
