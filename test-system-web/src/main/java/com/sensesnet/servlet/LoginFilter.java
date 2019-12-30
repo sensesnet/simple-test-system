@@ -1,11 +1,11 @@
 package com.sensesnet.servlet;
 
-import com.sensesnet.IUserService;
+import com.sensesnet.UserRoleService;
+import com.sensesnet.UserService;
 import com.sensesnet.ServiceFactory;
 import com.sensesnet.constant.ConstantProvider;
 import com.sensesnet.exception.ServiceException;
-import com.sensesnet.impl.UserRoleService;
-import com.sensesnet.impl.UserService;
+import com.sensesnet.impl.UserRoleServiceImpl;
 import com.sensesnet.pojo.authentication.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,7 +26,7 @@ import java.io.IOException;
 public class LoginFilter extends HttpServlet
 {
     private static final Logger log = LogManager.getLogger(LoginFilter.class);
-    private IUserService userService = ServiceFactory.getInstance().getUserService();
+    private UserService userService = ServiceFactory.getInstance().getUserService();
     private UserRoleService userRoleService = ServiceFactory.getInstance().getUserRoleService();
 
     @Override

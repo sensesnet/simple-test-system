@@ -11,7 +11,7 @@ import java.util.List;
  * <p>
  * Interface provides methods for User entity.
  */
-public interface IUserService
+public interface UserService
 {
     /**
      * get user by email

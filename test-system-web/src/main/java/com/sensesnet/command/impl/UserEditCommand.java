@@ -1,13 +1,13 @@
 package com.sensesnet.command.impl;
 
-import com.sensesnet.IUserService;
+import com.sensesnet.UserRoleService;
+import com.sensesnet.UserService;
 import com.sensesnet.ServiceFactory;
-import com.sensesnet.command.ICommand;
-import com.sensesnet.connection.ConnectionPoolException;
+import com.sensesnet.command.Command;
 import com.sensesnet.constant.ConstantProvider;
-import com.sensesnet.dao.exception.DaoException;
+import com.sensesnet.dto.UserDto;
 import com.sensesnet.exception.ServiceException;
-import com.sensesnet.impl.UserService;
+import com.sensesnet.pojo.authentication.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,17 +23,19 @@ import java.io.IOException;
  * <p>
  * TODO: add description
  */
-public class UserEditCommand implements ICommand
+public class UserEditCommand implements Command
 {
     private static final Logger log = LogManager.getLogger(UserEditCommand.class);
-    private IUserService userService = ServiceFactory.getInstance().getUserService();
+    private UserService userService = ServiceFactory.getInstance().getUserService();
+    private UserRoleService userRoleService = ServiceFactory.getInstance().getUserRoleService();
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException
     {
+        User user = userService.getUserById(Integer.valueOf(request.getParameter("userId")));
         RequestDispatcher dispatcher = request.getRequestDispatcher(ConstantProvider.getPagePath().USER_EDIT_PAGE);
         request.setAttribute("editUser",
-                userService.getUserById(Integer.valueOf(request.getParameter("userId"))));
+                new UserDto(user, userRoleService.getRoleById(user.getUserRole())));
         dispatcher.forward(request, response);
     }
 }

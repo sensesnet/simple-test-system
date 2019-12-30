@@ -1,13 +1,10 @@
 package com.sensesnet.command.impl;
 
-import com.sensesnet.IUserRoleService;
-import com.sensesnet.IUserService;
+import com.sensesnet.UserRoleService;
+import com.sensesnet.UserService;
 import com.sensesnet.ServiceFactory;
-import com.sensesnet.command.ICommand;
-import com.sensesnet.constant.enums.RoleType;
-import com.sensesnet.dto.UserDto;
+import com.sensesnet.command.Command;
 import com.sensesnet.exception.ServiceException;
-import com.sensesnet.impl.UserService;
 import com.sensesnet.pojo.authentication.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,11 +20,11 @@ import java.io.IOException;
  * <p>
  * TODO: add description
  */
-public class UserSaveEditCommand implements ICommand
+public class UserSaveEditCommand implements Command
 {
     private static final Logger log = LogManager.getLogger(UserSaveEditCommand.class);
-    private IUserService userService = ServiceFactory.getInstance().getUserService();
-    private IUserRoleService userRoleService = ServiceFactory.getInstance().getUserRoleService();
+    private UserService userService = ServiceFactory.getInstance().getUserService();
+    private UserRoleService userRoleService = ServiceFactory.getInstance().getUserRoleService();
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException
@@ -36,19 +33,16 @@ public class UserSaveEditCommand implements ICommand
         User userData;
         User updatedUserData;
         userData = userService
-                .getUserById(
-                        Integer.valueOf(request.getParameter("userId")));
+                .getUserById(Integer.valueOf(request.getParameter("userId")));
         userData.setUserName(request.getParameter("firstName"));
         userData.setUserSurname(request.getParameter("secondName"));
         userData.setUserAddress(request.getParameter("address"));
         userData.setUserBirthday(request.getParameter("birthday"));
         userData.setUserPhone(request.getParameter("phone"));
-        userData.setUserRole(
-                userRoleService.getRoleByName(request.getParameter("role")).getRoleId());
+        userData.setUserRole(userRoleService.getRoleByName(request.getParameter("role")).getRoleId());
         userService.updateUser(userData);
         updatedUserData = userService
-                .getUserById(
-                        Integer.valueOf(request.getParameter("userId")));
+                .getUserById(Integer.valueOf(request.getParameter("userId")));
         if (userData.equals(updatedUserData))
             response.sendRedirect("Controller?action=user_view&errorMessage=New details "
                     + "has been updated successfully.");

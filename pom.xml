@@ -44,6 +44,7 @@
         <mockito.version>1.9.5</mockito.version>
         <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
         <source.encoding>UTF-8</source.encoding>
+        <jackson.version>2.8.6</jackson.version>
     </properties>
 
     <dependencyManagement>
@@ -131,6 +132,12 @@
                 <scope>test</scope>
             </dependency>
 
+            <!-- Jackson json parser -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>

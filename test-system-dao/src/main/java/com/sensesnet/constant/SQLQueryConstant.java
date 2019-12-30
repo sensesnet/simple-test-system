@@ -13,14 +13,14 @@ public class SQLQueryConstant
      * SQL queries for DB (test_system.user;)
      */
     public final String INSERT_NEW_USER = ""
-            + "INSERT INTO test_system.user (user_id, user_login, user_password, role_id, user_name, user_surname, user_address, user_birthday, user_phone) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            + "INSERT INTO test_system.user (user_login, user_password, role_id, user_name, user_surname, user_address, user_birthday, user_phone) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     public final String DELETE_USER_BY_ID = ""
             + "DELETE FROM test_system.user "
             + "WHERE user_id=?";
     public final String UPDATE_USER = ""
             + "UPDATE test_system.user "
-            + "SET user_login = ?, user_password = ?, role_id = (SELECT role_id FROM user_role WHERE role_name = ?), user_name = ?, user_surname = ?, user_address = ?, user_birthday = ?, user_phone = ?  "
+            + "SET user_login = ?, user_password = ?, role_id = ?, user_name = ?, user_surname = ?, user_address = ?, user_birthday = ?, user_phone = ?  "
             + "WHERE user_id = ?";
     public final String SELECT_ALL_USER = ""
             + "SELECT * "
@@ -31,11 +31,11 @@ public class SQLQueryConstant
             + "WHERE user_login = ? AND user_password = ?";
     public final String SELECT_USER_BY_ID = ""
             + "SELECT * "
-            + "FROM user test_system.user "
+            + "FROM test_system.user "
             + "WHERE user_id = ?";
     public final String SELECT_USER_BY_LOGIN = ""
             + "SELECT * "
-            + "FROM user test_system.user "
+            + "FROM test_system.user "
             + "WHERE user_login = ?";
     /**
      * SQL queries for DB (test_system.user_role)
@@ -69,8 +69,7 @@ public class SQLQueryConstant
     public final String DELETE_TEST_BY_ID = ""
             + "DELETE FROM test_system.test "
             + "WHERE test_id = ?";
-    public final String SELECT_ALL_TEST = ""
-            + "SELECT * "
+    public final String SELECT_ALL_TEST = "SELECT * "
             + "FROM test_system.test";
     public final String SELECT_TEST_BY_ID = ""
             + "SELECT * "
@@ -80,8 +79,8 @@ public class SQLQueryConstant
      * SQL queries for DB (test_system.test_process)
      */
     public final String INSERT_NEW_TEST_PROCESS = ""
-            + "INSERT INTO test_system.test_process (test_process_date, user_id, test_id, main_result_value, is_completed) "
-            + "VALUES (?, ?, ?, ?, ?)";
+            + "INSERT INTO test_system.test_process (test_process_id, test_process_date, user_id, test_id, main_result_value, is_completed) "
+            + "VALUES (?, ?, ?, ?, ?, ?)";
     public final String UPDATE_TEST_PROCESS = ""
             + "UPDATE test_system.test SET test_process_date = ?, user_id = ?, test_id = ?, main_result_value = ?, is_completed = ? "
             + "WHERE test_process_id = ?";
@@ -114,6 +113,10 @@ public class SQLQueryConstant
             + "SELECT * "
             + "FROM test_system.question "
             + "WHERE question_id = ?";
+    public static final String SELECT_ALL_QUESTIONS_BY_TEST_ID = ""
+            + "SELECT * "
+            + "FROM test_system.question "
+            + "WHERE test_id = ?";
 
     /**
      * SQL queries for DB (test_system.answer;)
@@ -133,6 +136,10 @@ public class SQLQueryConstant
     public final String SELECT_ANSWER_BY_ID = ""
             + "SELECT * "
             + "FROM test_system.answer WHERE answer_id = ?";
+    public final String SELECT_ALL_ANSWER_BY_QUESTION_ID =  ""
+            + "SELECT * "
+            + "FROM test_system.answer "
+            + "WHERE question_id = ?";
 
     /**
      * SQL queries for DB (test_system.result;)

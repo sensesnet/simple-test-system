@@ -28,7 +28,6 @@ public class TestQuestion
     public boolean equals(Object object)
     {
         if (this == object) return true;
-        if (!super.equals(object)) return false;
         if (getClass() != object.getClass()) return false;
 
         TestQuestion that = (TestQuestion) object;

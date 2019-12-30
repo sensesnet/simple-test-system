@@ -1,5 +1,7 @@
+import com.sensesnet.connection.ConnectionPool;
+import com.sensesnet.connection.ConnectionPoolException;
 import com.sensesnet.exception.ServiceException;
-import com.sensesnet.impl.UserService;
+import com.sensesnet.impl.UserServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
@@ -15,9 +17,10 @@ public class UserServiceTest
     private static final Logger log = LogManager.getLogger(UserServiceTest.class);
 
     @Test
-    public void userServiceTest() throws ServiceException
+    public void userServiceTest() throws ServiceException, ConnectionPoolException
     {
-        UserService userService = new UserService();
+        UserServiceImpl userService = new UserServiceImpl();
+        ConnectionPool.getInstance().initPoolData();
         userService.getUserByEmailAndPassword("admin@admin.com", "Password1");
         log.info("[Test] Connection pool test completed!");
     }
@@ -25,7 +28,7 @@ public class UserServiceTest
     @Test
     public void userIsNotExist() throws ServiceException
     {
-        UserService userService = new UserService();
+        UserServiceImpl userService = new UserServiceImpl();
         userService.getUserByEmailAndPassword("admin@admin123.com", "Password2");
         log.info("[Test] Connection pool test completed!");
     }

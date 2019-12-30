@@ -8,7 +8,7 @@ import lombok.*;
  * @author sensesnet <br />
  * Copyright 2019 Eshted LLC. All rights reserved.
  * <p>
- * DTO: User details
+ * UserDto: User entity & UserRole entity
  */
 @Data
 @Builder

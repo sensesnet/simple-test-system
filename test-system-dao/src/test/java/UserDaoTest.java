@@ -21,7 +21,7 @@ public class UserDaoTest
     public void userDaoTest() throws ConnectionPoolException, DaoException
     {
         UserDao userDao = new UserDao();
-
+        ConnectionPool.getInstance().initPoolData();
         User user = userDao.getUserByLoginAndPassword("admin@admin.com", "19513fdc9da4fb72a4a05eb66917548d3c90ff94d5419e1f2363eea89dfee1dd");
 
         log.info("[Test] Connection pool test completed! User:" + user.toString());

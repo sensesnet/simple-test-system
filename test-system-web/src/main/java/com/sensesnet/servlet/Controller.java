@@ -1,9 +1,7 @@
 package com.sensesnet.servlet;
 
 import com.sensesnet.command.CommandProvider;
-import com.sensesnet.command.ICommand;
-import com.sensesnet.connection.ConnectionPoolException;
-import com.sensesnet.dao.exception.DaoException;
+import com.sensesnet.command.Command;
 import com.sensesnet.exception.ServiceException;
 import com.sensesnet.pojo.authentication.User;
 import org.apache.logging.log4j.LogManager;
@@ -63,7 +61,7 @@ public class Controller extends HttpServlet
      */
     private void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        ICommand command;
+        Command command;
         User user = (User) request.getSession().getAttribute("currentUser");
         String action = request.getParameter("action");
         log.info("[Controller] Get action:[" + action + "]");

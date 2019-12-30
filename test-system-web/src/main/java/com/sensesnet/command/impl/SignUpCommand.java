@@ -1,14 +1,12 @@
 package com.sensesnet.command.impl;
 
-import com.sensesnet.IUserService;
+import com.sensesnet.UserService;
 import com.sensesnet.ServiceFactory;
-import com.sensesnet.command.ICommand;
+import com.sensesnet.command.Command;
 import com.sensesnet.constant.ConstantProvider;
 import com.sensesnet.dto.UserDto;
 import com.sensesnet.exception.ServiceException;
-import com.sensesnet.impl.UserService;
 import com.sensesnet.pojo.authentication.User;
-import com.sensesnet.pojo.authentication.UserRole;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,10 +24,10 @@ import static com.sensesnet.util.HttpRequestValidator.isPost;
  * <p>
  * Command : Sign Up
  */
-public class SignUpCommand implements ICommand
+public class SignUpCommand implements Command
 {
     private static final Logger log = LogManager.getLogger(SignUpCommand.class);
-    private IUserService userService = ServiceFactory.getInstance().getUserService();
+    private UserService userService = ServiceFactory.getInstance().getUserService();
     private UserDto userDto;
 
     @Override
@@ -67,7 +65,6 @@ public class SignUpCommand implements ICommand
                 response.sendRedirect("Controller?action=sign_up&errorMessage=Account is found, use other email.");
                 return;
             }
-            HttpSession session = request.getSession(true);
             userService.createUser(
                             User.builder()
                                     .userLogin(login)
@@ -80,23 +77,20 @@ public class SignUpCommand implements ICommand
                                     .userAddress(address)
                                     .build());
 
-            User currentUser = userService.getUserByEmailAndPassword(login, password);
+            User currentUser = userService.getUserByEmail(login);
             if (currentUser == null)
             {
                 response.sendRedirect("Controller?action=sign_in&errorMessage=Account is found, try to sign up.");
                 return;
             }
-            session = request.getSession(true);
-            session.setAttribute("currentUser", user);
-            response.sendRedirect("Controller?action=home");
+            HttpSession session = request.getSession(true);
             session.setAttribute("currentUser", currentUser);
-            session.setAttribute("message", "Account has been registered successfully");
-            request.getRequestDispatcher(ConstantProvider.getPagePath().HOME_ADMIN_PAGE).forward(request, response);
+            response.sendRedirect("Controller?action=home&message=Account has been registered successfully");
         }
-        catch (SecurityException | ServiceException e)
+        catch (ServiceException e)
         {
             log.warn("[LoginFilter] Security exception: lost connection to DB.");
-            response.sendRedirect("Controller?action=sign_up&errorMessage=Lost connection to DB. try later...");
+            response.sendRedirect("Controller?action=sign_up&errorMessage=Lot connectsion to DB. try later...");
         }
     }
 }

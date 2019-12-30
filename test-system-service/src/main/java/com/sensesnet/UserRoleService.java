@@ -11,7 +11,7 @@ import java.util.List;
  * <p>
  * Interface provides methods for user role entity
  */
-public interface IUserRoleService
+public interface UserRoleService
 {
     /**
      * get user role by id

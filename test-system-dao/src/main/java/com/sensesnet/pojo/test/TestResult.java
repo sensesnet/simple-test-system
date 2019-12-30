@@ -18,7 +18,7 @@ import java.util.Objects;
 public class TestResult
 {
     private @NonNull Integer resultId;
-    private @NonNull Integer testProcessId;
+    private @NonNull String testProcessId;
     private @NonNull Integer questionId;
     private @NonNull Integer answerId;
 
@@ -26,7 +26,6 @@ public class TestResult
     public boolean equals(Object object)
     {
         if (this == object) return true;
-        if (!super.equals(object)) return false;
         if (getClass() != object.getClass()) return false;
 
         TestResult that = (TestResult) object;

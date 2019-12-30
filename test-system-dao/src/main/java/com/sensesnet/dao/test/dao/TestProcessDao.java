@@ -4,7 +4,6 @@ import com.sensesnet.connection.ConnectionPoolException;
 import com.sensesnet.constant.DaoConstant;
 import com.sensesnet.dao.AbstractDao;
 import com.sensesnet.dao.exception.DaoException;
-import com.sensesnet.pojo.test.Test;
 import com.sensesnet.pojo.test.TestProcess;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,7 +14,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author sensesnet <br />
@@ -35,14 +33,15 @@ public class TestProcessDao extends AbstractDao<TestProcess>
         try (PreparedStatement statement = connection
                 .prepareStatement(DaoConstant.query().SELECT_TEST_PROCESS_BY_ID))
         {
-            statement.setInt(1, entity.getTestProcessId());
+            statement.setString(1, entity.getTestProcessId());
             try (ResultSet resultSet = statement.executeQuery())
             {
                 if (resultSet.next())
                 {
                     return this.buildEntity(resultSet);
                 }
-                log.info("[TestProcessDao] Test Process has been selected by id: " + entity.getResultId());
+                log.info("[" + this.getClass().getName() + "] Test Process has been selected by id: "
+                        + entity.getResult());
             }
         }
         catch (SQLException e)
@@ -70,7 +69,7 @@ public class TestProcessDao extends AbstractDao<TestProcess>
                 {
                     testProcessList.add(this.buildEntity(resultSet));
                 }
-                log.info("[TestProcessDao] All test processes has been selected.");
+                log.info("[" + this.getClass().getName() + "] All test processes has been selected.");
             }
         }
         catch (SQLException e)
@@ -101,21 +100,20 @@ public class TestProcessDao extends AbstractDao<TestProcess>
                         entity.getTestId(),
                         entity.getMainResultValue(),
                         entity.isCompleted()).executeUpdate();
-                log.info("[TestProcessDao] New test process has been added: " + entity.toString());
                 connection.commit();
+                log.info("[" + this.getClass().getName() + "] New test process has been added: " + entity.toString());
             }
         }
         catch (SQLException e)
         {
-            log.error("[TestProcessDao] Test has NOT added, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] Test has NOT added, DB access error.", e);
             try
             {
                 connection.rollback();
-                log.warn("[TestProcessDao] Transaction rollback is completed.");
+                log.warn("[" + this.getClass().getName() + "] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[TestProcessDao] Rollback has NOT possible.");
                 throw new DaoException("SQL Error: Have no access to DB.", ex);
             }
         }
@@ -135,23 +133,22 @@ public class TestProcessDao extends AbstractDao<TestProcess>
             try (PreparedStatement statement = connection
                     .prepareStatement(DaoConstant.query().DELETE_TEST_PROCESS_BY_ID))
             {
-                statement.setInt(1, entity.getTestProcessId());
+                statement.setString(1, entity.getTestProcessId());
                 statement.execute();
-                log.info("[TestProcessDao] Test process has been removed: " + entity.toString());
                 connection.commit();
+                log.info("[" + this.getClass().getName() + "] Test process has been removed: " + entity.toString());
             }
         }
         catch (SQLException e)
         {
-            log.error("[TestProcessDao] Test has NOT removed, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] Test has NOT removed, DB access error.", e);
             try
             {
                 connection.rollback();
-                log.warn("[TestProcessDao] Transaction rollback is completed.");
+                log.warn("[" + this.getClass().getName() + "] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[TestProcessDao] Rollback has NOT possible.");
                 throw new DaoException("SQL Error: Have no access to DB.", ex);
             }
         }
@@ -179,21 +176,20 @@ public class TestProcessDao extends AbstractDao<TestProcess>
                         entity.getMainResultValue(),
                         entity.isCompleted(),
                         entity.getTestProcessId()).executeQuery();
-                log.info("[TestProcessDao] Test process has been updated: " + entity.toString());
                 connection.commit();
+                log.info("[" + this.getClass().getName() + "] Test process has been updated: " + entity.toString());
             }
         }
         catch (SQLException e)
         {
-            log.error("[TTestProcessDao] Test has NOT updated, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] Test has NOT updated, DB access error.", e);
             try
             {
                 connection.rollback();
-                log.warn("[TestProcessDao] Transaction rollback is completed.");
+                log.warn("[" + this.getClass().getName() + "] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[TestDao] Rollback has NOT possible.");
                 throw new DaoException("SQL Error: Have no access to DB.", ex);
             }
         }
@@ -207,8 +203,8 @@ public class TestProcessDao extends AbstractDao<TestProcess>
     public TestProcess buildEntity(ResultSet resultSet) throws SQLException
     {
         return TestProcess.builder()
-                .testProcessId(resultSet.getInt("test_process_id"))
-                .testProcessDate(resultSet.getDate("test_process_date"))
+                .testProcessId(resultSet.getString("test_process_id"))
+                .testProcessDate(resultSet.getString("test_process_date"))
                 .userId(resultSet.getInt("user_id"))
                 .testId(resultSet.getInt("test_id"))
                 .mainResultValue(resultSet.getInt("main_result_value"))

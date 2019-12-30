@@ -55,7 +55,7 @@
 
     a {
         z-index: 4;
-        font-size: 20px;
+        font-size: 18px;
         line-height: 3;
         text-decoration: none;
         text-decoration-line: none;
@@ -67,7 +67,7 @@
         display: inline-block;
         text-decoration: inherit;
         text-decoration-line: inherit;
-        margin-left: 5px;
+        margin-left: 30px;
         white-space: nowrap;
     }
 
@@ -134,8 +134,14 @@
 </style>
 
 <body>
+<h3>Online test system</h3>
+<div>
+    <div class="links">
+        <a href="Controller?action=home"><span class="headLink">User main page</span></a>
+        <a href="Controller?action=close_session"><span class="headLink">Sign Out</span></a>
+    </div>
+</div>
 <form method="POST" action="Controller" name="frmAddUser">
-    <p>Online test system</p>
     <input type="hidden" name="action" value="user_new_save"/>
     <center>
         <table border="0" width="30%" cellpadding="5">
@@ -177,7 +183,7 @@
             <tr>
                 <td>
                     <input type="text"
-                           name="birthdayDate"
+                           name="birthday"
                            value=""
                            placeholder="Date of birth"
                            readonly

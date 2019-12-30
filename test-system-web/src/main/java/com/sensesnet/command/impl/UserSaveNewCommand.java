@@ -1,13 +1,12 @@
 package com.sensesnet.command.impl;
 
-import com.sensesnet.IUserService;
+import com.sensesnet.UserRoleService;
+import com.sensesnet.UserService;
 import com.sensesnet.ServiceFactory;
-import com.sensesnet.command.ICommand;
+import com.sensesnet.command.Command;
 import com.sensesnet.constant.ConstantProvider;
-import com.sensesnet.dto.UserDto;
 import com.sensesnet.exception.ServiceException;
-import com.sensesnet.impl.UserRoleService;
-import com.sensesnet.impl.UserService;
+import com.sensesnet.impl.UserRoleServiceImpl;
 import com.sensesnet.pojo.authentication.User;
 import com.sensesnet.pojo.authentication.UserRole;
 import org.apache.logging.log4j.LogManager;
@@ -16,7 +15,6 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -25,10 +23,10 @@ import java.io.IOException;
  * <p>
  * TODO: add description
  */
-public class UserSaveNewCommand implements ICommand
+public class UserSaveNewCommand implements Command
 {
     private static final Logger log = LogManager.getLogger(UserSaveNewCommand.class);
-    private IUserService userService = ServiceFactory.getInstance().getUserService();
+    private UserService userService = ServiceFactory.getInstance().getUserService();
     private UserRoleService userRoleService = ServiceFactory.getInstance().getUserRoleService();
 
     @Override
@@ -36,7 +34,6 @@ public class UserSaveNewCommand implements ICommand
     {
         User user;
         UserRole role;
-        HttpSession session;
 
         String firstName = request.getParameter(ConstantProvider.getRequestParameter().FIRST_NAME);
         String secondName = request.getParameter(ConstantProvider.getRequestParameter().SECOND_NAME);
@@ -59,20 +56,19 @@ public class UserSaveNewCommand implements ICommand
                         User.builder()
                                 .userLogin(login)
                                 .userPassword(password)
-                                .userName(firstName)
                                 .userRole(role.getRoleId())
+                                .userName(firstName)
                                 .userSurname(secondName)
+                                .userAddress(address)
                                 .userBirthday(birthday)
                                 .userPhone(phone)
-                                .userAddress(address)
                                 .build());
-
         user = userService.getUserByEmail(login);
         if (user != null)
-            response.sendRedirect("Controller?action=user_view&errorMessage=Account has been registered successfully.");
+            response.sendRedirect("Controller?action=user_view&message=Account has been registered successfully.");
         else
         {
-            log.warn("[LoginFilter] Security exception: lost connection to DB.");
+            log.error("[UserSaveNewCommand] Security exception: lost connection to DB.");
             response.sendRedirect("Controller?action=user_view&errorMessage=Lost connection to DB. try later...");
         }
     }

@@ -8,10 +8,7 @@ import com.sensesnet.pojo.test.Test;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -41,12 +38,12 @@ public class TestDao extends AbstractDao<Test>
                 {
                     return this.buildEntity(resultSet);
                 }
-                log.info("[TestDao] Test has been selected by id: " + entity.getTestId());
+                log.info("[" + this.getClass().getName() + "] Test has been selected by id: " + entity.getTestId());
             }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", e);
         }
         finally
         {
@@ -60,21 +57,20 @@ public class TestDao extends AbstractDao<Test>
     {
         LinkedList<Test> testList = new LinkedList<>();
         Connection connection = getConnection();
-        try (PreparedStatement statement = connection
-                .prepareStatement(DaoConstant.query().SELECT_ALL_TEST))
+        try (Statement statement = connection.createStatement())
         {
-            try (ResultSet resultSet = statement.executeQuery())
+            try (ResultSet resultSet = statement.executeQuery(DaoConstant.query().SELECT_ALL_TEST))
             {
                 while (resultSet.next())
                 {
                     testList.add(this.buildEntity(resultSet));
                 }
-                log.info("[TestDao] All tests has been selected.");
+                log.info("[" + this.getClass().getName() + "] All tests has been selected.");
             }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", e);
         }
         finally
         {
@@ -98,22 +94,21 @@ public class TestDao extends AbstractDao<Test>
                         entity.getTestDescription(),
                         entity.getTestValue(),
                         entity.getTestTime()).executeUpdate();
-                log.info("[TestDao] New test has been added: " + entity.toString());
+                log.info("[" + this.getClass().getName() + "] New test has been added: " + entity.toString());
                 connection.commit();
             }
         }
         catch (SQLException e)
         {
-            log.error("[TestDao] Test has NOT added, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] Test has NOT added, DB access error.", e);
             try
             {
                 connection.rollback();
-                log.warn("[TestDao] Transaction rollback is completed.");
+                log.warn("[" + this.getClass().getName() + "] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[TestDao] Rollback has NOT possible.");
-                throw new DaoException("SQL Error: Have no access to DB.", ex);
+                throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", ex);
             }
         }
         finally
@@ -134,21 +129,21 @@ public class TestDao extends AbstractDao<Test>
             {
                 statement.setInt(1, entity.getTestId());
                 statement.execute();
-                log.info("[TestDao] Test has been removed: " + entity.toString());
+                connection.commit();
+                log.info("[" + this.getClass().getName() + "] Test has been removed: " + entity.toString());
             }
         }
         catch (SQLException e)
         {
-            log.error("[TestDao] Test has NOT removed, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] Test has NOT removed, DB access error.", e);
             try
             {
                 connection.rollback();
-                log.warn("[TestDao] Transaction rollback is completed.");
+                log.warn("[" + this.getClass().getName() + "] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[TestDao] Rollback has NOT possible.");
-                throw new DaoException("SQL Error: Have no access to DB.", ex);
+                throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", ex);
             }
         }
         finally
@@ -174,22 +169,21 @@ public class TestDao extends AbstractDao<Test>
                         entity.getTestValue(),
                         entity.getTestTime(),
                         entity.getTestId()).execute();
-                log.info("[TestDao] Test has been updated: " + entity.toString());
                 connection.commit();
+                log.info("[" + this.getClass().getName() + "] Test has been updated: " + entity.toString());
             }
         }
         catch (SQLException e)
         {
-            log.error("[TestDao] Test has NOT updated, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] Test has NOT updated, DB access error.", e);
             try
             {
                 connection.rollback();
-                log.warn("[TestDao] Transaction rollback is completed.");
+                log.warn("[" + this.getClass().getName() + "] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[TestDao] Rollback has NOT possible.");
-                throw new DaoException("SQL Error: Have no access to DB.", ex);
+                throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", ex);
             }
         }
         finally
@@ -206,6 +200,6 @@ public class TestDao extends AbstractDao<Test>
                 .testName(resultSet.getString("test_name"))
                 .testDescription(resultSet.getString("test_description"))
                 .testValue(resultSet.getInt("test_value"))
-                .testTime(resultSet.getTime("test_time")).build();
+                .testTime(resultSet.getInt("test_time")).build();
     }
 }

@@ -42,12 +42,12 @@ public class UserRoleDao extends AbstractDao<UserRole>
                 {
                     return this.buildEntity(resultSet);
                 }
-                log.info("[UserRoleDao] Role has been selected by id: " + userRoleId);
+                log.info("[" + this.getClass().getName() + "] Role has been selected by id: " + userRoleId);
             }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", e);
         }
         finally
         {
@@ -77,12 +77,12 @@ public class UserRoleDao extends AbstractDao<UserRole>
                 {
                     return this.buildEntity(resultSet);
                 }
-                log.info("[UserDao] Role has been selected by name: " + roleName);
+                log.info("[" + this.getClass().getName() + "] Role has been selected by name: " + roleName);
             }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", e);
         }
         finally
         {
@@ -113,12 +113,12 @@ public class UserRoleDao extends AbstractDao<UserRole>
                 {
                     return this.buildEntity(resultSet);
                 }
-                log.info("[UserDao] Role has been selected by id: " + entity.getRoleId());
+                log.info("[" + this.getClass().getName() + "] Role has been selected by id: " + entity.getRoleId());
             }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", e);
         }
         finally
         {
@@ -148,12 +148,12 @@ public class UserRoleDao extends AbstractDao<UserRole>
                 {
                     roleList.add(this.buildEntity(resultSet));
                 }
-                log.info("[UserDao] All account's roles has been selected.");
+                log.info("[" + this.getClass().getName() + "] All account's roles has been selected.");
             }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", e);
         }
         finally
         {
@@ -183,22 +183,21 @@ public class UserRoleDao extends AbstractDao<UserRole>
                         statement,
                         entity.getRoleName(),
                         entity.getRoleDesc()).executeUpdate();
-                log.info("[UserRoleDao] Role has been added: " + entity.toString());
+                log.info("[" + this.getClass().getName() + "] Role has been added: " + entity.toString());
                 connection.commit();
             }
         }
         catch (SQLException e)
         {
-            log.error("[UserRoleDao] Role has NOT added, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] Role has NOT added, DB access error.", e);
             try
             {
                 connection.rollback();
-                log.warn("[UserRoleDao] Transaction rollback is completed.");
+                log.warn("[" + this.getClass().getName() + "] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[UserRoleDao] Rollback has NOT possible.");
-                throw new DaoException("SQL Error: Have no access to DB.", ex);
+                throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", ex);
             }
         }
         finally
@@ -226,23 +225,21 @@ public class UserRoleDao extends AbstractDao<UserRole>
             {
                 statement.setInt(1, entity.getRoleId());
                 statement.execute();
-                log.info("[UserRoleDao] Account role has been removed: " + entity.toString());
                 connection.commit();
+                log.info("[" + this.getClass().getName() + "] Account role has been removed: " + entity.toString());
             }
         }
         catch (SQLException e)
         {
-            log.error("[UserRoleDao] Account role has NOT removed, DB access error. Error: "
-                    + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] Role has NOT removed, DB access error.", e);
             try
             {
                 connection.rollback();
-                log.warn("[UserRoleDao] Transaction rollback is completed.");
+                log.warn("[" + this.getClass().getName() + "] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[UserRoleDao] Rollback has NOT possible.");
-                throw new DaoException("SQL Error: Have no access to DB.", ex);
+                throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", ex);
             }
         }
         finally
@@ -266,23 +263,21 @@ public class UserRoleDao extends AbstractDao<UserRole>
                         entity.getRoleName(),
                         entity.getRoleDesc(),
                         entity.getRoleId()).executeQuery();
-                log.info("[UserRoleDao] Account role has been updated: " + entity.toString());
                 connection.commit();
+                log.info("[" + this.getClass().getName() + "] Account role has been updated: " + entity.toString());
             }
         }
         catch (SQLException e)
         {
-            log.error("[UserRoleDao] Role has NOT updated, DB access error. Error: "
-                    + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] Role has NOT updated, DB access error.", e);
             try
             {
                 connection.rollback();
-                log.warn("[UserRoleDao] Transaction rollback is completed.");
+                log.warn("[" + this.getClass().getName() + "] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[UserRoleDao] Rollback has NOT possible.");
-                throw new DaoException("SQL Error: Have no access to DB.", ex);
+                throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", ex);
             }
         }
         finally

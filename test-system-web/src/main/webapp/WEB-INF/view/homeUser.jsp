@@ -54,7 +54,7 @@
 
     a {
         z-index: 4;
-        font-size: 20px;
+        font-size: 18px;
         line-height: 3;
         text-decoration: none;
         text-decoration-line: none;
@@ -79,16 +79,25 @@
 <div>
     <h3 class="headline">'User' role</h3>
     <div class="links">
-        <a href="Controller?action=testList"><span class="more nowrap">Find Test</span></a>
-        <a href="Controller?action=userTestResultsList"><span class="more nowrap">Investigate own Results</span></a>
+        <a href="Controller?action=test_view"><span class="more nowrap">Find test</span></a>
+        <a href="Controller?action=assigned_tests_view"><span class="more nowrap">Assigned tests</span></a>
+        <a href="Controller?action=result_view"><span class="more nowrap">Investigate results</span></a>
+        <a href="Controller?action=change_password"><span class="more nowrap">Change password</span></a>
         <a href="Controller?action=close_session"><span class="more nowrap">Sign Out</span></a>
     </div>
 </div>
-
-<p class="pd-billboard-subcopy pd-util-compact-large-12 pd-util-expand-small-1">
+<c:if test="${not empty param.errorMessage }">
+    <c:out value="${param.errorMessage}"></c:out>
+</c:if>
+<c:if test="${not empty param.message }">
+    <c:out value="${param.message}"></c:out>
+</c:if>
+<p>
     'User' role gives you main capabilities for:
-    <br>- Find and complete available tests
+    <br>- Find and complete available & assigned tests
     <br>- Investigate own test results
 </p>
+<hr align="center" size="1px" width="500px">
+<p>Online test system</p>
 </body>
 </html>

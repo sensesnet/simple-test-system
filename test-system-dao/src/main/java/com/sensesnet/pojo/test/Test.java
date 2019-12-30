@@ -23,13 +23,12 @@ public class Test
     private @NonNull String testName;
     private @NonNull String testDescription;
     private @NonNull Integer testValue;
-    private @NonNull Time testTime;
+    private @NonNull Integer testTime;
 
     @Override
     public boolean equals(Object object)
     {
         if (this == object) return true;
-        if (!super.equals(object)) return false;
         if (getClass() != object.getClass()) return false;
 
         Test test = (Test) object;

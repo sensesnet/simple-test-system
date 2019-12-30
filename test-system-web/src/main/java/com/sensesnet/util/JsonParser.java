@@ -1,4 +1,4 @@
-package com.sensesnet;
+package com.sensesnet.util;
 
 /**
  * @author sensesnet <br />
@@ -6,6 +6,7 @@ package com.sensesnet;
  * <p>
  * TODO: add description
  */
-public interface ITestService
+public class JsonParser
 {
+
 }

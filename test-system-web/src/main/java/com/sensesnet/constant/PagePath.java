@@ -4,7 +4,7 @@ package com.sensesnet.constant;
  * @author sensesnet <br />
  * Copyright 2019 Eshted LLC. All rights reserved.
  * <p>
- * DaoConstant: page path
+ * Constant: page path
  */
 public class PagePath
 {
@@ -33,7 +33,9 @@ public class PagePath
     public final String TEST_EDIT_PAGE = "/WEB-INF/view/process/testEdit.jsp";
     public final String TEST_PROCESS_PAGE = "/WEB-INF/view/process/testProcess.jsp";
     public final String TEST_RESULT_PAGE = "/WEB-INF/view/process/testResult.jsp";
-    public final String TEST_SELECT_PAGE = "/WEB-INF/view/process/testSelect.jsp";
+    public final String TEST_LIST_FOR_USER_PAGE = "/WEB-INF/view/process/testListForUser.jsp";
+    public final String TEST_LIST_FOR_ADMIN_PAGE = "/WEB-INF/view/process/testListForAdmin.jsp";
+    public final String TEST_EDIT = "/WEB-INF/view/process/testEdit.jsp";
 
     /*
     error

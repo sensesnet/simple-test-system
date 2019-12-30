@@ -1,6 +1,5 @@
 package com.sensesnet;
 
-import com.sensesnet.connection.ConnectionPool;
 import com.sensesnet.connection.ConnectionPoolException;
 import com.sensesnet.dao.DaoFactory;
 import com.sensesnet.exception.ServiceException;
@@ -18,20 +17,20 @@ public class ServiceFactory
 {
     private static final ServiceFactory instance = new ServiceFactory();
 
-    private final IUserService userService = new UserService();
-    private final UserRoleService userRoleService = new UserRoleService();
-    private final TestAnswerService testAnswerService = new TestAnswerService();
-    private final TestProcessService testProcessService = new TestProcessService();
-    private final TestQuestionService testQuestionService = new TestQuestionService();
-    private final TestResultService testResultService = new TestResultService();
-    private final TestService testService = new TestService();
+    private final UserService userService = new UserServiceImpl();
+    private final UserRoleService userRoleService = new UserRoleServiceImpl();
+    private final TestAnswerService testAnswerService = new TestAnswerServiceImpl();
+    private final TestProcessService testProcessService = new TestProcessServiceImpl();
+    private final TestQuestionService testQuestionService = new TestQuestionServiceImpl();
+    private final TestResultService testResultService = new TestResultServiceImpl();
+    private final TestService testService = new TestServiceImpl();
 
     public static ServiceFactory getInstance()
     {
         return instance;
     }
 
-    public IUserService getUserService()
+    public UserService getUserService()
     {
         return userService;
     }

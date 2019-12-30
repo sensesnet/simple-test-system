@@ -15,7 +15,7 @@ import java.io.IOException;
  * <p>
  * Common impl interface
  */
-public interface ICommand
+public interface Command
 {
     void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException;
 }

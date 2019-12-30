@@ -26,7 +26,6 @@ public abstract class AbstractDao<T>
      * (Double-checked locking)
      *
      * @return
-     * @throws ConnectionPoolException
      */
     protected Connection getConnection() throws ConnectionPoolException
     {
@@ -58,7 +57,7 @@ public abstract class AbstractDao<T>
         }
         catch (SQLException e)
         {
-            e.printStackTrace();
+            log.error("SQL exception: Lost DB connection.", e);
         }
         log.info("[Abstract DAO] Connection has been closed with statement!");
     }
@@ -99,8 +98,7 @@ public abstract class AbstractDao<T>
         }
         catch (SQLException e)
         {
-            log.error("[" + this.getClass().getName() + "] Prepared statement has not been prepared:"
-                    + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] Prepared statement has not been prepared", e);
         }
         return statement;
     }

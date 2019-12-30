@@ -107,6 +107,9 @@
 <c:if test="${not empty param.errorMessage }">
     <c:out value="${param.errorMessage}"></c:out>
 </c:if>
+<c:if test="${not empty param.message }">
+    <c:out value="${param.message}"></c:out>
+</c:if>
 <form action="Controller">
     <center>
         <h2>List of User</h2>

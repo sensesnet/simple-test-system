@@ -1,13 +1,12 @@
 package com.sensesnet.command.impl;
 
-import com.sensesnet.IUserRoleService;
-import com.sensesnet.IUserService;
+import com.sensesnet.UserRoleService;
+import com.sensesnet.UserService;
 import com.sensesnet.ServiceFactory;
-import com.sensesnet.command.ICommand;
+import com.sensesnet.command.Command;
 import com.sensesnet.constant.ConstantProvider;
 import com.sensesnet.dto.UserDto;
 import com.sensesnet.exception.ServiceException;
-import com.sensesnet.impl.UserService;
 import com.sensesnet.pojo.authentication.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,11 +25,11 @@ import java.util.List;
  * <p>
  * UserViewCommand: Show all users
  */
-public class UserViewCommand implements ICommand
+public class UserViewCommand implements Command
 {
     private static final Logger log = LogManager.getLogger(UserViewCommand.class);
-    private IUserService userService = ServiceFactory.getInstance().getUserService();
-    private IUserRoleService userRoleService = ServiceFactory.getInstance().getUserRoleService();
+    private UserService userService = ServiceFactory.getInstance().getUserService();
+    private UserRoleService userRoleService = ServiceFactory.getInstance().getUserRoleService();
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException

@@ -1,6 +1,6 @@
 package com.sensesnet.command.impl;
 
-import com.sensesnet.command.ICommand;
+import com.sensesnet.command.Command;
 import com.sensesnet.constant.ConstantProvider;
 
 import javax.servlet.RequestDispatcher;
@@ -15,7 +15,7 @@ import java.io.IOException;
  * <p>
  * TODO: add description
  */
-public class UserAddCommand implements ICommand
+public class UserAddCommand implements Command
 {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException

@@ -1,7 +1,6 @@
 package com.sensesnet.impl;
 
-import com.sensesnet.IUserRoleService;
-import com.sensesnet.connection.ConnectionPool;
+import com.sensesnet.UserRoleService;
 import com.sensesnet.connection.ConnectionPoolException;
 import com.sensesnet.dao.DaoFactory;
 import com.sensesnet.dao.exception.DaoException;
@@ -12,7 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author sensesnet <br />
@@ -20,15 +18,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * <p>
  * Service: User role service
  */
-public class UserRoleService implements IUserRoleService
+public class UserRoleServiceImpl implements UserRoleService
 {
-    private static final Logger log = LogManager.getLogger(UserRoleService.class);
+    private static final Logger log = LogManager.getLogger(UserRoleServiceImpl.class);
     private UserRoleDao userRoleDao = DaoFactory.getUserRoleDao();
 
     @Override
     public UserRole getRoleById(UserRole entity) throws ServiceException
     {
-        log.info("[UserRoleService] Get users by id: [" + entity.getRoleId() + "].");
+        log.info("[UserRoleServiceImpl] Get users by id: [" + entity.getRoleId() + "].");
         try
         {
             return userRoleDao.getByIdentifier(entity);
@@ -43,7 +41,7 @@ public class UserRoleService implements IUserRoleService
     @Override
     public List<UserRole> getListOfRoles() throws ServiceException
     {
-        log.info("[UserRoleService] Get list with all roles.");
+        log.info("[UserRoleServiceImpl] Get list with all roles.");
         try
         {
             return userRoleDao.getListOfEntity();
@@ -58,7 +56,7 @@ public class UserRoleService implements IUserRoleService
     @Override
     public void createRole(UserRole entity) throws ServiceException
     {
-        log.info("[UserRoleService] Add new role:[" + entity.toString() + "]");
+        log.info("[UserRoleServiceImpl] Add new role:[" + entity.toString() + "]");
         try
         {
             userRoleDao.addEntity(entity);

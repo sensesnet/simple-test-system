@@ -1,10 +1,11 @@
 package com.sensesnet.command.impl;
 
 import com.sensesnet.ServiceFactory;
-import com.sensesnet.command.ICommand;
+import com.sensesnet.UserRoleService;
+import com.sensesnet.command.Command;
 import com.sensesnet.constant.ConstantProvider;
 import com.sensesnet.exception.ServiceException;
-import com.sensesnet.impl.UserRoleService;
+import com.sensesnet.impl.UserRoleServiceImpl;
 import com.sensesnet.pojo.authentication.User;
 import com.sensesnet.pojo.authentication.UserRole;
 import org.apache.logging.log4j.LogManager;
@@ -26,7 +27,7 @@ import java.io.IOException;
  * - add param to session
  * - return redirect to depended page by role ('Admin' or 'User').
  */
-public class HomeCommand implements ICommand
+public class HomeCommand implements Command
 {
     private static final Logger log = LogManager.getLogger(HomeCommand.class);
     private UserRoleService userRoleService = ServiceFactory.getInstance().getUserRoleService();

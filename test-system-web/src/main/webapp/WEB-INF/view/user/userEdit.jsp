@@ -158,7 +158,7 @@
                 <td>
                     <span>User Id (read-only)</span>
                     <input type="text" name="userId" readonly="readonly"
-                           value="${editUser.getUserId()}">
+                           value="${editUser.getUser().getUserId()}">
                 </td>
             </tr>
             <tr>
@@ -168,7 +168,7 @@
                            name="firstName"
                            pattern="^[a-zA-Z]+$"
                            title="Please, set your first name. Use only later."
-                           value="${editUser.getUserName()}"/>
+                           value="${editUser.getUser().getUserName()}"/>
                 </td>
             </tr>
             <tr>
@@ -178,7 +178,7 @@
                            name="secondName"
                            pattern="^[a-zA-Z]+$"
                            title="Please, set your second name. Use only later."
-                           value="${editUser.getUserSurname()}"/>
+                           value="${editUser.getUser().getUserSurname()}"/>
                 </td>
             </tr>
             <tr>
@@ -187,7 +187,7 @@
                     <input type="text"
                            name="login"
                            readonly="readonly"
-                           value="${editUser.getUserLogin()}"/>
+                           value="${editUser.getUser().getUserLogin()}"/>
                 </td>
             </tr>
             <tr>
@@ -195,7 +195,7 @@
                     <span>Address</span>
                     <input type="text"
                            name="address"
-                           value="${editUser.getUserAddress()}"/>
+                           value="${editUser.getUser().getUserAddress()}"/>
                 </td>
             </tr>
             <tr>
@@ -204,7 +204,7 @@
                     <input type="text" name="birthday"
                            pattern="^\d{4}-\d{2}-\d{2}$"
                            title="'Please, use format like 'yyyy-mm-dd'"
-                           value="${editUser.getUserBirthday()}"/>
+                           value="${editUser.getUser().getUserBirthday()}"/>
                 </td>
             </tr>
             <tr>
@@ -213,7 +213,7 @@
                     <input type="text" name="phone"
                            pattern="(8 0(25|29|33|34) ([0-9]{3}( [0-9]{2}){2}))"
                            title="like, '8 0xx xxx xx xx'"
-                           value="${editUser.getUserPhone()}"/>
+                           value="${editUser.getUser().getUserPhone()}"/>
                 </td>
             </tr>
             <tr>
@@ -222,7 +222,7 @@
                     <input type="text" name="role"
                            pattern="^(ADMIN|USER)"
                            title="'ADMIN' or 'USER'"
-                           value="${editUser.getRoleName()}"/>
+                           value="${editUser.getUserRole().getRoleName()}"/>
                 </td>
             </tr>
 

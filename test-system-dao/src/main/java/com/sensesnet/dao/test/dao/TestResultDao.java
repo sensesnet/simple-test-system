@@ -41,7 +41,7 @@ public class TestResultDao extends AbstractDao<TestResult>
                 {
                     return this.buildEntity(resultSet);
                 }
-                log.info("[TestResultDao] Result has been selected by id: " + entity.getResultId());
+                log.info("[" + this.getClass().getName() + "] Result has been selected by id: " + entity.getResultId());
             }
         }
         catch (SQLException e)
@@ -69,7 +69,7 @@ public class TestResultDao extends AbstractDao<TestResult>
                 {
                     resultList.add(this.buildEntity(resultSet));
                 }
-                log.info("[TestResultDao] All results has been selected.");
+                log.info("[" + this.getClass().getName() + "] All results has been selected.");
             }
         }
         catch (SQLException e)
@@ -98,22 +98,21 @@ public class TestResultDao extends AbstractDao<TestResult>
                         statement,
                         entity.getTestProcessId(),
                         entity.getQuestionId(),
-                        entity.getAnswerId()).executeUpdate();
-                log.info("[TestResultDao] New result has been added: " + entity.toString());
+                        entity.getAnswerId()).execute();
                 connection.commit();
+                log.info("[" + this.getClass().getName() + "] New result has been added: " + entity.toString());
             }
         }
         catch (SQLException e)
         {
-            log.error("[TestResultDao] Test has NOT added, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] Test has NOT added, DB access error.", e);
             try
             {
                 connection.rollback();
-                log.warn("[TestResultDao] Transaction rollback is completed.");
+                log.warn("[" + this.getClass().getName() + "] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[TestResultDao] Rollback has NOT possible.");
                 throw new DaoException("SQL Error: Have no access to DB.", ex);
             }
         }
@@ -135,21 +134,20 @@ public class TestResultDao extends AbstractDao<TestResult>
             {
                 statement.setInt(1, entity.getResultId());
                 statement.execute();
-                log.info("[TestResultDao] Result has been removed: " + entity.toString());
+                log.info("[" + this.getClass().getName() + "] Result has been removed: " + entity.toString());
                 connection.commit();
             }
         }
         catch (SQLException e)
         {
-            log.error("[TestResultDao] Test has NOT removed, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] Test has NOT removed, DB access error.", e);
             try
             {
                 connection.rollback();
-                log.warn("[TestResultDao] Transaction rollback is completed.");
+                log.warn("[" + this.getClass().getName() + "] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[TestResultDao] Rollback has NOT possible.");
                 throw new DaoException("SQL Error: Have no access to DB.", ex);
             }
         }
@@ -175,21 +173,20 @@ public class TestResultDao extends AbstractDao<TestResult>
                         entity.getQuestionId(),
                         entity.getAnswerId(),
                         entity.getResultId()).executeQuery();
-                log.info("[TestResultDao] Result has been updated: " + entity.toString());
                 connection.commit();
+                log.info("[" + this.getClass().getName() + "] Result has been updated: " + entity.toString());
             }
         }
         catch (SQLException e)
         {
-            log.error("[TestResultDao] Test has NOT updated, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] Test has NOT updated, DB access error.", e);
             try
             {
                 connection.rollback();
-                log.warn("[TestResultDao] Transaction rollback is completed.");
+                log.warn("[" + this.getClass().getName() + "] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[TestResultDao] Rollback has NOT possible.");
                 throw new DaoException("SQL Error: Have no access to DB.", ex);
             }
         }
@@ -204,7 +201,7 @@ public class TestResultDao extends AbstractDao<TestResult>
     {
         return TestResult.builder()
                 .resultId(resultSet.getInt("result_id"))
-                .testProcessId(resultSet.getInt("test_process_id"))
+                .testProcessId(resultSet.getString("test_process_id"))
                 .questionId(resultSet.getInt("question_id"))
                 .answerId(resultSet.getInt("answer_id")).build();
     }

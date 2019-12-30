@@ -1,16 +1,13 @@
 package com.sensesnet.command.impl;
 
-import com.sensesnet.IUserService;
+import com.sensesnet.UserService;
 import com.sensesnet.ServiceFactory;
-import com.sensesnet.command.ICommand;
-import com.sensesnet.connection.ConnectionPoolException;
-import com.sensesnet.dto.UserDto;
+import com.sensesnet.command.Command;
 import com.sensesnet.exception.ServiceException;
 import com.sensesnet.pojo.authentication.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -21,10 +18,10 @@ import java.io.IOException;
  * <p>
  * Command: Remove user
  */
-public class UserRemoveCommand implements ICommand
+public class UserRemoveCommand implements Command
 {
     private static final Logger log = LogManager.getLogger(UserRemoveCommand.class);
-    private IUserService userService = ServiceFactory.getInstance().getUserService();
+    private UserService userService = ServiceFactory.getInstance().getUserService();
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServiceException

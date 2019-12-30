@@ -15,6 +15,8 @@ public enum CommandType
     TEST_VIEW,
     TEST_EDIT,
     TEST_PROCESS,
+    TEST_CREATE,
+    FINISH_TEST,
     RESULT_VIEW,
     USER_VIEW,
     USER_ADD,
@@ -22,5 +24,6 @@ public enum CommandType
     USER_REMOVE,
     USER_NEW_SAVE,
     USER_EDIT_SAVE,
+    START_TEST,
     CLOSE_SESSION;
 }

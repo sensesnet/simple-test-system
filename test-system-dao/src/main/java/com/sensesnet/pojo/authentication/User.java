@@ -32,7 +32,6 @@ public class User
     public boolean equals(Object object)
     {
         if (this == object) return true;
-        if (!super.equals(object)) return false;
         if (getClass() != object.getClass()) return false;
 
         User user = (User) object;

@@ -17,7 +17,7 @@ public class DateUtils
 //    SimpleDateFormat format = new SimpleDateFormat();
 //format.applyPattern("dd.mm.yyyy");
 //    Date docDate= format.parse(docDate);
-    public static String getDateTime (String dateFormatTemplate){
+    public static String getCurrentDate (String dateFormatTemplate){
         DateFormat dateFormat = new SimpleDateFormat(dateFormatTemplate);
         Date date = new Date();
         String dateToday = dateFormat.format(date);

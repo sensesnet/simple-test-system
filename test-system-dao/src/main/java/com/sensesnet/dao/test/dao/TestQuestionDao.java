@@ -4,6 +4,7 @@ import com.sensesnet.connection.ConnectionPoolException;
 import com.sensesnet.constant.DaoConstant;
 import com.sensesnet.dao.AbstractDao;
 import com.sensesnet.dao.exception.DaoException;
+import com.sensesnet.pojo.test.Test;
 import com.sensesnet.pojo.test.TestQuestion;
 import com.sensesnet.pojo.test.TestResult;
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +43,8 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
                 {
                     return this.buildEntity(resultSet);
                 }
-                log.info("[TestQuestionDao] Question has been selected by id: " + entity.getQuestionId());
+                log.info("[" + this.getClass().getName() + "] Question has been selected by id: "
+                        + entity.getQuestionId());
             }
         }
         catch (SQLException e)
@@ -70,7 +72,7 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
                 {
                     testQuestionList.add(this.buildEntity(resultSet));
                 }
-                log.info("[TestQuestionDao] All questions has been selected.");
+                log.info("[" + this.getClass().getName() + "] All questions has been selected.");
             }
         }
         catch (SQLException e)
@@ -101,21 +103,20 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
                         entity.getTestId(),
                         entity.getAnswerId(),
                         entity.getQuestionClarification()).executeUpdate();
-                log.info("[TestQuestionDao] New result has been added: " + entity.toString());
                 connection.commit();
+                log.info("[" + this.getClass().getName() + "] New result has been added: " + entity.toString());
             }
         }
         catch (SQLException e)
         {
-            log.error("[TestQuestionDao] Test has NOT added, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] Test has NOT added, DB access error.", e);
             try
             {
                 connection.rollback();
-                log.warn("[TestQuestionDao] Transaction rollback is completed.");
+                log.warn("[" + this.getClass().getName() + "] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[TestQuestionDao] Rollback has NOT possible.");
                 throw new DaoException("SQL Error: Have no access to DB.", ex);
             }
         }
@@ -138,21 +139,20 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
             {
                 statement.setInt(1, entity.getQuestionId());
                 statement.execute();
-                log.info("[TestQuestionDao] Question has been removed: " + entity.toString());
                 connection.commit();
+                log.info("[" + this.getClass().getName() + "] Question has been removed: " + entity.toString());
             }
         }
         catch (SQLException e)
         {
-            log.error("[TestQuestionDao] Test has NOT removed, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] Test has NOT removed, DB access error.", e);
             try
             {
                 connection.rollback();
-                log.warn("[TestQuestionDao] Transaction rollback is completed.");
+                log.warn("[" + this.getClass().getName() + "] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[TestQuestionDao] Rollback has NOT possible.");
                 throw new DaoException("SQL Error: Have no access to DB.", ex);
             }
         }
@@ -179,21 +179,20 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
                         entity.getTestId(),
                         entity.getAnswerId(),
                         entity.getQuestionClarification()).execute();
-                log.info("[TestQuestionDao] Question has been updated: " + entity.toString());
                 connection.commit();
+                log.info("[" + this.getClass().getName() + "] Question has been updated: " + entity.toString());
             }
         }
         catch (SQLException e)
         {
-            log.error("[TestQuestionDao] Test has NOT updated, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] Test has NOT updated, DB access error.", e);
             try
             {
                 connection.rollback();
-                log.warn("[TestQuestionDao] Transaction rollback is completed.");
+                log.warn("[" + this.getClass().getName() + "] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[TestQuestionDao] Rollback has NOT possible.");
                 throw new DaoException("SQL Error: Have no access to DB.", ex);
             }
         }
@@ -203,6 +202,41 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
         }
     }
 
+    public List<TestQuestion> listOfQuestionsByTestId(Integer testId) throws ConnectionPoolException, DaoException
+    {
+        LinkedList<TestQuestion> testQuestionList = new LinkedList<>();
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(DaoConstant.query().SELECT_ALL_QUESTIONS_BY_TEST_ID))
+        {
+            statement.setInt(1, testId);
+            try (ResultSet resultSet = statement.executeQuery())
+            {
+                while (resultSet.next())
+                {
+                    testQuestionList.add(this.buildEntity(resultSet));
+                }
+                log.info("[" + this.getClass().getName() + "] All questions has been selected.");
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DaoException("SQL Error: Have no access to DB.", e);
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
+        return testQuestionList;
+    }
+
+    /**
+     * build question entity
+     *
+     * @param resultSet
+     * @return
+     * @throws SQLException
+     */
     @Override
     public TestQuestion buildEntity(ResultSet resultSet) throws SQLException
     {

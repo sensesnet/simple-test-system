@@ -1,6 +1,6 @@
 package com.sensesnet.command.impl;
 
-import com.sensesnet.command.ICommand;
+import com.sensesnet.command.Command;
 import com.sensesnet.constant.ConstantProvider;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,7 +14,7 @@ import java.io.IOException;
  * <p>
  * Command : Sign In
  */
-public class SignInCommand implements ICommand
+public class SignInCommand implements Command
 {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException

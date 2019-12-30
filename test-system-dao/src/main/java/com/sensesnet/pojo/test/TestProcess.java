@@ -3,7 +3,6 @@ package com.sensesnet.pojo.test;
 import lombok.*;
 
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * @author sensesnet <br />
@@ -19,10 +18,10 @@ import java.util.Objects;
 @ToString
 public class TestProcess
 {
-    private Integer testProcessId;
-    private Date testProcessDate;
+    private String testProcessId;
+    private String testProcessDate;
     private Integer userId;
-    private Integer resultId;
+    private Integer result;
     private Integer testId;
     private Integer mainResultValue;
     private boolean isCompleted;
@@ -31,7 +30,6 @@ public class TestProcess
     public boolean equals(Object object)
     {
         if (this == object) return true;
-        if (!super.equals(object)) return false;
         if (getClass() != object.getClass()) return false;
 
         TestProcess that = (TestProcess) object;
@@ -40,7 +38,7 @@ public class TestProcess
         if (!getTestProcessId().equals(that.getTestProcessId())) return false;
         if (!getTestProcessDate().equals(that.getTestProcessDate())) return false;
         if (!getUserId().equals(that.getUserId())) return false;
-        if (!getResultId().equals(that.getResultId())) return false;
+        if (!getResult().equals(that.getResult())) return false;
         if (!getTestId().equals(that.getTestId())) return false;
         return getMainResultValue().equals(that.getMainResultValue());
 
@@ -52,7 +50,7 @@ public class TestProcess
         int result = getTestProcessId().hashCode();
         result = 31 * result + getTestProcessDate().hashCode();
         result = 31 * result + getUserId().hashCode();
-        result = 31 * result + getResultId().hashCode();
+        result = 31 * result + getResult().hashCode();
         result = 31 * result + getTestId().hashCode();
         result = 31 * result + getMainResultValue().hashCode();
         result = 31 * result + (isCompleted() ? 1 : 0);

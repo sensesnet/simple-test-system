@@ -1,11 +1,10 @@
 package com.sensesnet.impl;
 
-import com.sensesnet.IUserService;
+import com.sensesnet.UserService;
 import com.sensesnet.connection.ConnectionPoolException;
 import com.sensesnet.dao.DaoFactory;
 import com.sensesnet.dao.exception.DaoException;
 import com.sensesnet.dao.user.dao.UserDao;
-import com.sensesnet.dto.UserDto;
 import com.sensesnet.exception.ServiceException;
 import com.sensesnet.pojo.authentication.User;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -21,9 +20,9 @@ import java.util.List;
  * <p>
  * Service: User service
  */
-public class UserService implements IUserService
+public class UserServiceImpl implements UserService
 {
-    private static final Logger log = LogManager.getLogger(UserService.class);
+    private static final Logger log = LogManager.getLogger(UserServiceImpl.class);
     private UserDao userDao = DaoFactory.getUserDao();
 
     /**
@@ -37,24 +36,17 @@ public class UserService implements IUserService
     @Override
     public User getUserByEmailAndPassword(String login, String password) throws ServiceException
     {
-        User existingUser = null;
+        log.info("[UserServiceImpl] Get user by email and password: [" + login + " | "
+                + this.getEncryptPassword(password) + "].");
         try
         {
-            existingUser = userDao.getUserByLoginAndPassword(login, this.getEncryptPassword(password));
-            if (existingUser == null)
-            {
-                log.error("[Auth step] User account is not found:[" + login + ";"
-                        + this.getEncryptPassword(password) + "] ");
-                return null;
-            }
-            log.info("[User Service] Authorization has completed successfully with [" + existingUser.toString() + "].");
+            return userDao.getUserByLoginAndPassword(login, this.getEncryptPassword(password));
         }
         catch (ConnectionPoolException | DaoException e)
         {
             throw new SecurityException("[Auth step] User is not found by Name and Password:[" + login + ";" +
                     "" + this.getEncryptPassword(password) + "]");
         }
-        return existingUser;
     }
 
     @Override
@@ -76,7 +68,7 @@ public class UserService implements IUserService
     public List<User> getListOfEntity() throws ServiceException
     {
 
-        log.info("[UserService] Get list with all users.");
+        log.info("[UserServiceImpl] Get list with all users.");
         try
         {
             return userDao.getListOfEntity();
@@ -91,7 +83,7 @@ public class UserService implements IUserService
     @Override
     public void createUser(User entity) throws ServiceException
     {
-        log.info("[UserService] Add new user:[" + entity.toString() + "]");
+        log.info("[UserServiceImpl] Add new user:[" + entity.toString() + "]");
         try
         {
             entity.setUserPassword(getEncryptPassword(entity.getUserPassword()));
@@ -107,7 +99,7 @@ public class UserService implements IUserService
     @Override
     public void removeUser(User entity) throws ServiceException
     {
-        log.info("[UserService] Remove user:[" + entity.toString() + "].");
+        log.info("[UserServiceImpl] Remove user:[" + entity.toString() + "].");
         try
         {
             userDao.removeEntity(entity);
@@ -122,7 +114,7 @@ public class UserService implements IUserService
     @Override
     public void updateUser(User entity) throws ServiceException
     {
-        log.info("[UserService] Edit user:[" + entity.toString() + "].");
+        log.info("[UserServiceImpl] Edit user:[" + entity.toString() + "].");
         try
         {
             userDao.editEntity(entity);
@@ -143,7 +135,7 @@ public class UserService implements IUserService
     @Override
     public User getUserByEmail(String email) throws ServiceException
     {
-        log.info("[UserService] Get users by email (login) [" + email + "].");
+        log.info("[UserServiceImpl] Get users by email (login) [" + email + "].");
         try
         {
             return userDao.getUserByLogin(email);
@@ -164,14 +156,14 @@ public class UserService implements IUserService
     @Override
     public User getUserById(Integer userId) throws ServiceException
     {
-        log.info("[UserService] Get users by id: [" + userId + "].");
+        log.info("[UserServiceImpl] Get users by id: [" + userId + "].");
         try
         {
             return userDao.getByIdentifier(userId);
         }
         catch (ConnectionPoolException | DaoException e)
         {
-            throw new ServiceException("[UserService] User [" + userId.toString() + " ] has NOT been found.", e);
+            throw new ServiceException("[UserServiceImpl] User [" + userId + " ] has NOT been found.", e);
         }
     }
 

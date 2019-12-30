@@ -27,8 +27,7 @@ public class UserDao extends AbstractDao<User>
 
     private static final Logger log = LogManager.getLogger(UserDao.class);
 
-    public User getUserByLoginAndPassword(String login, String password) throws
-            DaoException, ConnectionPoolException
+    public User getUserByLoginAndPassword(String login, String password) throws DaoException, ConnectionPoolException
     {
         Connection connection = getConnection();
         try (PreparedStatement statement = connection
@@ -42,12 +41,13 @@ public class UserDao extends AbstractDao<User>
                 {
                     return this.buildEntity(resultSet);
                 }
-                log.info("[UserDao] Account has been found by login and password: [" + login + ";" + password + "].");
+                log.info("[" + this.getClass().getName() + "] Account has been found by "
+                        + "login and password: [" + login + ";" + password + "].");
             }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", e);
         }
         finally
         {
@@ -69,12 +69,12 @@ public class UserDao extends AbstractDao<User>
                 {
                     return this.buildEntity(resultSet);
                 }
-                log.info("[UserDao] Account has been found by login : " + login);
+                log.info("[" + this.getClass().getName() + "] Account has been found by login : " + login);
             }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", e);
         }
         finally
         {
@@ -96,12 +96,12 @@ public class UserDao extends AbstractDao<User>
                 {
                     return this.buildEntity(resultSet);
                 }
-                log.info("[UserDao] Account has been found by id: " + userId);
+                log.info("[" + this.getClass().getName() + "] Account has been found by id: " + userId);
             }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", e);
         }
         finally
         {
@@ -124,12 +124,12 @@ public class UserDao extends AbstractDao<User>
                 {
                     return this.buildEntity(resultSet);
                 }
-                log.info("[UserDao] Account has been found: " + entity.toString());
+                log.info("[" + this.getClass().getName() + "] Account has been found: " + entity.toString());
             }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", e);
         }
         finally
         {
@@ -152,12 +152,12 @@ public class UserDao extends AbstractDao<User>
                 {
                     userList.add(this.buildEntity(resultSet));
                 }
-                log.info("[UserDao] Account's has been selected.");
+                log.info("[" + this.getClass().getName() + "] Account's has been selected.");
             }
         }
         catch (SQLException e)
         {
-            throw new DaoException("SQL Error: Have no access to DB.", e);
+            throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", e);
         }
         finally
         {
@@ -186,22 +186,21 @@ public class UserDao extends AbstractDao<User>
                         entity.getUserAddress(),
                         entity.getUserBirthday(),
                         entity.getUserPhone()).execute();
-                log.info("[UserDao] Account Info has been added: " + entity.toString());
                 connection.commit();
+                log.info("[" + this.getClass().getName() + "] New account has been added: " + entity.toString());
             }
         }
         catch (SQLException e)
         {
-            log.error("[UserDao] Account's have NOT added, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] New account has NOT added, DB access error.", e);
             try
             {
                 connection.rollback();
-                log.warn("[UserDao] Transaction rollback is completed.");
+                log.warn("[" + this.getClass().getName() + "] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[UserDao] Rollback has NOT possible.");
-                throw new DaoException("SQL Error: Have no access to DB.", ex);
+                throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", ex);
             }
         }
         finally
@@ -222,22 +221,21 @@ public class UserDao extends AbstractDao<User>
             {
                 statement.setInt(1, entity.getUserId());
                 statement.execute();
-                log.info("[UserDao] Account has been removed: " + entity.toString());
                 connection.commit();
+                log.info("[" + this.getClass().getName() + "] Account has been removed: " + entity.toString());
             }
         }
         catch (SQLException e)
         {
-            log.error("[UserDao] Account has NOT removed, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] Account has NOT removed, DB access error.", e);
             try
             {
                 connection.rollback();
-                log.warn("[UserDao] Transaction rollback is completed.");
+                log.warn("[" + this.getClass().getName() + "] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[UserDao] Rollback has NOT possible.");
-                throw new DaoException("SQL Error: Have no access to DB.", ex);
+                throw new DaoException("[" + this.getClass().getName() + "]: Have no access to DB.", ex);
             }
         }
         finally
@@ -264,26 +262,24 @@ public class UserDao extends AbstractDao<User>
                         entity.getUserName(),
                         entity.getUserSurname(),
                         entity.getUserAddress(),
-                        entity.getUserAddress(),
                         entity.getUserBirthday(),
                         entity.getUserPhone(),
                         entity.getUserId()).execute();
-                log.info("[UserDao] Account has been updated: " + entity.toString());
                 connection.commit();
+                log.info("[" + this.getClass().getName() + "] Account has been updated: " + entity.toString());
             }
         }
         catch (SQLException e)
         {
-            log.error("[UserDao] Account's have NOT updated, DB access error. Error: " + e.getLocalizedMessage());
+            log.error("[" + this.getClass().getName() + "] Account's have NOT updated. DB access error.", e);
             try
             {
                 connection.rollback();
-                log.warn("[UserDao] Transaction rollback is completed.");
+                log.warn("[" + this.getClass().getName() + "] Transaction rollback is completed.");
             }
             catch (SQLException ex)
             {
-                log.error("[UserDao] Rollback has NOT possible.");
-                throw new DaoException("SQL Error: Have no access to DB.", ex);
+                throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", ex);
             }
         }
         finally
