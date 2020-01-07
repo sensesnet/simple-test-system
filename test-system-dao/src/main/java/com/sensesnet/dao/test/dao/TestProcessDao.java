@@ -41,7 +41,7 @@ public class TestProcessDao extends AbstractDao<TestProcess>
                     return this.buildEntity(resultSet);
                 }
                 log.info("[" + this.getClass().getName() + "] Test Process has been selected by id: "
-                        + entity.getResult());
+                        + entity.getTestProcessId());
             }
         }
         catch (SQLException e)
@@ -95,11 +95,12 @@ public class TestProcessDao extends AbstractDao<TestProcess>
             {
                 prepareStatementParams(
                         statement,
+                        entity.getTestProcessId(),
                         entity.getTestProcessDate(),
                         entity.getUserId(),
                         entity.getTestId(),
                         entity.getMainResultValue(),
-                        entity.isCompleted()).executeUpdate();
+                        entity.isCompleted()).execute();
                 connection.commit();
                 log.info("[" + this.getClass().getName() + "] New test process has been added: " + entity.toString());
             }
@@ -175,7 +176,7 @@ public class TestProcessDao extends AbstractDao<TestProcess>
                         entity.getTestId(),
                         entity.getMainResultValue(),
                         entity.isCompleted(),
-                        entity.getTestProcessId()).executeQuery();
+                        entity.getTestProcessId()).execute();
                 connection.commit();
                 log.info("[" + this.getClass().getName() + "] Test process has been updated: " + entity.toString());
             }
@@ -197,6 +198,62 @@ public class TestProcessDao extends AbstractDao<TestProcess>
         {
             closeConnection(connection);
         }
+    }
+
+    public TestProcess getByIdentifier(String testProcessId) throws ConnectionPoolException, DaoException
+    {
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(DaoConstant.query().SELECT_TEST_PROCESS_BY_ID))
+        {
+            statement.setString(1, testProcessId);
+            try (ResultSet resultSet = statement.executeQuery())
+            {
+                if (resultSet.next())
+                {
+                    return this.buildEntity(resultSet);
+                }
+                log.info("[" + this.getClass().getName() + "] Test Process has been selected by id: "
+                        + testProcessId);
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DaoException("SQL Error: Have no access to DB.", e);
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
+        return null;
+    }
+
+    public List<TestProcess> getHistoryByUserId(Integer userId) throws ConnectionPoolException, DaoException
+    {
+        LinkedList<TestProcess> testProcessList = new LinkedList<>();
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(DaoConstant.query().SELECT_ALL_TEST_PROCESS_BY_USER_ID))
+        {
+            statement.setInt(1,userId);
+            try (ResultSet resultSet = statement.executeQuery())
+            {
+                while (resultSet.next())
+                {
+                    testProcessList.add(this.buildEntity(resultSet));
+                }
+                log.info("[" + this.getClass().getName() + "] All test processes has been selected.");
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DaoException("SQL Error: Have no access to DB.", e);
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
+        return testProcessList;
     }
 
     @Override

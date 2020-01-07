@@ -1,5 +1,8 @@
 package com.sensesnet.util;
 
+import com.sensesnet.constant.ConstantProvider;
+
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,11 +20,10 @@ public class DateUtils
 //    SimpleDateFormat format = new SimpleDateFormat();
 //format.applyPattern("dd.mm.yyyy");
 //    Date docDate= format.parse(docDate);
-    public static String getCurrentDate (String dateFormatTemplate){
-        DateFormat dateFormat = new SimpleDateFormat(dateFormatTemplate);
-        Date date = new Date();
-        String dateToday = dateFormat.format(date);
-        return dateToday;
+    public static String getCurrentDate(){
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat(ConstantProvider.dateFormat().YYYY_MM_DD);
+        return dateFormat.format(timestamp);
     }
 
     public static String getMinutesSecondsCurrentTime (String dateTime){

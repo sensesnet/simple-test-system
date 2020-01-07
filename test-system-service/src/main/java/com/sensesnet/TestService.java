@@ -1,6 +1,8 @@
 package com.sensesnet;
 
 
+import com.sensesnet.connection.ConnectionPoolException;
+import com.sensesnet.dao.exception.DaoException;
 import com.sensesnet.dto.TestDto;
 import com.sensesnet.exception.ServiceException;
 import com.sensesnet.pojo.test.Test;
@@ -97,4 +99,11 @@ public interface TestService
      * @return
      */
     List<TestDto> getAllTestWithTheirAnswers(Test test);
+
+    /**
+     *
+     * @param result
+     * @return
+     */
+    boolean isTestCompleted(Integer testId,Integer result) throws ServiceException;
 }

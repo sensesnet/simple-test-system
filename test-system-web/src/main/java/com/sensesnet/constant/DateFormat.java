@@ -8,5 +8,5 @@ package com.sensesnet.constant;
  */
 public class DateFormat
 {
-    public final String YYYY_MM_DD = "YYYY_MM_DD";
+    public final String YYYY_MM_DD = "yyyy_MM_dd";
 }

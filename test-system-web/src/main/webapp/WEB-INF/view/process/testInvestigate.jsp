@@ -194,6 +194,15 @@
 <body onload="startTimer()">
 <h1>Online Testing Platform</h1>
 
+<div>
+    <div class="links">
+        <a href="Controller?action=start_test&testId=${testId}"><span class="more nowrap">Restart test</span></a>
+        <a href="Controller?action=home"><span class="more nowrap">Main user</span></a>
+        <a href="Controller?action=test_view"><span class="more nowrap">List of tests</span></a>
+        <a href="Controller?action=close_session"><span class="more nowrap">Sign Out</span></a>
+    </div>
+</div>
+
 <c:if test="${not empty param.errorMessage }">
     <c:out value="${param.errorMessage}"></c:out>
 </c:if>
@@ -203,71 +212,92 @@
 <form method="post" action="Controller" name="frmTestProcess">
     <input type="hidden" name="action" value="finish_test"/>
     <center>
-        <span id="timer" style="color: #d6d6d6; font-size: 120%;
-                        font-weight: bold;">00:15:30</span>
-
         <table border="0" width="30%" cellpadding="5">
-<%--            <div class="links">--%>
-<%--                <center>--%>
-<%--                    <c:forEach items="${testQuestionList}" var="question">--%>
-<%--                        <a href="Controller?action=open_test&questionId=${question.getTestQuestion().getQuestionId()}"><span--%>
-<%--                                class="pagination">${testQuestionList.indexOf(question)+1}</span></a>--%>
-<%--                    </c:forEach>--%>
-<%--                </center>--%>
-<%--            </div>--%>
-            <c:forEach items="${testQuestionList}" var="question">
+            <c:forEach items="${testResultList}" var="result">
                 <tr>
                     <td class="col2">
-                        <p class="que_title" align="center">Question ${testQuestionList.indexOf(question)+1}</p>
+                        <p class="que_title" align="center">Question ${testResultList.indexOf(result)+1}</p>
                         <hr align="center" size="1px" width="500px">
-                        <span class="test_desc">${question.getTestQuestion().getQuestionDesc()}</span>
+                        <span class="test_desc">${result.getTestQuestion().getQuestionDesc()}</span>
                         <br>
-                        <c:forEach items="${question.getTestAnswerList()}" var="answer">
-                            <p><input name="question_${question.getTestQuestion().getQuestionId()}" type="radio"
-                                      value="${answer.getAnswerId()}"> ${answer.getAnswerDescription()}</p>
+                        <c:forEach items="${result.getTestAnswerList()}" var="answer">
+                            <div>
+                                Answer Id:${answer.getAnswerId()}
+                                Right answer: ${result.getTestQuestion().getAnswerId()}
+                                Result: ${result.getTestResult().getAnswerId()}
+                            </div>
+                            <c:set var="answerId" value='${answer.getAnswerId()}'/>
+                            <c:set var="rightAnswerId" value='${result.getTestQuestion().getAnswerId()}'/>
+                            <c:set var="selectedAnswerId" value='${result.getTestResult().getAnswerId()}'/>
+                            <%-- верный ответ  --%>
+                            <c:if test="${rightAnswerId.equals(answerId)}">
+                                <%-- выбран  --%>
+                                <c:choose>
+                                    <c:when test="${selectedAnswerId.equals(rightAnswerId)}">
+                                        <div style="color:green;">
+                                            <input
+                                                    name="question_${result.getTestQuestion().getQuestionId()}"
+                                                    type="radio"
+                                                    value="${answer.getAnswerId()}"
+                                                    checked
+                                                    disabled>
+                                                ${answer.getAnswerDescription()}
+                                        </div>
+                                    </c:when>
+                                    <%-- не выбран  --%>
+                                    <c:when test="${!selectedAnswerId.equals(rightAnswerId)}">
+                                        <div style="color:green;">
+                                            <input
+                                                    name="question_${result.getTestQuestion().getQuestionId()}"
+                                                    type="radio"
+                                                    value="${answer.getAnswerId()}"
+                                                    disabled>
+                                                ${answer.getAnswerDescription()}
+                                        </div>
+                                    </c:when>
+                                </c:choose>
+                            </c:if>
+                            <%-- неверный ответ  --%>
+                            <c:if test="${!rightAnswerId.equals(answerId)}">
+                                <%-- выбран  --%>
+                                <c:choose>
+                                    <c:when test="${selectedAnswerId.equals(answerId)}">
+                                        <div style="color:red;">
+                                            <input
+                                                    name="question_${result.getTestQuestion().getQuestionId()}"
+                                                    type="radio"
+                                                    value="${answer.getAnswerId()}"
+                                                    checked
+                                                    disabled>
+                                                ${answer.getAnswerDescription()}
+                                        </div>
+                                    </c:when>
+                                    <%-- не выбран  --%>
+                                    <c:when test="${!selectedAnswerId.equals(answerId)}">
+                                        <div>
+                                            <input
+                                                    name="question_${result.getTestQuestion().getQuestionId()}"
+                                                    type="radio"
+                                                    value="${answer.getAnswerId()}"
+                                                    disabled>
+                                                ${answer.getAnswerDescription()}
+                                        </div>
+                                    </c:when>
+                                </c:choose>
+                            </c:if>
                         </c:forEach>
                         <hr align="center" size="1px" width="500px">
-
+                        <div style="color:green;">
+                                ${result.getTestQuestion().getQuestionClarification()}
+                        </div>
+                        <hr align="center" size="1px" width="500px">
                     </td>
                 </tr>
             </c:forEach>
         </table>
-        <input type="submit" value="Finish test"/>
         <hr align="center" size="1px" width="500px">
         <p>Online test system</p>
     </center>
 </form>
 </body>
-<script>
-    function startTimer() {
-        var timer = document.getElementById("timer");
-        var time = timer.innerHTML;
-        var arr = time.split(":");
-        var hh = arr[0];
-        var mm = arr[1];
-        var ss = arr[2];
-        if (ss == 0) {
-            if (mm == 0) {
-                if (hh == 0) {
-                    alert("Test has been finished.");
-                    var x = document.getElementsByClassName("form");
-                    x[0].submit();
-                    return;
-                }
-                hh--;
-                mm = 60;
-                if (hh < 10)
-                    hh = "0" + hh;
-            }
-            mm--;
-            if (mm < 10)
-                mm = "0" + mm;
-            ss = 59;
-        } else ss--;
-        if (ss < 10)
-            ss = "0" + ss;
-        document.getElementById("timer").innerHTML = hh+":"+mm+":"+ss;
-        setTimeout(startTimer, 1000);
-    }
-</script>
 </html>

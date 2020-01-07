@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class TestProcessCommand implements Command
 {
-    private static final Logger log = LogManager.getLogger(TestViewCommand.class);
+    private static final Logger log = LogManager.getLogger(TestProcessCommand.class);
     private TestQuestionService testQuestionService = ServiceFactory.getInstance().getTestQuestionService();
     private TestProcessService testProcessService = ServiceFactory.getInstance().getTestProcessService();
     private TestAnswerService answerService = ServiceFactory.getInstance().getTestAnswerService();
@@ -43,8 +43,9 @@ public class TestProcessCommand implements Command
 
         RequestDispatcher dispatcher = request
                 .getRequestDispatcher(ConstantProvider.getPagePath().TEST_PROCESS_PAGE);
+        Integer testId = Integer.valueOf(request.getParameter("testId"));
         List<TestView> testViewList = new ArrayList<TestView>();
-        List<TestQuestion> testQuestionList = testQuestionService.listOfQuestionsByTestId(Integer.valueOf(request.getParameter("testId")));
+        List<TestQuestion> testQuestionList = testQuestionService.listOfQuestionsByTestId(testId);
 
         for (TestQuestion question : testQuestionList)
         {
@@ -58,21 +59,21 @@ public class TestProcessCommand implements Command
             return;
         }
 
-        Integer userId = Integer.valueOf(request.getParameter("userId"));
+        User user = (User) request.getSession().getAttribute("currentUser");
         request.setAttribute("testQuestionList", testViewList);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        String processId = timestamp.toString() + "-" + userId;
+        String processId = timestamp.getTime() + "-" + user.getUserId();
         request.getSession().setAttribute("testProcessId", processId);
-        request.getSession().setAttribute("testId", request.getParameter("testId"));
+        request.getSession().setAttribute("userId", user.getUserId());
+        request.getSession().setAttribute("testId", testId);
+        String date = DateUtils.getCurrentDate();
 
         testProcessService
                 .createTestProcess(
                         processId,
-                        DateUtils.getCurrentDate("YYYY-MM-DD"),
-                        userId,
-                        Integer.valueOf(request.getParameter("testId")),
-                        0,
-                        false);
+                        date,
+                        user.getUserId(),
+                        testId, 0, false);
 
 
         dispatcher.forward(request, response);

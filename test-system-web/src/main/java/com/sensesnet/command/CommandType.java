@@ -18,6 +18,7 @@ public enum CommandType
     TEST_CREATE,
     FINISH_TEST,
     RESULT_VIEW,
+    INVESTIGATE_TEST,
     USER_VIEW,
     USER_ADD,
     USER_EDIT,

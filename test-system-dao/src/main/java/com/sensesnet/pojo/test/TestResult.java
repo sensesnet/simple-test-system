@@ -17,7 +17,7 @@ import java.util.Objects;
 @ToString
 public class TestResult
 {
-    private @NonNull Integer resultId;
+    private Integer resultId;
     private @NonNull String testProcessId;
     private @NonNull Integer questionId;
     private @NonNull Integer answerId;

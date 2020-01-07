@@ -18,8 +18,8 @@ import java.util.Objects;
 @ToString
 public class TestAnswer
 {
-    public @NonNull Integer answerId;
-    public @NonNull String answerDescription;
+    public Integer answerId;
+    public String answerDescription;
     public @NonNull Integer questionId;
 
     @Override

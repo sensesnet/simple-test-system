@@ -30,7 +30,7 @@ public class TestServiceImpl implements TestService
     @Override
     public List<Test> getAllTests() throws ServiceException
     {
-        log.info("[" + this.getClass().getName() + "] Get list with all users.");
+        log.info("[" + this.getClass().getName() + "] Get list with all tests.");
         try
         {
             return testDao.getListOfEntity();
@@ -45,7 +45,16 @@ public class TestServiceImpl implements TestService
     @Override
     public Test getTest(Integer testId) throws ServiceException
     {
-        return null;
+        log.info("[" + this.getClass().getName() + "] Get list with all tests.");
+        try
+        {
+            return testDao.getByIdentifier(testId);
+        }
+        catch (ConnectionPoolException | DaoException e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "Test list has not found at test system. Service exception", e);
+        }
     }
 
     @Override
@@ -94,5 +103,20 @@ public class TestServiceImpl implements TestService
     public List<TestDto> getAllTestWithTheirAnswers(Test test)
     {
         return null;
+    }
+
+    @Override
+    public boolean isTestCompleted(Integer testId, Integer result) throws ServiceException
+    {
+        try
+        {
+            log.info("[" + this.getClass().getName() + "] Check is " + testId + " test completed: " + result);
+            return testDao.isTestCompleted(testId, result);
+        }
+        catch (ConnectionPoolException | DaoException e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "Check test result is not available. Service exception", e);
+        }
     }
 }

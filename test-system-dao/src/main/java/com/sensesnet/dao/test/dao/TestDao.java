@@ -192,6 +192,60 @@ public class TestDao extends AbstractDao<Test>
         }
     }
 
+    public boolean isTestCompleted(Integer testId, Integer result) throws ConnectionPoolException, DaoException
+    {
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(DaoConstant.query().SELECT_TEST_BY_ID))
+        {
+            statement.setInt(1, testId);
+            try (ResultSet resultSet = statement.executeQuery())
+            {
+                if (resultSet.next())
+                {
+                    return this.buildEntity(resultSet).getTestValue() <= result;
+                }
+                log.info("[" + this.getClass().getName() + "] Test has been completed!");
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", e);
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
+        return false;
+    }
+
+    public Test getByIdentifier(Integer testId) throws ConnectionPoolException, DaoException
+    {
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(DaoConstant.query().SELECT_TEST_BY_ID))
+        {
+            statement.setInt(1, testId);
+            try (ResultSet resultSet = statement.executeQuery())
+            {
+                while (resultSet.next())
+                {
+                    return this.buildEntity(resultSet);
+                }
+                log.info("[" + this.getClass().getName() + "] Test has been selected by id: " + testId);
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", e);
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
+        return null;
+    }
+
     @Override
     public Test buildEntity(ResultSet resultSet) throws SQLException
     {

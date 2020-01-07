@@ -24,37 +24,8 @@ public class TestProcessServiceImpl implements TestProcessService
     private static final Logger log = LogManager.getLogger(TestQuestionServiceImpl.class);
     private TestProcessDao testProcessDao = DaoFactory.getTestProcessDao();
 
-    public TestProcess getByIdentifier(TestProcess entity)
-    {
-        return null;
-    }
-
-
-    public List<TestProcess> getListOfEntity()
-    {
-        return null;
-    }
-
-
-    public void addEntity(TestProcess entity)
-    {
-
-    }
-
-
-    public void removeEntity(TestProcess entity)
-    {
-
-    }
-
-
-    public void editEntity(TestProcess entity)
-    {
-
-    }
-
     @Override
-    public void createTestProcess(String testProcessId, String currentDate, Integer userId, Integer testId, Integer result, Boolean isCompleted) throws ServiceException
+    public void createTestProcess(String testProcessId, String currentDate, Integer userId, Integer testId, Integer result, boolean isCompleted) throws ServiceException
     {
         log.info("[" + this.getClass().getName() + "] Start test process:[" + testProcessId + "]");
         try
@@ -65,6 +36,51 @@ public class TestProcessServiceImpl implements TestProcessService
         {
             throw new ServiceException("[" + this.getClass().getName() + "] "
                     + "New test process " + testProcessId + " has NOT started.", e);
+        }
+    }
+
+    @Override
+    public void updateProcess(TestProcess testProcess) throws ServiceException
+    {
+        log.info("[" + this.getClass().getName() + "] Update test process:[" + testProcess.getTestProcessId() + "]");
+        try
+        {
+            testProcessDao.editEntity(testProcess);
+        }
+        catch (ConnectionPoolException | DaoException e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "Process " + testProcess.getTestProcessId() + " has NOT updated.", e);
+        }
+    }
+
+    @Override
+    public TestProcess getTestProcess(String testProcessId) throws ServiceException
+    {
+        log.info("[" + this.getClass().getName() + "] Get test process:[" + testProcessId + "]");
+        try
+        {
+            return testProcessDao.getByIdentifier(testProcessId);
+        }
+        catch (ConnectionPoolException | DaoException e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "New test process " + testProcessId + " has NOT started.", e);
+        }
+    }
+
+    @Override
+    public List<TestProcess> getUserTestHistory(Integer userId) throws ServiceException
+    {
+        log.info("[" + this.getClass().getName() + "] Get test history by user id:[" + userId + "]");
+        try
+        {
+            return testProcessDao.getHistoryByUserId(userId);
+        }
+        catch (ConnectionPoolException | DaoException e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "Test history process " + userId + " has NOT found.", e);
         }
     }
 
@@ -80,7 +96,7 @@ public class TestProcessServiceImpl implements TestProcessService
                 .testProcessDate(currentDate)
                 .testId(testId)
                 .userId(userId)
-                .result(result)
+                .mainResultValue(result)
                 .isCompleted(isCompleted).build();
     }
 }

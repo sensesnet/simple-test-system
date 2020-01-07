@@ -21,7 +21,6 @@ public class TestProcess
     private String testProcessId;
     private String testProcessDate;
     private Integer userId;
-    private Integer result;
     private Integer testId;
     private Integer mainResultValue;
     private boolean isCompleted;
@@ -38,7 +37,6 @@ public class TestProcess
         if (!getTestProcessId().equals(that.getTestProcessId())) return false;
         if (!getTestProcessDate().equals(that.getTestProcessDate())) return false;
         if (!getUserId().equals(that.getUserId())) return false;
-        if (!getResult().equals(that.getResult())) return false;
         if (!getTestId().equals(that.getTestId())) return false;
         return getMainResultValue().equals(that.getMainResultValue());
 
@@ -50,7 +48,6 @@ public class TestProcess
         int result = getTestProcessId().hashCode();
         result = 31 * result + getTestProcessDate().hashCode();
         result = 31 * result + getUserId().hashCode();
-        result = 31 * result + getResult().hashCode();
         result = 31 * result + getTestId().hashCode();
         result = 31 * result + getMainResultValue().hashCode();
         result = 31 * result + (isCompleted() ? 1 : 0);

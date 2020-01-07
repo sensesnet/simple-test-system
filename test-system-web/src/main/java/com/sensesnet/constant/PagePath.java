@@ -32,6 +32,7 @@ public class PagePath
     public final String TEST_ADD_PAGE = "/WEB-INF/view/process/testAdd.jsp";
     public final String TEST_EDIT_PAGE = "/WEB-INF/view/process/testEdit.jsp";
     public final String TEST_PROCESS_PAGE = "/WEB-INF/view/process/testProcess.jsp";
+    public final String TEST_INVESTIGATE_PAGE = "/WEB-INF/view/process/testInvestigate.jsp";
     public final String TEST_RESULT_PAGE = "/WEB-INF/view/process/testResult.jsp";
     public final String TEST_LIST_FOR_USER_PAGE = "/WEB-INF/view/process/testListForUser.jsp";
     public final String TEST_LIST_FOR_ADMIN_PAGE = "/WEB-INF/view/process/testListForAdmin.jsp";

@@ -53,6 +53,7 @@ public class LoginFilter extends HttpServlet
             }
             session = request.getSession(true);
             session.setAttribute("currentUser", user);
+            session.setAttribute("userId", user.getUserId());
             response.sendRedirect("Controller?action=home");
         }
         catch (ServiceException e)

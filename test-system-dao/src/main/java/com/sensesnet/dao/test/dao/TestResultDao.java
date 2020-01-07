@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -81,7 +82,34 @@ public class TestResultDao extends AbstractDao<TestResult>
             closeConnection(connection);
         }
         return resultList;
+    }
 
+    public HashMap<Integer, TestResult> getListOfEntityByProcessId(String testProcessId) throws ConnectionPoolException, DaoException
+    {
+        HashMap<Integer, TestResult> resultList = new HashMap<>();
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(DaoConstant.query().SELECT_ALL_RESULT_BY_TEST_PROCESS_ID))
+        {
+            statement.setString(1, testProcessId);
+            try (ResultSet resultSet = statement.executeQuery())
+            {
+                while (resultSet.next())
+                {
+                    resultList.put(this.buildEntity(resultSet).getQuestionId(), this.buildEntity(resultSet));
+                }
+                log.info("[" + this.getClass().getName() + "] All results has been selected.");
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DaoException("SQL Error: Have no access to DB.", e);
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
+        return resultList;
     }
 
     @Override
@@ -194,6 +222,35 @@ public class TestResultDao extends AbstractDao<TestResult>
         {
             closeConnection(connection);
         }
+    }
+
+    public TestResult getTestResultByProcessIdAndQuestionId(String testProcessId, Integer questionId) throws ConnectionPoolException, DaoException
+    {
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(DaoConstant.query().SELECT_RESULT_BY_PROCESS_ID_AND_QUESTION_ID))
+        {
+            statement.setString(1, testProcessId);
+            statement.setInt(2, questionId);
+            try (ResultSet resultSet = statement.executeQuery())
+            {
+                if (resultSet.next())
+                {
+                    return this.buildEntity(resultSet);
+                }
+                log.info("[" + this.getClass().getName() + "] "
+                        + "Result has been selected by id: " + testProcessId + "|" + questionId);
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DaoException("SQL Error: Have no access to DB.", e);
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
+        return null;
     }
 
     @Override

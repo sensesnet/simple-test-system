@@ -90,6 +90,10 @@ public abstract class AbstractDao<T>
                 {
                     statement.setFloat(i++, (Float) arg);
                 }
+                else if (arg instanceof Boolean)
+                {
+                    statement.setBoolean(i++, (Boolean) arg);
+                }
                 else
                 {
                     statement.setString(i++, (String) arg);

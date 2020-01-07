@@ -82,7 +82,7 @@ public class SQLQueryConstant
             + "INSERT INTO test_system.test_process (test_process_id, test_process_date, user_id, test_id, main_result_value, is_completed) "
             + "VALUES (?, ?, ?, ?, ?, ?)";
     public final String UPDATE_TEST_PROCESS = ""
-            + "UPDATE test_system.test SET test_process_date = ?, user_id = ?, test_id = ?, main_result_value = ?, is_completed = ? "
+            + "UPDATE test_system.test_process SET test_process_date = ?, user_id = ?, test_id = ?, main_result_value = ?, is_completed = ? "
             + "WHERE test_process_id = ?";
     public final String DELETE_TEST_PROCESS_BY_ID = ""
             + "DELETE FROM test_system.test_process "
@@ -93,7 +93,13 @@ public class SQLQueryConstant
     public final String SELECT_TEST_PROCESS_BY_ID = ""
             + "SELECT * FROM test_system.test_process "
             + "WHERE test_process_id = ?";
-
+    public final String SELECT_RESULT_BY_PROCESS_ID_AND_QUESTION_ID =""
+            + "SELECT * FROM test_system.test_process "
+            + "WHERE test_process_id = ? "
+            + "AND question_id = ?";
+    public final String SELECT_ALL_TEST_PROCESS_BY_USER_ID =""
+            + "SELECT * FROM test_system.test_process "
+            + "WHERE user_id = ?";
     /**
      * SQL queries for DB (test_system.question;)
      */
@@ -159,5 +165,8 @@ public class SQLQueryConstant
     public final String UPDATE_RESULT = ""
             + "UPDATE test_system.result SET test_process_id = ?, question_id = ?, answer_id = ? "
             + "WHERE result_id = ?";
-
+    public final String SELECT_ALL_RESULT_BY_TEST_PROCESS_ID = ""
+            + "SELECT * "
+            + "FROM test_system.result "
+            + "WHERE test_process_id=?";
 }

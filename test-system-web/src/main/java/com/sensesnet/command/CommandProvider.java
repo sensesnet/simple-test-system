@@ -34,9 +34,11 @@ public class CommandProvider
         commands.put(CommandType.TEST_PROCESS, new TestProcessCommand());
         commands.put(CommandType.TEST_EDIT, new TestEditCommand());
         commands.put(CommandType.TEST_CREATE, new TestCreateCommand());
+        commands.put(CommandType.INVESTIGATE_TEST, new TestInvestigateCommand());
 
         commands.put(CommandType.START_TEST, new TestProcessCommand());
         commands.put(CommandType.FINISH_TEST, new TestFinishCommand());
+
     }
 
     public Command getCommand(String name)
