@@ -207,7 +207,8 @@
 <c:if test="${not empty param.message }">
     <c:out value="${param.message}"></c:out>
 </c:if>
-<form action="Controller">
+<%--<form method="post" action="Controller" name="frmEditQuestion">--%>
+<%--    <input type="hidden" name="action" value="save_question"/>--%>
     <center>
         <h2>Edit Question</h2>
         <table border="0" width="30%" cellpadding="5">
@@ -247,11 +248,13 @@
 
 
                     <form method="post" action="Controller" name="frmAddAnswer">
+                        <input type="hidden" name="action" value="add_answer"/>
                         <input type="hidden" name="questionId" value="${question.getQuestionId()}"/>
                         <br>
                         <textarea name="answerDesc" class="test_desc" placeholder="new answer here ..."></textarea>
                         <br>
-                        <input type="button" value="Add answer" onclick="addAnswer()">
+                        <input type="submit"
+                               value="Add answer">
                         <br>
                     </form>
 
@@ -266,11 +269,11 @@
                 </td>
             </tr>
         </table>
-        <input class="saveButton" type="button" value="Save changes" onclick="save()">
+        <input class="saveButton" type="submit" value="Save changes">
         <hr align="center" size="1px" width="500px">
         <p>Online test system</p>
     </center>
-</form>
+<%--</form>--%>
 <script type='text/javascript'>
     var tx = document.getElementsByTagName('textarea');
     for (var i = 0; i < tx.length; i++) {

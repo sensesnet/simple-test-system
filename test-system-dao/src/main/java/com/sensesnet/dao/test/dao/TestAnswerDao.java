@@ -97,7 +97,7 @@ public class TestAnswerDao extends AbstractDao<TestAnswer>
                 prepareStatementParams(
                         statement,
                         entity.getAnswerDescription(),
-                        entity.getQuestionId()).executeQuery();
+                        entity.getQuestionId()).execute();
                 log.info("[" + this.getClass().getName() + "] Answer has been added: " + entity.toString());
                 connection.commit();
             }

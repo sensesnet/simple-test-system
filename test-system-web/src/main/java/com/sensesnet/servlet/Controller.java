@@ -69,7 +69,7 @@ public class Controller extends HttpServlet
         }
         catch (ServiceException e)
         {
-            log.warn("[Controller] Service exception: lost connection to DB.");
+            log.error("[Controller] Service exception: lost connection to DB.", e);
             response.sendRedirect("Controller?action=sign_in&errorMessage=Lost connection to DB. try later...");
         }
     }
