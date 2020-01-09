@@ -55,7 +55,6 @@ public class Controller extends HttpServlet
     }
 
     /**
-     *
      * @param request
      * @param response
      * @throws ServletException
@@ -63,18 +62,9 @@ public class Controller extends HttpServlet
      */
     private void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        Command command;
-        User user = (User) request.getSession().getAttribute("currentUser");
-        String action = request.getParameter("action");
-        log.info("[Controller] Get action:[" + action + "]");
-        if (user == null)
-        {
-//            command = commandProvider.getCommand("closeSession");
-//            log.warn("[Controller] Session [" + request.getSession().getId() + "}has been expired!");
-        }
-        command = commandProvider.getCommand(action);
         try
         {
+            Command command = commandProvider.getCommand(request);
             command.execute(request, response);
         }
         catch (ServiceException e)

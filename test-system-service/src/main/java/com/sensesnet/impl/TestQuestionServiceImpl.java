@@ -26,35 +26,6 @@ public class TestQuestionServiceImpl implements TestQuestionService
     private static final Logger log = LogManager.getLogger(TestQuestionServiceImpl.class);
     private TestQuestionDao testQuestionDao = DaoFactory.getTestQuestionDao();
 
-    public TestQuestion getByIdentifier(TestQuestion entity)
-    {
-        return null;
-    }
-
-
-    public List<TestQuestion> getListOfEntity()
-    {
-        return null;
-    }
-
-
-    public void addEntity(TestQuestion entity)
-    {
-
-    }
-
-
-    public void removeEntity(TestQuestion entity)
-    {
-
-    }
-
-
-    public void editEntity(TestQuestion entity)
-    {
-
-    }
-
     @Override
     public List<TestQuestion> listOfQuestionsByTestId(Integer testId) throws ServiceException
     {
@@ -67,6 +38,21 @@ public class TestQuestionServiceImpl implements TestQuestionService
         {
             throw new ServiceException("[" + this.getClass().getName() + "] "
                     + "Questions list has not found at test system. Service exception", e);
+        }
+    }
+
+    @Override
+    public TestQuestion getQuestionById(Integer questionId) throws ServiceException
+    {
+        log.info("[" + this.getClass().getName() + "] Get questions by id [" + questionId + "].");
+        try
+        {
+            return testQuestionDao.getQuestionsById(questionId);
+        }
+        catch (ConnectionPoolException | DaoException e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "Questions [" + questionId + "] has not found at test system. Service exception", e);
         }
     }
 }

@@ -25,35 +25,6 @@ public class TestAnswerServiceImpl implements TestAnswerService
     private final Logger log = LogManager.getLogger(TestServiceImpl.class);
     private TestAnswerDao testAnswerDao = DaoFactory.getTestAnswerDao();
 
-    public TestAnswer getByIdentifier(TestAnswer entity)
-    {
-        return null;
-    }
-
-
-    public List<TestAnswer> getListOfEntity()
-    {
-        return null;
-    }
-
-
-    public void addEntity(TestAnswer entity)
-    {
-
-    }
-
-
-    public void removeEntity(TestAnswer entity)
-    {
-
-    }
-
-
-    public void editEntity(TestAnswer entity)
-    {
-
-    }
-
     @Override
     public List<TestAnswer> listOfAnswersByQuestionId(Integer questionId) throws ServiceException
     {
@@ -66,6 +37,37 @@ public class TestAnswerServiceImpl implements TestAnswerService
         {
             throw new ServiceException("[" + this.getClass().getName() + "] "
                     + "Answer list has not found at test system. Service exception", e);
+        }
+    }
+
+    @Override
+    public void removeAnswerById(Integer answerId) throws ServiceException
+    {
+        log.info("[" + this.getClass().getName() + "] Remove answer by id [" + answerId + "]");
+        try
+        {
+            testAnswerDao.removeAnswerById(answerId);
+        }
+        catch (ConnectionPoolException | DaoException e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "Answer has not found at test system. Service exception", e);
+        }
+    }
+
+    @Override
+    public void addAnswer(TestAnswer answer) throws ServiceException
+    {
+        log.info("[" + this.getClass().getName() + "] Add answer: [" + answer.getAnswerDescription() + "] "
+                + "for question [" + answer.getQuestionId() + "]");
+        try
+        {
+            testAnswerDao.addEntity(answer);
+        }
+        catch (ConnectionPoolException | DaoException e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "Answer has not found at test system. Service exception", e);
         }
     }
 }

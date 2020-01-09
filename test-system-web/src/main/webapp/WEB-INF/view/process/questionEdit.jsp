@@ -86,6 +86,7 @@
         display: inline-block;
         text-decoration: inherit;
         text-decoration-line: inherit;
+        margin-left: 0px;
         white-space: nowrap;
     }
 
@@ -153,18 +154,50 @@
     .test_desc {
         width: 70%;
     }
+
     .clar {
         width: 70%;
         color: rgba(16, 15, 17, 0.73);
+    }
+
+    .saveButton {
+
+        font-size: 17px;
+        line-height: 1.29412;
+        font-weight: 400;
+        letter-spacing: -.021em;
+        font-family: SF Pro Text, SF Pro Icons, Helvetica Neue, Helvetica, Arial, sans-serif;
+        display: inline-block;
+        box-sizing: border-box;
+        vertical-align: top;
+        width: 30%;
+        height: 34px;
+        margin-bottom: 14px;
+        padding-left: 15px;
+        padding-right: 15px;
+        color: #333;
+        text-align: left;
+        border: 1px solid #d6d6d6;
+        border-radius: 4px;
+        background: #fff;
+        background-clip: padding-box;
+    }
+
+    .saveButton {
+        background-color: rgb(240, 240, 240);
+        text-align: center;
+        vertical-align: center;
     }
 </style>
 
 <body>
 <h1>Online Testing Platform</h1>
+<c:set var="question" value='${editQuestion}'/>
 <div>
     <div class="links">
-        <a href="Controller?action=result_list"><span class="more nowrap">Save changes</span></a>
-        <a href="Controller?action=result_list"><span class="more nowrap">Admin main page</span></a>
+        <a href="Controller?action=test_edit&testId=<c:out value ="${question.getTestId()}"/>">
+            <span class="more nowrap">Test edit</span></a>
+        <a href="Controller?action=home"><span class="more nowrap">Admin main page</span></a>
         <a href="Controller?action=close_session"><span class="more nowrap">Sign Out</span></a>
     </div>
 </div>
@@ -176,61 +209,64 @@
 </c:if>
 <form action="Controller">
     <center>
-        <h2>Edit Test</h2>
+        <h2>Edit Question</h2>
         <table border="0" width="30%" cellpadding="5">
             <tr>
-                <th><a style="text-align:center;" href="Controller?action=remove_test_question&testId=<c:out value ="${test.getTestId()}"/>">
-                    <span class="link">Add New Question</span></a></th>
             </tr>
-            <c:forEach items="${testQuestionList}" var="question">
-                <tr>
-                    <td class="col2">
-                        <p class="que_title" align="center">Question ${testQuestionList.indexOf(question)+1}</p>
-                        <hr align="center" size="1px" width="500px">
+            <tr>
+                <td class="col2">
+                    <br>
+                    <label>Edit test questions:</label>
+                    <br>
+                    <textarea class="test_desc">${question.getQuestionDesc()}</textarea>
+                    <hr align="center" size="1px" width="500px">
+                    <label>Edit test answers & select right question:</label>
+                    <br>
+                    <c:forEach items="${listOfAnswers}" var="answer">
+                        <c:if test="${question.getAnswerId() == answer.getAnswerId()}">
+                            <p style="color:green;"><input name="${question.getQuestionId()}"
+                                                           type="radio"
+                                                           value="${answer.getAnswerId()}"
+                                                           checked>
+                                    ${answer.getAnswerDescription()}
+                                <a href="Controller?action=remove_answer&answerId=${answer.getAnswerId()}&questionId=${question.getQuestionId()}">
+                                    <span class="tableLink">&#10006;     </span></a>
+                            </p>
+                        </c:if>
+                        <c:if test="${question.getAnswerId() != answer.getAnswerId()}">
+                            <p><input name="${question.getQuestionId()}"
+                                      type="radio"
+                                      value="${answer.getAnswerId()}">
+                                    ${answer.getAnswerDescription()}
+                                <a href="Controller?action=remove_answer&answerId=${answer.getAnswerId()}&questionId=${question.getQuestionId()}">
+                                    <span class="tableLink">&#10006;     </span></a>
+                            </p>
+                        </c:if>
+                    </c:forEach>
+                    <label>Add new answer:</label>
+
+
+                    <form method="post" action="Controller" name="frmAddAnswer">
+                        <input type="hidden" name="questionId" value="${question.getQuestionId()}"/>
                         <br>
-                        <label>Edit test description:</label>
+                        <textarea name="answerDesc" class="test_desc" placeholder="new answer here ..."></textarea>
                         <br>
-                        <a href="Controller?action=edit_question&questionId=<c:out value ="${question.getTestQuestion().getQuestionId()}"/>">
-                            <span class="tableLink">Edit test question</span></a>
-                        <a href="Controller?action=remove_test_question&questionId=<c:out value ="${question.getTestQuestion().getQuestionId()}"/>">
-                            <span style="text-align:center;" class="tableLink">Remove Question</span></a>
+                        <input type="button" value="Add answer" onclick="addAnswer()">
                         <br>
-                        <textarea class="test_desc" disabled>${question.getTestQuestion().getQuestionDesc()}</textarea>
-                        <hr align="center" size="1px" width="500px">
-                        <label>Edit test questions:</label>
-                        <br>
-                        <c:forEach items="${question.getTestAnswerList()}" var="answer">
-                            <c:if test="${question.getTestQuestion().getAnswerId() == answer.getAnswerId()}">
-                                <p style="color:green;"><input name="${question.getTestQuestion().getQuestionId()}"
-                                          type="radio"
-                                          value="${answer.getAnswerId()}"
-                                          checked
-                                          disabled>
-                                        ${answer.getAnswerDescription()}
-                                </p>
-                            </c:if>
-                            <c:if test="${question.getTestQuestion().getAnswerId() != answer.getAnswerId()}">
-                                <p><input name="${question.getTestQuestion().getQuestionId()}"
-                                          type="radio"
-                                          value="${answer.getAnswerId()}"
-                                          disabled>
-                                        ${answer.getAnswerDescription()}
-                                </p>
-                            </c:if>
-                        </c:forEach>
-                        <hr align="center" size="1px" width="500px">
-                        <label>Edit test clarification:</label>
-                        <br>
-                        <br>
-                        <div class="clar">${question.getTestQuestion().getQuestionClarification()}
-                        </div>
-                        <hr align="center" size="1px" width="500px">
-                    </td>
-                </tr>
-            </c:forEach>
+                    </form>
+
+                    <hr align="center" size="1px" width="500px">
+                    <label>Edit test clarification:</label>
+                    <br>
+                    <br>
+                    <textarea name="newAnswerClarification" class="clar">${question.getQuestionClarification()}
+                    </textarea>
+                    <br>
+                    <hr align="center" size="1px" width="500px">
+                </td>
+            </tr>
         </table>
-        <a href="Controller?action=close_session"><span class="more nowrap">Admin main page</span></a>
-        <a href="Controller?action=result_list"><span class="more nowrap">Tests list</span></a>
+        <input class="saveButton" type="button" value="Save changes" onclick="save()">
         <hr align="center" size="1px" width="500px">
         <p>Online test system</p>
     </center>
@@ -245,6 +281,14 @@
     function OnInput() {
         this.style.height = 'auto';
         this.style.height = (this.scrollHeight) + 'px';
+    }
+
+    function addAnswer() {
+        document.location.href = "Controller?action=add_answer";
+    }
+
+    function save() {
+        document.location.href = "Controller?action=save_question";
     }
 </script>
 </body>

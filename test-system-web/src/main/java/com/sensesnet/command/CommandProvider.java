@@ -1,7 +1,10 @@
 package com.sensesnet.command;
 
 import com.sensesnet.command.impl.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +16,7 @@ import java.util.Map;
  */
 public class CommandProvider
 {
+    private static final Logger log = LogManager.getLogger(CommandProvider.class);
     private Map<CommandType, Command> commands = new HashMap<CommandType, Command>();
 
     public CommandProvider()
@@ -39,10 +43,34 @@ public class CommandProvider
         commands.put(CommandType.START_TEST, new TestProcessCommand());
         commands.put(CommandType.FINISH_TEST, new TestFinishCommand());
 
+        commands.put(CommandType.EDIT_QUESTION, new EditQuestionCommand());
+        commands.put(CommandType.EDIT_ANSWERS, new EditAnswersCommand());
+        commands.put(CommandType.EDIT_CLARIFICATION, new EditClarificationCommand());
+
+        commands.put(CommandType.SAVE_QUESTION, new SaveQuestionCommand());
+        commands.put(CommandType.ADD_ANSWER, new AddAnswerCommand());
+        commands.put(CommandType.REMOVE_ANSWER, new RemoveAnswerCommand());
+        commands.put(CommandType.SAVE_CLARIFICATION, new SaveClarificationCommand());
+
+        commands.put(CommandType.CREATE_NEW_TEST, new CreateNewTestCommand());
+        commands.put(CommandType.CREATE_NEW_QUESTION, new CreateNewQuestionCommand());
+
     }
 
-    public Command getCommand(String name)
+    /**
+     * Mapping Action to Command
+     *
+     * @param request
+     * @return
+     */
+    public Command getCommand(HttpServletRequest request)
     {
-        return commands.get(CommandType.valueOf(name.toUpperCase()));
+        String action = request.getParameter("action").toUpperCase();
+        if (action == null)
+        {
+            action = CommandType.HOME.toString();
+        }
+        log.info("[Controller] Command by action:[" + action + "]");
+        return commands.get(CommandType.valueOf(action));
     }
 }

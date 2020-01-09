@@ -20,7 +20,15 @@ public class TestAnswer
 {
     public Integer answerId;
     public String answerDescription;
-    public @NonNull Integer questionId;
+    public @NonNull
+    Integer questionId;
+
+    public TestAnswer(String answerDescription, Integer questionId)
+    {
+        this.answerId = null;
+        this.answerDescription = answerDescription;
+        this.questionId = questionId;
+    }
 
     @Override
     public boolean equals(Object object)

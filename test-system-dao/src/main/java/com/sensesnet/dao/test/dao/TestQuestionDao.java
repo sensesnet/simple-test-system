@@ -230,6 +230,34 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
         return testQuestionList;
     }
 
+    public TestQuestion getQuestionsById(Integer questionId) throws ConnectionPoolException, DaoException
+    {
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection
+                .prepareStatement(DaoConstant.query().SELECT_QUESTION_BY_ID))
+        {
+            statement.setInt(1, questionId);
+            try (ResultSet resultSet = statement.executeQuery())
+            {
+                if (resultSet.next())
+                {
+                    return this.buildEntity(resultSet);
+                }
+                log.info("[" + this.getClass().getName() + "] Question has been selected by id: "
+                        + questionId);
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DaoException("SQL Error: Have no access to DB.", e);
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
+        return null;
+    }
+
     /**
      * build question entity
      *

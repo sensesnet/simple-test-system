@@ -15,4 +15,6 @@ import java.util.List;
 public interface TestQuestionService
 {
     List<TestQuestion> listOfQuestionsByTestId(Integer testId) throws ServiceException;
+
+    TestQuestion getQuestionById(Integer questionId) throws ServiceException;
 }

@@ -97,14 +97,13 @@ public class TestAnswerDao extends AbstractDao<TestAnswer>
                 prepareStatementParams(
                         statement,
                         entity.getAnswerDescription(),
-                        entity.getQuestionId()).executeUpdate();
+                        entity.getQuestionId()).executeQuery();
                 log.info("[" + this.getClass().getName() + "] Answer has been added: " + entity.toString());
                 connection.commit();
             }
         }
         catch (SQLException e)
         {
-            log.error("[" + this.getClass().getName() + "] Test answer has NOT added, DB access error.", e);
             try
             {
                 connection.rollback();
@@ -132,14 +131,13 @@ public class TestAnswerDao extends AbstractDao<TestAnswer>
                     .prepareStatement(DaoConstant.query().DELETE_ANSWER_BY_ID))
             {
                 statement.setInt(1, entity.getAnswerId());
-                statement.execute();
+                statement.executeQuery();
                 log.info("[" + this.getClass().getName() + "] Answer has been removed: " + entity.toString());
                 connection.commit();
             }
         }
         catch (SQLException e)
         {
-            log.error("[" + this.getClass().getName() + "] Test answer has NOT removed. DB access error.", e);
             try
             {
                 connection.rollback();
@@ -177,7 +175,6 @@ public class TestAnswerDao extends AbstractDao<TestAnswer>
         }
         catch (SQLException e)
         {
-            log.error("[" + this.getClass().getName() + "] Test answer has NOT updated.", e);
             try
             {
                 connection.rollback();
@@ -223,6 +220,39 @@ public class TestAnswerDao extends AbstractDao<TestAnswer>
         return testAnswerList;
     }
 
+    public void removeAnswerById(Integer answerId) throws ConnectionPoolException, DaoException
+    {
+        Connection connection = getConnection();
+        try
+        {
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection
+                    .prepareStatement(DaoConstant.query().DELETE_ANSWER_BY_ID))
+            {
+                statement.setInt(1, answerId);
+                statement.execute();
+                log.info("[" + this.getClass().getName() + "] Answer has been removed: " + answerId);
+                connection.commit();
+            }
+        }
+        catch (SQLException e)
+        {
+            try
+            {
+                connection.rollback();
+                log.warn("[" + this.getClass().getName() + "] Transaction rollback is completed.");
+            }
+            catch (SQLException ex)
+            {
+                throw new DaoException("[" + this.getClass().getName() + "] Have no access to DB.", ex);
+            }
+        }
+        finally
+        {
+            closeConnection(connection);
+        }
+    }
+
     @Override
     public TestAnswer buildEntity(ResultSet resultSet) throws SQLException
     {
@@ -231,6 +261,4 @@ public class TestAnswerDao extends AbstractDao<TestAnswer>
                 .answerDescription(resultSet.getString("answer_description"))
                 .questionId(resultSet.getInt("question_id")).build();
     }
-
-
 }

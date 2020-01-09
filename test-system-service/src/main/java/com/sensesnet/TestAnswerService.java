@@ -15,4 +15,8 @@ import java.util.List;
 public interface TestAnswerService
 {
     List<TestAnswer> listOfAnswersByQuestionId(Integer questionId) throws ServiceException;
+
+    void removeAnswerById(Integer answerId) throws ServiceException;
+
+    void addAnswer(TestAnswer answer) throws ServiceException;
 }

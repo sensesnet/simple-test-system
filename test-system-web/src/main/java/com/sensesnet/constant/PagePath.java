@@ -8,6 +8,7 @@ package com.sensesnet.constant;
  */
 public class PagePath
 {
+
     public final String INDEX_PAGE = "index.jsp";
     public final String SIGN_IN_PAGE = "signIn.jsp";
     public final String SIGN_UP_PAGE = "signUp.jsp";
@@ -37,6 +38,11 @@ public class PagePath
     public final String TEST_LIST_FOR_USER_PAGE = "/WEB-INF/view/process/testListForUser.jsp";
     public final String TEST_LIST_FOR_ADMIN_PAGE = "/WEB-INF/view/process/testListForAdmin.jsp";
     public final String TEST_EDIT = "/WEB-INF/view/process/testEdit.jsp";
+
+    public final String QUESTION_EDIT_PAGE = "/WEB-INF/view/process/questionEdit.jsp";
+    public final String ANSWERS_EDIT_PAGE = "/WEB-INF/view/process/answersEdit.jsp";
+    public final String CLARIFICATION_EDIT_PAGE = "/WEB-INF/view/process/clarificationEdit.jsp";
+    public final String ADD_NEW_ANSWER_PAGE = "/WEB-INF/view/process/addNewAnswer.jsp";
 
     /*
     error
