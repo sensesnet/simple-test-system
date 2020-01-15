@@ -17,4 +17,6 @@ public interface TestQuestionService
     List<TestQuestion> listOfQuestionsByTestId(Integer testId) throws ServiceException;
 
     TestQuestion getQuestionById(Integer questionId) throws ServiceException;
+
+    void updateQuestion(TestQuestion testQuestion) throws ServiceException;
 }

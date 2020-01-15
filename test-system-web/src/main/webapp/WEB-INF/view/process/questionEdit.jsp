@@ -197,7 +197,7 @@
     <div class="links">
         <a href="Controller?action=test_edit&testId=<c:out value ="${question.getTestId()}"/>">
             <span class="more nowrap">Test edit</span></a>
-        <a href="Controller?action=home"><span class="more nowrap">Admin main page</span></a>
+        <a href="Controller?action=home"><span class="more nowrap">Admin main</span></a>
         <a href="Controller?action=close_session"><span class="more nowrap">Sign Out</span></a>
     </div>
 </div>
@@ -209,70 +209,90 @@
 </c:if>
 <%--<form method="post" action="Controller" name="frmEditQuestion">--%>
 <%--    <input type="hidden" name="action" value="save_question"/>--%>
-    <center>
-        <h2>Edit Question</h2>
-        <table border="0" width="30%" cellpadding="5">
-            <tr>
-            </tr>
-            <tr>
-                <td class="col2">
-                    <br>
-                    <label>Edit test questions:</label>
-                    <br>
-                    <textarea class="test_desc">${question.getQuestionDesc()}</textarea>
-                    <hr align="center" size="1px" width="500px">
-                    <label>Edit test answers & select right question:</label>
-                    <br>
-                    <c:forEach items="${listOfAnswers}" var="answer">
-                        <c:if test="${question.getAnswerId() == answer.getAnswerId()}">
-                            <p style="color:green;"><input name="${question.getQuestionId()}"
-                                                           type="radio"
-                                                           value="${answer.getAnswerId()}"
-                                                           checked>
-                                    ${answer.getAnswerDescription()}
-                                <a href="Controller?action=remove_answer&answerId=${answer.getAnswerId()}&questionId=${question.getQuestionId()}">
-                                    <span class="tableLink">&#10006;     </span></a>
-                            </p>
-                        </c:if>
-                        <c:if test="${question.getAnswerId() != answer.getAnswerId()}">
-                            <p><input name="${question.getQuestionId()}"
-                                      type="radio"
-                                      value="${answer.getAnswerId()}">
-                                    ${answer.getAnswerDescription()}
-                                <a href="Controller?action=remove_answer&answerId=${answer.getAnswerId()}&questionId=${question.getQuestionId()}">
-                                    <span class="tableLink">&#10006;     </span></a>
-                            </p>
-                        </c:if>
-                    </c:forEach>
-                    <label>Add new answer:</label>
+<center>
+    <h2>Edit Question</h2>
+    <table border="0" width="30%" cellpadding="5">
+        <tr>
+        </tr>
+        <tr>
+            <td class="col2">
+                <br>
 
+                <label>Edit test questions:</label>
+                <br>
+                <form method="post" action="Controller" name="frmUpdateQuestion">
+                    <input type="hidden" name="action" value="save_question"/>
+                    <input type="hidden" name="questionId" value="${question.getQuestionId()}"/>
+                    <textarea name="newQuestion" class="test_desc">${question.getQuestionDesc()}</textarea>
+                    <br>
+                    <input type="submit"
+                           value="Update question">
+                    <br>
+                </form>
+                <hr align="center" size="1px" width="500px">
+                <label>Edit test answers & select right question:</label>
+                <br>
 
-                    <form method="post" action="Controller" name="frmAddAnswer">
-                        <input type="hidden" name="action" value="add_answer"/>
-                        <input type="hidden" name="questionId" value="${question.getQuestionId()}"/>
-                        <br>
-                        <textarea name="answerDesc" class="test_desc" placeholder="new answer here ..."></textarea>
-                        <br>
-                        <input type="submit"
-                               value="Add answer">
-                        <br>
-                    </form>
+                <c:forEach items="${listOfAnswers}" var="answer">
+                    <c:if test="${question.getAnswerId() == answer.getAnswerId()}">
+                        <p style="color:green;"><input name="${question.getQuestionId()}"
+                                                       type="radio"
+                                                       value="${answer.getAnswerId()}"
+                                                       checked>
+                                ${answer.getAnswerDescription()}
+                            <a href="Controller?action=remove_answer&answerId=${answer.getAnswerId()}&questionId=${question.getQuestionId()}">
+                                <span class="tableLink">&#10006;     </span></a>
+                        </p>
+                    </c:if>
 
-                    <hr align="center" size="1px" width="500px">
-                    <label>Edit test clarification:</label>
+                    <c:if test="${question.getAnswerId() != answer.getAnswerId()}">
+                        <p><input name="${question.getQuestionId()}"
+                                  type="radio"
+                                  value="${answer.getAnswerId()}">
+                                ${answer.getAnswerDescription()}
+                            <a href="Controller?action=remove_answer&answerId=${answer.getAnswerId()}&questionId=${question.getQuestionId()}">
+                                <span class="tableLink">&#10006;     </span></a>
+                        </p>
+                    </c:if>
+                </c:forEach>
+
+                <label>Add new answer:</label>
+                <form method="post" action="Controller" name="frmAddAnswer">
+                    <input type="hidden" name="action" value="add_answer"/>
+                    <input type="hidden" name="questionId" value="${question.getQuestionId()}"/>
+                    <br>
+                    <textarea name="answerDesc" class="test_desc" placeholder="new answer here ..."></textarea>
+                    <br>
+                    <input type="submit"
+                           value="Add answer">
+                    <br>
+                </form>
+
+                <hr align="center" size="1px" width="500px">
+                <label>Edit test clarification:</label>
+                <br>
+                <br>
+                <form method="post" action="Controller" name="frmUpdateClarification">
+                    <input type="hidden" name="action" value="save_clarification"/>
+                    <input type="hidden" name="questionId" value="${question.getQuestionId()}"/>
+                    <br>
+                    <textarea name="newAnswerClarification"
+                              class="clar">${question.getQuestionClarification()}</textarea>
                     <br>
                     <br>
-                    <textarea name="newAnswerClarification" class="clar">${question.getQuestionClarification()}
-                    </textarea>
+                    <input type="submit"
+                           value="Update clarification">
                     <br>
-                    <hr align="center" size="1px" width="500px">
-                </td>
-            </tr>
-        </table>
-        <input class="saveButton" type="submit" value="Save changes">
-        <hr align="center" size="1px" width="500px">
-        <p>Online test system</p>
-    </center>
+                </form>
+                <br>
+                <hr align="center" size="1px" width="500px">
+            </td>
+        </tr>
+    </table>
+    <input class="saveButton" type="button" value="Save changes">
+    <hr align="center" size="1px" width="500px">
+    <p>Online test system</p>
+</center>
 <%--</form>--%>
 <script type='text/javascript'>
     var tx = document.getElementsByTagName('textarea');
@@ -284,14 +304,6 @@
     function OnInput() {
         this.style.height = 'auto';
         this.style.height = (this.scrollHeight) + 'px';
-    }
-
-    function addAnswer() {
-        document.location.href = "Controller?action=add_answer";
-    }
-
-    function save() {
-        document.location.href = "Controller?action=save_question";
     }
 </script>
 </body>

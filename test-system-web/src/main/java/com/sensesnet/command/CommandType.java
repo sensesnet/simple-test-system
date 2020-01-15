@@ -24,6 +24,7 @@ public enum CommandType
     USER_EDIT,
     USER_REMOVE,
     USER_NEW_SAVE,
+    CHANGE_PASSWORD,
     USER_EDIT_SAVE,
     START_TEST,
     CLOSE_SESSION,

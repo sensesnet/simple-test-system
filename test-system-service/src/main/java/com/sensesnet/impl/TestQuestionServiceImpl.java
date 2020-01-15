@@ -55,4 +55,19 @@ public class TestQuestionServiceImpl implements TestQuestionService
                     + "Questions [" + questionId + "] has not found at test system. Service exception", e);
         }
     }
+
+    @Override
+    public void updateQuestion(TestQuestion testQuestion) throws ServiceException
+    {
+        log.info("[" + this.getClass().getName() + "] New question [" + testQuestion + "].");
+        try
+        {
+            testQuestionDao.editEntity(testQuestion);
+        }
+        catch (ConnectionPoolException | DaoException e)
+        {
+            throw new ServiceException("[" + this.getClass().getName() + "] "
+                    + "New question [" + testQuestion + "] has not updated at test system. Service exception", e);
+        }
+    }
 }

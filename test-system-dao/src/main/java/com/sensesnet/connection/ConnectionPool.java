@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
+import java.util.Locale;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -55,7 +56,7 @@ public class ConnectionPool
     {
         freeConnectionsQueue = new ArrayBlockingQueue<>(connectionCount);
         givenAwayConnectionsQueue = new ArrayBlockingQueue<>(connectionCount);
-
+        Locale.setDefault(Locale.ENGLISH);
         try
         {
             Class.forName(databaseClass);

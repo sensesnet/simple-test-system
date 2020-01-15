@@ -27,35 +27,6 @@ public class TestResultServiceImpl implements TestResultService
     private final Logger log = LogManager.getLogger(TestServiceImpl.class);
     private TestResultDao testResultDao = DaoFactory.getTestResultDao();
 
-    public TestResult getByIdentifier(TestResult entity)
-    {
-        return null;
-    }
-
-
-    public List<TestResult> getListOfEntity()
-    {
-        return null;
-    }
-
-
-    public void addEntity(TestResult entity)
-    {
-
-    }
-
-
-    public void removeEntity(TestResult entity)
-    {
-
-    }
-
-
-    public void editEntity(TestResult entity)
-    {
-
-    }
-
     @Override
     public void addAnswerToResult(String testProcessId, Integer questionId, Integer answerId) throws ServiceException
     {

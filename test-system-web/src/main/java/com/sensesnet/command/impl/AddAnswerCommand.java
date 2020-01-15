@@ -34,7 +34,7 @@ public class AddAnswerCommand implements Command
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException
     {
-
+        //todo: create Entity builder
         Integer questionId = Integer.valueOf(request.getParameter("questionId"));
         String answerDesc = String.valueOf(request.getParameter("answerDesc"));
         if (answerDesc != null)

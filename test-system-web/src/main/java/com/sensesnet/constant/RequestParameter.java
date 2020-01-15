@@ -19,5 +19,6 @@ public class RequestParameter
     public final String FIRST_NAME = "firstName";
     public final String LOGIN = "login";
     public final String PASSWORD = "password";
+    public final String OLD_PASSWORD = "oldPassword";
     public final String CONFIRM_PASSWORD = "confirmPassword";
 }

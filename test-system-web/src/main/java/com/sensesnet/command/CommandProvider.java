@@ -32,6 +32,7 @@ public class CommandProvider
         commands.put(CommandType.USER_REMOVE, new UserRemoveCommand());
         commands.put(CommandType.USER_EDIT_SAVE, new UserSaveEditCommand());
         commands.put(CommandType.USER_NEW_SAVE, new UserSaveNewCommand());
+        commands.put(CommandType.CHANGE_PASSWORD, new ChangePasswordCommand());
 
         commands.put(CommandType.TEST_VIEW, new TestViewCommand());
         commands.put(CommandType.RESULT_VIEW, new TestResultCommand());

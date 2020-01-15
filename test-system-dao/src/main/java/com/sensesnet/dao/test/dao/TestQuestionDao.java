@@ -178,7 +178,8 @@ public class TestQuestionDao extends AbstractDao<TestQuestion>
                         entity.getQuestionValue(),
                         entity.getTestId(),
                         entity.getAnswerId(),
-                        entity.getQuestionClarification()).execute();
+                        entity.getQuestionClarification(),
+                        entity.getQuestionId()).execute();
                 connection.commit();
                 log.info("[" + this.getClass().getName() + "] Question has been updated: " + entity.toString());
             }

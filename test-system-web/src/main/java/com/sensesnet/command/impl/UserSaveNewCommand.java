@@ -34,7 +34,7 @@ public class UserSaveNewCommand implements Command
     {
         User user;
         UserRole role;
-
+        //todo: create Entity builder
         String firstName = request.getParameter(ConstantProvider.getRequestParameter().FIRST_NAME);
         String secondName = request.getParameter(ConstantProvider.getRequestParameter().SECOND_NAME);
         String birthday = request.getParameter(ConstantProvider.getRequestParameter().BIRTHDAY);

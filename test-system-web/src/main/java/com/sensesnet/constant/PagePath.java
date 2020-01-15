@@ -9,6 +9,7 @@ package com.sensesnet.constant;
 public class PagePath
 {
 
+
     public final String INDEX_PAGE = "index.jsp";
     public final String SIGN_IN_PAGE = "signIn.jsp";
     public final String SIGN_UP_PAGE = "signUp.jsp";
@@ -26,7 +27,7 @@ public class PagePath
     public final String USER_EDIT_PAGE = "/WEB-INF/view/user/userEdit.jsp";
     public final String USER_HISTORY_PAGE = "/WEB-INF/view/user/userHistory.jsp";
     public final String USER_LIST_PAGE = "/WEB-INF/view/user/userList.jsp";
-
+    public final String CHANGE_PASS = "/WEB-INF/view/user/changePassword.jsp";;
     /*
     test.process
      */

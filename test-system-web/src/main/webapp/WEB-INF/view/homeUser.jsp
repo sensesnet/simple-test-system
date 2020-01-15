@@ -123,6 +123,9 @@
 <body>
 <h1>Online Testing Platform</h1>
 <c:if test="${not empty param.errorMessage }">
+    <c:out value="${param.errorMessage}"></c:out>
+</c:if>
+<c:if test="${not empty param.message }">
     <c:out value="${param.message}"></c:out>
 </c:if>
 <div>
@@ -134,12 +137,7 @@
         <a href="Controller?action=close_session"><span class="more nowrap">Sign Out</span></a>
     </div>
 </div>
-<c:if test="${not empty param.errorMessage }">
-    <c:out value="${param.errorMessage}"></c:out>
-</c:if>
-<c:if test="${not empty param.message }">
-    <c:out value="${param.message}"></c:out>
-</c:if>
+
 <p>
     'User' role gives you main capabilities for:
     <br>- Find and complete available & assigned tests
