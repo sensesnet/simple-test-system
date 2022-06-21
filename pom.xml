@@ -33,7 +33,7 @@
         <slf4j.version>1.7.25</slf4j.version>
         <junit.version>4.13.1</junit.version>
         <commons-lang3.version>3.7</commons-lang3.version>
-        <mysql.connector.version>8.0.18</mysql.connector.version>
+        <mysql.connector.version>8.0.28</mysql.connector.version>
         <lombok.version>1.18.0</lombok.version>
         <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
         <jstl.version>1.2</jstl.version>
