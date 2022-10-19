@@ -44,7 +44,7 @@
         <mockito.version>1.9.5</mockito.version>
         <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
         <source.encoding>UTF-8</source.encoding>
-        <jackson.version>2.9.10.7</jackson.version>
+        <jackson.version>2.13.4.1</jackson.version>
     </properties>
 
     <dependencyManagement>
